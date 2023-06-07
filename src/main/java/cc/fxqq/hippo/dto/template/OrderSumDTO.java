@@ -22,5 +22,9 @@ public class OrderSumDTO {
 	private BigDecimal realProfit;
 	
 	private String curDate;
+	
+	private Integer slCount;
+	
+	private Integer tpCount;
 
 }

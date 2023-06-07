@@ -19,6 +19,10 @@ public class TradeOrderParam extends PageParam {
 	
 	private String openEndDate;
 	
+	private boolean isTp;
+	
+	private boolean isSl;
+	
 	private String orderBy;
 	
 }

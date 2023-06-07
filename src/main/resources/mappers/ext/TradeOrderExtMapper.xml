@@ -73,6 +73,12 @@
 		<if test="closeStartDate != null and closeEndDate != null">
 			and date(close_time) BETWEEN #{closeStartDate} and #{closeEndDate}
 		</if>
+		<if test="isTp">
+			and comment like '%[tp]%'
+		</if>
+		<if test="isSl">
+			and comment like '%[sl]%'
+		</if>
 	</sql>
 
 	<insert id="replaceBatch">

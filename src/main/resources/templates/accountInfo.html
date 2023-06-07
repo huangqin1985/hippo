@@ -60,7 +60,7 @@
 	    	</td>
 	    </tr>
 	    <tr>
-			<td style="text-align:right;width:90px;">盈亏：</td>
+			<td style="text-align:right;width:90px;">收益：</td>
 			<td style="font-weight:bold;text-align:right;padding:0 10px 0 0;">
 				<span th:class="${acc.income>=0?'g':'r'}" th:text="${acc.income}"></span>
 			</td>
@@ -130,7 +130,7 @@
 	    	</td>
 	    </tr>
 	    <tr>
-			<td style="text-align:right;width:90px;">爆仓条件：</td>
+			<td style="text-align:right;width:90px;">爆仓比率：</td>
 			<td style="text-align:right;padding:0 10px 0 0;">
 				<span th:text="${acc.stopOutLevel}"></span>
 			</td>

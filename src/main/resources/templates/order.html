@@ -114,6 +114,16 @@
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>
+	    <tr style="padding:0 20px 0 20px">
+    		<td style="text-align:right;padding:0 20px 0 20px">
+	    			<a th:href="'orderList?tp=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'止盈(' + totalSum.tpCount + ')'}"></a>
+	        		&nbsp;<a th:href="'orderList?sl=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'止损(' + totalSum.slCount + ')'}"></a>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
 	</table>
 </body>
 </html>

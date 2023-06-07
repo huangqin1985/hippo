@@ -243,6 +243,8 @@ public class TradeOrderController extends BaseController {
 			@RequestParam(name="startDate", required = false) Date startDate,
 			@RequestParam(name="endDate", required = false) Date endDate,
 			@RequestParam(name="type", required = false) String type,
+			@RequestParam(name="sl", required = false, defaultValue="false") boolean sl,
+			@RequestParam(name="tp", required = false, defaultValue="false") boolean tp,
 			@RequestParam(name="pageNum", required = false) Integer pageNum) {
 		
 		// 账户列表
@@ -306,6 +308,8 @@ public class TradeOrderController extends BaseController {
 		} else {
 			param.setPage(pageNum);
 		}
+		param.setTp(tp);
+		param.setSl(sl);
 		
 		Pager<TradeOrderDTO> orderList = tradeOrderService.getTradeOrderList(param);
 		model.addAttribute("pager", orderList);
@@ -319,6 +323,8 @@ public class TradeOrderController extends BaseController {
 		model.addAttribute("sortType", sortOrder);
 		model.addAttribute("startDateStr", DateUtil.formatDate(startDate));
 		model.addAttribute("endDateStr", DateUtil.formatDate(endDate));
+		model.addAttribute("tp", tp);
+		model.addAttribute("sl", sl);
 		
 		return "orderList";
 	}

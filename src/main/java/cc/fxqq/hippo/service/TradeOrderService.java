@@ -342,6 +342,16 @@ public class TradeOrderService {
 		OrderSumDTO dto = new OrderSumDTO();
 		BeanUtils.copyProperties(result, dto);
 		
+		param.setTp(false);
+		param.setSl(true);
+		int slCount = tradeOrderExtMapper.selectTotal(param);
+		
+		param.setSl(false);
+		param.setTp(true);
+		int tpCount = tradeOrderExtMapper.selectTotal(param);
+		dto.setSlCount(slCount);
+		dto.setTpCount(tpCount);
+		
 		return dto;
 	}
 }
