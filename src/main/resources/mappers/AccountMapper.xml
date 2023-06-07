@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.fxqq.hippo.dao.AccountMapper">
+  <resultMap id="BaseResultMap" type="cc.fxqq.hippo.entity.Account">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="server" jdbcType="VARCHAR" property="server" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="leverage" jdbcType="INTEGER" property="leverage" />
+    <result column="balance" jdbcType="DECIMAL" property="balance" />
+    <result column="time_zone" jdbcType="INTEGER" property="timeZone" />
+    <result column="client_name" jdbcType="VARCHAR" property="clientName" />
+    <result column="stop_out_level" jdbcType="VARCHAR" property="stopOutLevel" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+    <result column="connect_time" jdbcType="VARCHAR" property="connectTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, number, company, server, currency, leverage, balance, time_zone, client_name, 
+    stop_out_level, create_time, update_time, connect_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from account
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from account
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cc.fxqq.hippo.entity.Account">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      select last_insert_rowid()
+    </selectKey>
+    insert into account (name, number, company, 
+      server, currency, leverage, 
+      balance, time_zone, client_name, 
+      stop_out_level, create_time, update_time, 
+      connect_time)
+    values (#{name,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER}, #{company,jdbcType=VARCHAR}, 
+      #{server,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR}, #{leverage,jdbcType=INTEGER}, 
+      #{balance,jdbcType=DECIMAL}, #{timeZone,jdbcType=INTEGER}, #{clientName,jdbcType=VARCHAR}, 
+      #{stopOutLevel,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, 
+      #{connectTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cc.fxqq.hippo.entity.Account">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      select last_insert_rowid()
+    </selectKey>
+    insert into account
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="company != null">
+        company,
+      </if>
+      <if test="server != null">
+        server,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="leverage != null">
+        leverage,
+      </if>
+      <if test="balance != null">
+        balance,
+      </if>
+      <if test="timeZone != null">
+        time_zone,
+      </if>
+      <if test="clientName != null">
+        client_name,
+      </if>
+      <if test="stopOutLevel != null">
+        stop_out_level,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="connectTime != null">
+        connect_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="company != null">
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="server != null">
+        #{server,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="leverage != null">
+        #{leverage,jdbcType=INTEGER},
+      </if>
+      <if test="balance != null">
+        #{balance,jdbcType=DECIMAL},
+      </if>
+      <if test="timeZone != null">
+        #{timeZone,jdbcType=INTEGER},
+      </if>
+      <if test="clientName != null">
+        #{clientName,jdbcType=VARCHAR},
+      </if>
+      <if test="stopOutLevel != null">
+        #{stopOutLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="connectTime != null">
+        #{connectTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cc.fxqq.hippo.entity.Account">
+    update account
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="company != null">
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="server != null">
+        server = #{server,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="leverage != null">
+        leverage = #{leverage,jdbcType=INTEGER},
+      </if>
+      <if test="balance != null">
+        balance = #{balance,jdbcType=DECIMAL},
+      </if>
+      <if test="timeZone != null">
+        time_zone = #{timeZone,jdbcType=INTEGER},
+      </if>
+      <if test="clientName != null">
+        client_name = #{clientName,jdbcType=VARCHAR},
+      </if>
+      <if test="stopOutLevel != null">
+        stop_out_level = #{stopOutLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="connectTime != null">
+        connect_time = #{connectTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cc.fxqq.hippo.entity.Account">
+    update account
+    set name = #{name,jdbcType=VARCHAR},
+      number = #{number,jdbcType=INTEGER},
+      company = #{company,jdbcType=VARCHAR},
+      server = #{server,jdbcType=VARCHAR},
+      currency = #{currency,jdbcType=VARCHAR},
+      leverage = #{leverage,jdbcType=INTEGER},
+      balance = #{balance,jdbcType=DECIMAL},
+      time_zone = #{timeZone,jdbcType=INTEGER},
+      client_name = #{clientName,jdbcType=VARCHAR},
+      stop_out_level = #{stopOutLevel,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=VARCHAR},
+      connect_time = #{connectTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

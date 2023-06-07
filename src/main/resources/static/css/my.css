@@ -1,0 +1,73 @@
+* {
+      margin: 0;
+      padding: 0;
+      font-size: 17px;
+      font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+  }
+  table {
+      /*设置相邻单元格的边框间的距离*/
+      border-spacing: 0;
+      /*表格设置合并边框模型*/
+      border-collapse: collapse;
+      text-align: center;
+  }
+  /*关键设置 tbody出现滚动条*/
+  table tbody {
+      display: block;
+      overflow-y: hidden;
+      overflow-x: hidden;
+  }
+
+  table thead,
+  tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+      height: 25px;
+      text-align:center;
+  }
+  /*关键设置：滚动条默认宽度是16px 将thead的宽度减16px*/
+         table thead {
+             width: calc( 100% - 1.1em)
+         }
+         table thead th {
+             background: #ccc;
+         }
+         a:link {
+          color: #2440b3;
+ text-decoration: none;
+}
+a:visited {
+ color: #2440b3;
+ text-decoration: none;
+}
+a:hover {
+ color: #2440b3;
+ text-decoration: none;
+}
+.g {
+	color: #0078FF;
+}
+.r {
+	color: #AB3439
+}
+.d {
+	display: none;
+}
+/*select居中*/
+.last_center{
+	text-align:center;
+	text-align-last:center;
+	border:1px solid rgba(255,255,255,0.2);
+	background-color:#FFFFFF;	
+	font-size:17px;
+}
+.sl {
+	border-left:3px solid #AB3439;
+}
+.tp {
+	border-left:3px solid #0078FF;
+}
+.so {
+	border-left:3px solid #AB3439;
+}

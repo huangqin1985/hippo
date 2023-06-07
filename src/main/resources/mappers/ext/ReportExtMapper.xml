@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.fxqq.hippo.dao.ext.ReportExtMapper">
+
+	<resultMap id="BaseResultMap" type="cc.fxqq.hippo.entity.Report">
+	    <id column="id" jdbcType="INTEGER" property="id" />
+	    <result column="account_id" jdbcType="INTEGER" property="accountId" />
+	    <result column="type" jdbcType="VARCHAR" property="type" />
+	    <result column="start_date" jdbcType="VARCHAR" property="startDate" />
+	    <result column="end_date" jdbcType="VARCHAR" property="endDate" />
+	    <result column="pre_balance" jdbcType="DECIMAL" property="preBalance" />
+	    <result column="balance" jdbcType="DECIMAL" property="balance" />
+	    <result column="real_profit" jdbcType="DECIMAL" property="realProfit" />
+	    <result column="commission" jdbcType="DECIMAL" property="commission" />
+	    <result column="swap" jdbcType="DECIMAL" property="swap" />
+	    <result column="profit" jdbcType="DECIMAL" property="profit" />
+	    <result column="lots" jdbcType="DECIMAL" property="lots" />
+	    <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+	    <result column="deposit" jdbcType="DECIMAL" property="deposit" />
+	    <result column="withdraw" jdbcType="DECIMAL" property="withdraw" />
+	    <result column="other" jdbcType="DECIMAL" property="other" />
+	    <result column="max_equity" jdbcType="DECIMAL" property="maxEquity" />
+	    <result column="min_equity" jdbcType="DECIMAL" property="minEquity" />
+	    <result column="max_real_profit" jdbcType="DECIMAL" property="maxRealProfit" />
+	    <result column="min_real_profit" jdbcType="DECIMAL" property="minRealProfit" />
+	    <result column="max_profit" jdbcType="FLOAT" property="maxProfit" />
+	    <result column="min_profit" jdbcType="FLOAT" property="minProfit" />
+	    <result column="max_margin" jdbcType="DECIMAL" property="maxMargin" />
+	    <result column="min_margin_rate" jdbcType="DECIMAL" property="minMarginRate" />
+	    <result column="trade_duration" jdbcType="INTEGER" property="tradeDuration" />
+	    <result column="extra" jdbcType="INTEGER" property="extra" />
+	    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+	    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+	  </resultMap>
+	  
+	<sql id="Base_Column_List">
+		*
+	</sql>
+	
+	<sql id="cond">
+		where
+			account_id = #{accountId}
+			and type = #{type}
+	</sql>
+	
+	<select id="selectTotal" parameterType="cc.fxqq.hippo.entity.param.ReportParam"
+		 resultType="int">
+		select
+			count(*)
+		from
+			report
+			<include refid="cond" />
+	</select>
+	
+	<select id="selectPage" parameterType="cc.fxqq.hippo.entity.param.ReportParam"
+		 resultMap="BaseResultMap">
+		select
+			<include refid="Base_Column_List" />
+		from
+			report a
+			<include refid="cond" />
+            <if test="orderBy != null">
+				order by ${orderBy}
+			</if>
+            <if test="page != null">
+            	 limit #{startRecord} , #{rows}
+            </if>
+	</select>
+
+	<select id="selectUnique" resultMap="BaseResultMap">
+		select
+			*
+		from
+			report
+		where
+			account_id = #{accountId}
+			and type = #{type}
+			and date(start_date) = #{startDate}
+	</select>
+
+</mapper>

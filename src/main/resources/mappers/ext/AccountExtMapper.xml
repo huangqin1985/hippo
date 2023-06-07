@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.fxqq.hippo.dao.ext.AccountExtMapper">
+	<resultMap id="BaseResultMap" type="cc.fxqq.hippo.entity.Account">
+	    <id column="id" jdbcType="INTEGER" property="id" />
+	    <result column="name" jdbcType="VARCHAR" property="name" />
+	    <result column="number" jdbcType="INTEGER" property="number" />
+	    <result column="company" jdbcType="VARCHAR" property="company" />
+	    <result column="server" jdbcType="VARCHAR" property="server" />
+	    <result column="currency" jdbcType="VARCHAR" property="currency" />
+	    <result column="leverage" jdbcType="INTEGER" property="leverage" />
+	    <result column="balance" jdbcType="DECIMAL" property="balance" />
+	    <result column="time_zone" jdbcType="INTEGER" property="timeZone" />
+	    <result column="client_name" jdbcType="VARCHAR" property="clientName" />
+	    <result column="stop_out_level" jdbcType="VARCHAR" property="stopOutLevel" />
+	    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+	    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+	    <result column="connect_time" jdbcType="VARCHAR" property="connectTime" />
+	  </resultMap>
+	
+	<select id="selectAccounts" resultMap="BaseResultMap">
+		select * from account
+	</select>
+	
+	<select id="selectUnique" resultMap="BaseResultMap">
+		select
+			*
+		from
+			account
+		where
+			name = #{name}
+	</select>
+</mapper>

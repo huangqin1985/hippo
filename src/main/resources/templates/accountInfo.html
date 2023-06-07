@@ -1,0 +1,175 @@
+
+<!doctype html>
+
+<!--注意：引入thymeleaf的名称空间-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>历史</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my.css} "/>
+    
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script>
+    $(function() {
+
+    	$("#sel2").change(function() {
+    		var type = $("#sel2").val();
+    		
+    		$("#type").val(type);
+        	$("#form2").submit();
+    	});
+    	
+    	$(".orderDetail").click(function() {
+    		$(this).parent().children(".moreInfo").toggle();
+    	});
+    	
+    	$("a").click(function(evt) {
+    		evt.stopPropagation();
+    	});
+
+    });
+    </script>
+</head>
+<body>
+<table>
+	<table style="margin: 0 8px 0 8px;">
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:25px;">
+			<td colspan="3" style="text-align:center;width:100%;padding:0 10px 0 10px;">
+				<div th:insert="common::account"></div>
+			</td> 	
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;text-align:left;padding:0 0 0 10px;">
+				<div th:insert="common::nav"></div>
+			</td>
+		</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+			<td style="text-align:right;width:90px;">盈亏：</td>
+			<td style="font-weight:bold;text-align:right;padding:0 10px 0 0;">
+				<span th:class="${acc.income>=0?'g':'r'}" th:text="${acc.income}"></span>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+			<td style="text-align:right;width:90px;">余额：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${acc.balance + ' ' + acc.currency}"></span>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+		<tr>
+			<td style="text-align:right;width:90px;">交易商：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${acc.company}"></span>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+		<tr>
+			<td style="text-align:right;width:90px;">服务器：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${acc.server}"></span>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+			<td style="text-align:right;width:90px;">账号：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${acc.number}"></span>
+			</td>
+		</tr> 
+		<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+			<td style="text-align:right;width:90px;">名称：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${acc.clientName}"></span>
+			</td>
+		</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+		<tr>
+			<td style="text-align:right;width:90px;">杠杠：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${'1:' + acc.leverage}"></span>
+			</td>
+		</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+			<td style="text-align:right;width:90px;">爆仓条件：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${acc.stopOutLevel}"></span>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+			<td style="text-align:right;width:90px;">交易日期：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${acc.tradeDate}"></span>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+			<td style="text-align:right;width:90px;">连接状态：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:if="${acc.status == 0}" class="r">未连接</span>
+				<span th:if="${acc.status == 1}" class="g">已连接</span>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+			<td style="text-align:right;width:90px;">连接时间：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${acc.connectTime}"></span>
+			</td>
+		</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	</table>
+</body>
+</html>

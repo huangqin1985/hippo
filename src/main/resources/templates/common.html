@@ -1,0 +1,44 @@
+
+<!doctype html>
+
+<!--注意：引入thymeleaf的名称空间-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+<body>
+<div th:fragment="account">
+	<form name="form1" action="report">
+	 	<select name="account" class="last_center" onChange="form1.submit();">
+	 		<option th:selected="${acc.id==account}" th:each="acc : ${accounts}" th:value="${acc.id}" th:text="${acc.name}"></option>
+	 	</select>
+	</form>
+</div>
+<div th:fragment="nav">
+	<a th:href="'order?account=' + ${account} + '&type=thisWeek'">订单</a>&nbsp;&nbsp;&nbsp;
+	<a th:href="'report?account=' + ${account}">报表</a>&nbsp;&nbsp;&nbsp;
+	<a th:href="'fund?account=' + ${account}">资金</a>&nbsp;&nbsp;&nbsp;
+	<!-- <a th:href="'position?account=' + ${account}">持仓</a>&nbsp;&nbsp;&nbsp; -->
+	<a th:href="'accountInfo?account=' + ${account}">账户</a>&nbsp;&nbsp;&nbsp;
+</div>
+<div th:fragment="orderNav">
+	<a th:href="'order?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=today'" >
+		<span>今日</span>
+	</a>
+	&nbsp;
+	<a th:href="'order?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=thisWeek'" >
+		<span>本周</span>
+	</a>
+	&nbsp;
+	<a th:href="'order?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=thisMonth'" >
+		<span>本月</span>
+	</a>
+	&nbsp;
+	<a th:href="'order?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=all'" >
+		<span>全部</span>
+	</a>
+</div>
+</body>

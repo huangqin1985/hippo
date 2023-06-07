@@ -1,0 +1,275 @@
+
+<!doctype html>
+
+<!--注意：引入thymeleaf的名称空间-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>历史</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my.css} "/>
+    
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script>
+    $(function() {
+    	
+    	$("#sel2").change(function() {
+    		var col = $("#sel2").val();
+    		
+    		$("#col").val(col);
+    		$("#sort").val("");
+    		$("#sortType").val("");
+        	$("#form2").submit();
+    	});
+    	
+    	$(".orderDetail").click(function() {
+    		$(this).parent().children(".moreInfo").toggle();
+    	});
+    	
+    	$("a").click(function(evt) {
+    		evt.stopPropagation();
+    	});
+    	
+    	$("#aDate").click(function(evt) {
+    		var sort = $("#sort").val();
+    		var sortType = $("#sortType").val();
+    		
+    		if ("startDate" == sort) {
+    			if ("desc" == sortType) {
+    				$("#sortType").val("asc");
+    			} else {
+    				$("#sortType").val("desc");
+    			}
+    		} else {
+    			$("#sort").val("startDate");
+    			$("#sortType").val("desc");
+    		}
+    		$("#form2").submit();
+    	});
+    	$("#aBalance").click(function(evt) {
+    		var sort = $("#sort").val();
+    		var sortType = $("#sortType").val();
+    		
+    		if ("balance" == sort) {
+    			if ("desc" == sortType) {
+    				$("#sortType").val("asc");
+    			} else {
+    				$("#sortType").val("desc");
+    			}
+    		} else {
+    			$("#sort").val("balance");
+    			$("#sortType").val("desc");
+    		}
+    		$("#form2").submit();
+    	});
+    	$("#aOrderNum").click(function(evt) {
+    		var sort = $("#sort").val();
+    		var sortType = $("#sortType").val();
+    		
+    		if ("orderNum" == sort) {
+    			if ("desc" == sortType) {
+    				$("#sortType").val("asc");
+    			} else {
+    				$("#sortType").val("desc");
+    			}
+    		} else {
+    			$("#sort").val("orderNum");
+    			$("#sortType").val("desc");
+    		}
+    		$("#form2").submit();
+    	});
+    	$("#aLots").click(function(evt) {
+    		var sort = $("#sort").val();
+    		var sortType = $("#sortType").val();
+    		
+    		if ("lots" == sort) {
+    			if ("desc" == sortType) {
+    				$("#sortType").val("asc");
+    			} else {
+    				$("#sortType").val("desc");
+    			}
+    		} else {
+    			$("#sort").val("lots");
+    			$("#sortType").val("desc");
+    		}
+    		$("#form2").submit();
+    	});
+    	$("#aProfit").click(function(evt) {
+    		var sort = $("#sort").val();
+    		var sortType = $("#sortType").val();
+    		
+    		if ("realProfit" == sort) {
+    			if ("desc" == sortType) {
+    				$("#sortType").val("asc");
+    			} else {
+    				$("#sortType").val("desc");
+    			}
+    		} else {
+    			$("#sort").val("realProfit");
+    			$("#sortType").val("desc");
+    		}
+    		$("#form2").submit();
+    	});
+    });
+    </script>
+</head>
+<body>
+<table>
+	<table style="margin: 0 8px 0 8px;">
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:25px;">
+			<td colspan="3" style="text-align:center;width:100%;padding:0 10px 0 10px;">
+				<div th:insert="common::account"></div>
+			</td> 	
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;text-align:left;padding:0 0 0 10px;">
+				<div th:insert="common::nav"></div>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+		<tr>
+    		<td style="text-align:left;width:40%">
+		    <select id="sel2" class="last_center">
+	    		<option th:selected="${col == 'lots'}" value="lots">&nbsp;交易量&nbsp;</option>
+	    		<option th:selected="${col == 'balance'}" value="balance">&nbsp;余额&nbsp;</option>
+	    		<option th:selected="${col == 'orderNum'}" value="orderNum">&nbsp;订单数&nbsp;</option>
+		    </select>
+		    <form id="form2" name="form2" action="report">
+		    	<input type="hidden" th:value="${account}" name = "account"/>
+		    	<input type="hidden" id="col" th:value="${col}" name = "col"/>
+				<input type="hidden" th:value="${sort}" id = "sort" name="sort"/>
+				<input type="hidden" th:value="${sortType}" id = "sortType" name="sortType"/>
+	    	</form>
+    		</td>
+    		<td  colspan="2" style="text-align:right;width:60%">
+    		<span th:text="${pager.totalRecord}"></span>条&nbsp;<span th:if="${pager.pageCount gt 0}"><span th:text="${pager.pageNum}"></span>/<span th:text="${pager.pageCount}"></span></span>
+    		<a th:if="${pager.hasPrePage}"
+    			  th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType} + '&pageNum=' + ${pager.prePage}">上页</a>
+    		<a th:if="${pager.hasNextPage}" 
+    			 th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType}  + '&pageNum=' + ${pager.nextPage}">下页</a>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr style="height:10px;">
+	    	<td style = "width:32%;text-align:center;"><a href="javascript:;" id="aDate">周</a><span th:if="${sort=='startDate'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='startDate'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
+       		
+       		<td th:if="${col=='balance'}" style="width:34%;text-align:right;"><a href="javascript:;" id="aBalance">余额</a><span th:if="${sort=='balance'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='balance'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
+       		<td th:if="${col=='lots'}" style="width:34%;text-align:right;"><a href="javascript:;" id="aLots">交易量</a><span th:if="${sort=='lots'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='lots'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
+       		<td th:if="${col=='orderNum'}" style="width:34%;text-align:right;"><a href="javascript:;" id="aOrderNum">订单数</a><span th:if="${sort=='orderNum'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='orderNum'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
+       		
+       		<td style="width:34%;text-align:right;padding:0 5px 0 0;"><a href="javascript:;" id="aProfit">利润</a><span th:if="${sort=='realProfit'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='realProfit'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
+	    </tr>
+	    <tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+		    <td>
+		    <table th:each="item : ${pager.data}">
+			    <tr class="orderDetail">
+			        <td style = "width:32%;text-align:center;" >
+			        <a th:href="'order?account=' + ${account} + '&startDate=' + ${item.startDate} + '&endDate=' + ${item.endDate} + ${item.thisWeek ? '&type=thisWeek':''}" th:text="${item.description}"></a>
+			        </td>
+		       		<td style="width:34%;text-align:right;">
+	    				<span th:if="${col=='balance'}" th:text="${item.balance}"></span>
+	    				<span th:if="${col=='lots'}" th:text="${item.lots}"></span>
+	    				<span th:if="${col=='orderNum'}" th:text="${item.orderNum}"></span>
+		       		</td>
+		       		<td style = "width:34%;text-align:right;padding:0 5px 0 0;" >
+	    				<span th:class="${item.realProfit>=0?'g':'r'}" th:text="${item.realProfit}"></span>
+			        </td>
+			    </tr>
+			    <tr th:style="${item.thisWeek?'display:visible':'display:none'}"  class="orderDetail moreInfo">
+					<td style="font-size: 15px;text-align:right;width:85px;">最小利润：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.minRealProfit != null}" th:text="${item.minRealProfit}"></span>
+						<span th:if="${item.minRealProfit == null}">-</span>
+					
+					</td>
+					<td style="font-size: 15px;text-align:right;width:85px;">最大利润：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.maxRealProfit != null}" th:text="${item.maxRealProfit}"></span>
+						<span th:if="${item.minRealProfit == null}">-</span>
+					</td>
+				</tr>
+				<tr th:style="${item.thisWeek?'display:visible':'display:none'}"  class="orderDetail moreInfo">
+					<td style="font-size: 15px;text-align:right;width:85px">最小净值：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.minEquity != null}" th:text="${item.minEquity}"></span>
+						<span th:if="${item.minEquity == null}">-</span>
+					</td>
+					<td style="font-size: 15px;text-align:right;width:85px;">最大净值：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.maxEquity != null}" th:text="${item.maxEquity}"></span>
+						<span th:if="${item.maxEquity == null}">-</span>
+					</td>
+				</tr>
+				<tr th:style="${item.thisWeek?'display:visible':'display:none'}"  class="orderDetail moreInfo">
+					<td style="font-size: 15px;text-align:right;width:85px">最小盈亏：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.minProfit != null}" th:text="${item.minProfit}"></span>
+						<span th:if="${item.minProfit == null}">-</span>
+					</td>
+					<td style="font-size: 15px;text-align:right;width:85px;">最大盈亏：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.maxProfit != null}" th:text="${item.maxProfit}"></span>
+						<span th:if="${item.maxProfit == null}">-</span>
+					</td>
+				</tr>
+				<tr th:style="${item.thisWeek?'display:visible':'display:none'}"  class="orderDetail moreInfo">
+					<td style="font-size: 15px;text-align:left;width:125px;">最小预付款比率：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.minMarginRateStr != null}" th:text="${item.minMarginRateStr}"></span>
+						<span th:if="${item.minMarginRateStr == null}">-</span>
+					</td>
+				</tr>
+				<tr th:style="${item.thisWeek?'display:visible':'display:none'}"  class="orderDetail moreInfo">
+					<td style="font-size: 15px;text-align:left;width:125px;">交易时长：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.tradeDuration != null}" th:text="${item.tradeDuration}"></span>
+						<span th:if="${item.tradeDuration == null}">-</span>
+					</td>
+				</tr>
+			    <tr style="height:10px;">
+		    		<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+		    	</td>
+			    </tr>
+		    </table>
+		    </td>
+	    </tr>
+	    <tr th:if="${pager.totalRecord > 0}">
+    		<td style="text-align:left;width:40%">
+		    
+    		</td>
+    		<td  colspan="2" style="text-align:right;width:60%">
+    		<span th:text="${pager.totalRecord}"></span>条&nbsp;<span th:if="${pager.pageCount gt 0}"><span th:text="${pager.pageNum}"></span>/<span th:text="${pager.pageCount}"></span></span>
+    		<a th:if="${pager.hasPrePage}"
+    			  th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType} + '&pageNum=' + ${pager.prePage}">上页</a>
+    		<a th:if="${pager.hasNextPage}" 
+    			 th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType}  + '&pageNum=' + ${pager.nextPage}">下页</a>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	</table>
+</body>
+</html>

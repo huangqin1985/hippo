@@ -1,0 +1,179 @@
+<!doctype html>
+
+<!--注意：引入thymeleaf的名称空间-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>收益</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my.css} "/>
+
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jsrender.min.js}"></script>
+    
+    <script id="orders_tmpl" type="text/x-jsrender">
+        {{for orders}}
+      <table>
+		<tr class="orderDetail">
+			<td style="text-align: left;padding: 0 5px 0 5px;width:75%">
+				<span style="font-weight: bold">{{:symbol}}</span>, 
+				<span class="{{:typeColor}}"
+					style="font-weight: bold">{{:typeStr}}</span> 
+				<span  class="{{:typeColor}}"
+					style="font-weight: bold">{{:lots}}</span>
+			</td>
+			<td  style="padding: 0 5px 0 5px; text-align: right;width:25%;">
+				<span style="font-weight: bold;" class="{{:profitColor}}">{{:profit}}</span>
+			</td>
+		</tr>
+		<tr class="orderDetail" >
+			<td style="text-align: left;width:75%;padding: 0 5px 0 5px">
+				<span style="font-size:17px;">{{:closePrice}}</span> 
+			</td>
+			<td style="padding: 0 5px 0 5px; text-align: right;width:25%;">
+				
+			</td>
+		</tr>
+		<tr style="height:6px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		
+	</table>
+        {{/for}}
+	</script>
+	<script id="blank_tmpl" type="text/x-jsrender">
+        <table>
+				    <tr>
+						<td style="text-align:center;">
+							-
+						</td>
+					</tr>
+				</table>
+	</script>
+    <script>
+    function createSocket() {
+    	var accountId = $("#accountId").val();
+    	//var url = "ws://121.41.119.155//ws?accountId=" + accountId;
+    	var url = "ws://localhost//ws?accountId=" + accountId;
+        var websocket;
+        if ('WebSocket' in window) {
+            websocket = new WebSocket(url);
+        } else if ('MozWebSocket' in window) {
+            websocket = new MozWebSocket(url);
+        }
+        websocket.onopen = function (evnt) {
+        };
+        websocket.onmessage = function (evnt) {
+        	var data = $.parseJSON(evnt.data);
+
+        	$("#equity").html(data.equity);
+        	$("#totalProfit").attr("class", data.profitColor).html(data.profit);
+        	$("#serverTime").html(data.serverTime);
+        	
+        	if (data.trading.length > 0) {
+        		$("#orderPanel").html($("#orders_tmpl").render({orders: data.trading}));
+        	} else {
+            	$("#orderPanel").html($("#blank_tmpl").render({}));
+        	}
+        	
+        };
+        websocket.onerror = function (evnt) {
+        	createSocket();
+        };
+        websocket.onclose = function (evnt) {
+            createSocket();
+        }
+    }
+    
+    $(function() {
+    	createSocket();
+    });
+    </script>
+</head>
+<body>
+	<input type="hidden" id="accountId" th:value="${account}"/>
+	<table style="margin: 0 8px 0 8px;">
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:25px;">
+			<td colspan="3" style="text-align:center;width:100%;padding:0 10px 0 10px;">
+				<div th:insert="common::account"></div>
+			</td> 	
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;text-align:left;padding:0 0 0 10px;">
+				<div th:insert="common::nav"></div>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:left;width:50%;padding: 0 5px 0 5px;">
+				净值：<span id="equity" th:text="${position.equity}"></span>
+			</td>
+			<td th:class="${statusColor}" style="width:50%;text-align:right;padding: 0 5px 0 5px;">
+				盈亏：<span style="font-weight:bold" id="totalProfit" th:class="${position.profitColor}" th:text="${position.profit}"></span>
+			</td>
+		</tr>
+		<tr style="height:6px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+		<tr>
+			<td th:if="${position.trading.size == 0}" id="orderPanel">
+				<table>
+				    <tr>
+						<td style="text-align:center;">
+							-
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td th:if="${position.trading.size > 0}" id="orderPanel">
+				<table th:each="item : ${position.trading}">
+					<tr class="orderDetail">
+						<td style="text-align: left;padding: 0 5px 0 5px;width:75%">
+							<span style="font-weight: bold" th:text="${item.symbol}"></span>, 
+							<span  th:class="${item.typeColor}"
+								style="font-weight: bold" th:text="${item.typeStr}"></span> 
+							<span th:class="${item.typeColor}"
+								style="font-weight: bold" th:text="${item.lots}"></span>
+						</td>
+						<td  style="padding: 0 5px 0 5px; text-align: right;width:25%;">
+							<span th:class="${item.profitColor}" style="font-weight:bold" th:text="${item.profit}"></span>
+						</td>
+					</tr>
+					<tr class="orderDetail" >
+						<td style="text-align: left;width:75%;padding: 0 5px 0 5px">
+							<span style="font-size:17px;" th:text="${item.closePrice}"></span> 
+						</td>
+						<td style="padding: 0 5px 0 5px; text-align: right;width:25%;">
+							<!-- <span style="font-size: 15px" th:text="${item.points}"></span> -->
+						</td>
+					</tr>
+					<tr style="height:6px;">
+				    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+				    	</td>
+				    </tr>
+				</table>
+			</td>
+		</tr>
+		<tr style="height:25px;">
+			<td style="text-align:right;width:100%;padding:0 10px 0 10px;">
+				<span id="serverTime" style="font-style:italic;font-size:15px;" th:text="${position.serverTime}"></span>
+			</td> 	
+		</tr>
+	</table>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.fxqq.hippo.dao.ext.TradeOrderExtMapper">
+
+	<resultMap id="BaseResultMap"
+		type="cc.fxqq.hippo.entity.TradeOrder">
+		<result column="account_id" jdbcType="INTEGER" property="accountId" />
+		<result column="ticket" jdbcType="VARCHAR" property="ticket" />
+		<result column="open_time" jdbcType="VARCHAR" property="openTime" />
+		<result column="close_time" jdbcType="VARCHAR" property="closeTime" />
+		<result column="symbol" jdbcType="VARCHAR" property="symbol" />
+		<result column="lots" jdbcType="DECIMAL" property="lots" />
+		<result column="commission" jdbcType="DECIMAL" property="commission" />
+		<result column="swap" jdbcType="DECIMAL" property="swap" />
+		<result column="profit" jdbcType="DECIMAL" property="profit" />
+		<result column="real_profit" jdbcType="DECIMAL" property="realProfit" />
+		<result column="type" jdbcType="VARCHAR" property="type" />
+		<result column="open_price" jdbcType="VARCHAR" property="openPrice" />
+		<result column="close_price" jdbcType="VARCHAR" property="closePrice" />
+		<result column="stop_loss" jdbcType="VARCHAR" property="stopLoss" />
+		<result column="take_profit" jdbcType="VARCHAR" property="takeProfit" />
+		<result column="comment" jdbcType="VARCHAR" property="comment" />
+	</resultMap>
+
+	<resultMap id="orderSumResult"
+		type="cc.fxqq.hippo.entity.result.OrderSumResult">
+		<result column="symbol" jdbcType="VARCHAR" property="symbol" />
+		<result column="commission" jdbcType="DECIMAL" property="commission" />
+		<result column="swap" jdbcType="DECIMAL" property="swap" />
+		<result column="profit" jdbcType="DECIMAL" property="profit" />
+		<result column="real_profit" jdbcType="DECIMAL" property="realProfit" />
+		<result column="lots" jdbcType="DECIMAL" property="lots" />
+		<result column="orderNum" jdbcType="INTEGER" property="orderNum" />
+		<result column="avg_hold_time" jdbcType="INTEGER" property="avgHoldTime" />
+		<result column="cur_date" jdbcType="INTEGER" property="curDate" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		account_id, ticket, open_time, close_time, symbol, lots, commission, swap, profit, 
+		real_profit, type, open_price, close_price, stop_loss, take_profit, comment
+	</sql>
+
+	<select id="selectPage" parameterType="cc.fxqq.hippo.entity.param.TradeOrderParam" 
+			resultMap="BaseResultMap">
+	    select 
+	    <include refid="Base_Column_List" />
+	    from trade_order
+	    <include refid="cond" />
+	    <if test="orderBy != null">
+			order by ${orderBy}
+		</if>
+	    <if test="page != null">
+        	 limit #{startRecord} , #{rows}
+        </if>
+	  </select>
+
+	<select id="selectTotal" resultType="int">
+		select count(*) from trade_order
+		<include refid="cond" />
+	</select>
+
+	<sql id="cond">
+		where account_id = #{accountId}
+		<if test="symbol != null and symbol != ''">
+			and symbol = #{symbol}
+		</if>
+		<if test="ticket != null and ticket != ''">
+			and ticket = #{ticket}
+		</if>
+		<if test="openStartDate != null and openEndDate != null">
+			and date(close_time) BETWEEN #{openStartDate} and #{openEndDate}
+		</if>
+		<if test="closeStartDate != null and closeEndDate != null">
+			and date(close_time) BETWEEN #{closeStartDate} and #{closeEndDate}
+		</if>
+	</sql>
+
+	<insert id="replaceBatch">
+		replace into trade_order (
+		`account_id`,
+		`ticket`,
+		`open_time`,
+		`close_time`,
+		`symbol`,
+		`lots`,
+		`commission`,
+		`swap`,
+		`profit`,
+		`real_profit`,
+		`type`,
+		`open_price`,
+		`close_price`,
+		`stop_loss`,
+		`take_profit`,
+		`comment`
+		)
+		VALUES
+		<foreach collection="list" close="" index="index" item="item"
+			open="" separator=",">
+			(
+			#{item.accountId},
+			#{item.ticket},
+			#{item.openTime},
+			#{item.closeTime},
+			#{item.symbol},
+			#{item.lots},
+			#{item.commission},
+			#{item.swap},
+			#{item.profit},
+			#{item.realProfit},
+			#{item.type},
+			#{item.openPrice},
+			#{item.closePrice},
+			#{item.stopLoss},
+			#{item.takeProfit},
+			#{item.comment}
+			)
+		</foreach>
+	</insert>
+
+	<select id="selectSumByDate"
+		parameterType="cc.fxqq.hippo.entity.param.TradeOrderParam"
+		resultMap="orderSumResult">
+		select date(close_time) as cur_date,
+			sum(lots) as lots,
+			sum(commission) as commission,
+			sum(swap) as swap,
+			sum(profit) as profit,
+			sum(real_profit) as real_profit,
+			count(*) as orderNum
+		from trade_order
+			where account_id = #{accountId}
+		<if test="closeStartDate != null and closeEndDate != null">
+				and date(close_time) BETWEEN #{closeStartDate} and #{closeEndDate}
+		</if>
+			group by date(close_time)
+		<if test="orderBy != null">
+			order by ${orderBy}
+		</if>
+	</select>
+	
+	<select id="selectSumBySymbol"
+		parameterType="cc.fxqq.hippo.entity.param.TradeOrderParam"
+		resultMap="orderSumResult">
+		select symbol,
+			sum(lots) as lots,
+			sum(commission) as commission,
+			sum(swap) as swap,
+			sum(profit) as profit,
+			sum(real_profit) as real_profit,
+			count(*) as orderNum
+		from trade_order
+			where account_id = #{accountId}
+		<if test="closeStartDate != null and closeEndDate != null">
+				and date(close_time) BETWEEN #{closeStartDate} and #{closeEndDate}
+		</if>
+			group by symbol
+		<if test="orderBy != null">
+			order by ${orderBy}
+		</if>
+	</select>
+	
+	<select id="selectRealProfit"
+		parameterType="cc.fxqq.hippo.entity.param.TradeOrderParam"
+		resultType="java.math.BigDecimal">
+		select 
+			sum(real_profit) as real_profit
+		from trade_order
+			where account_id = #{accountId}
+			<if test="closeStartDate != null and closeEndDate != null">
+			and date(close_time) BETWEEN #{closeStartDate} and #{closeEndDate}
+			</if>
+	</select>
+	
+	<select id="selectSum"
+		parameterType="cc.fxqq.hippo.entity.param.TradeOrderParam"
+		resultMap="orderSumResult">
+		select count(*) as orderNum,
+			sum(lots) as lots,
+			sum(commission) as commission,
+			sum(swap) as swap,
+			sum(profit) as profit,
+			sum(real_profit) as real_profit
+		from trade_order
+			where account_id = #{accountId}
+		<if test="closeStartDate != null and closeEndDate != null">
+			and date(close_time) BETWEEN #{closeStartDate} and #{closeEndDate}
+		</if>
+	</select>
+	
+	<select id="selectFirstAndLast" resultType="java.util.Map">
+		select min(close_time) as firstDate, max(close_time) as lastDate from trade_order where account_id = #{accountId}
+	</select>
+	
+	<select id="selectMinOpenTime" resultType="java.lang.String">
+		select min(open_time) from trade_order where account_id = #{accountId}
+	</select>
+	
+	<select  id="selectTradeDays" resultType="integer">
+		select
+			count(*)
+		from
+			(
+			select
+				date(close_time)
+			from
+				trade_order
+			where
+				account_id = #{accountId}
+			group by
+				date(close_time)
+		)
+	</select>
+</mapper>

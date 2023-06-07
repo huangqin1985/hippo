@@ -1,0 +1,119 @@
+<!doctype html>
+
+<!--注意：引入thymeleaf的名称空间-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>收益</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my.css} "/>
+
+</head>
+<body>
+<form id="form2" name="form2" action="order">
+   	<input type="hidden" th:value="${account}" name = "account"/>
+   	<input type="hidden" th:value="${startDate}" id="startDate" name = "startDate"/>
+   	<input type="hidden" th:value="${endDate}" id="endDate" name = "endDate"/>
+   	<input type="hidden" th:value="${type}" id="type" name = "type"/>
+</form>
+<table style="margin: 0 8px 0 8px;">
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:25px;">
+			<td colspan="3" style="text-align:center;width:100%;padding:0 10px 0 10px;">
+				<div th:insert="common::account"></div>
+			</td> 	
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;text-align:left;padding:0 0 0 10px;">
+				<div th:insert="common::nav"></div>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height: 25px;padding:0 10px 0 10px">
+    		<td style="text-align:center;">
+	    		<span th:text="${startDateStr + ' - ' + endDateStr}"></span>
+	    		<span th:if="${type=='today'}">(今日)</span>
+	    		<span th:if="${type=='thisWeek'}">(本周)</span>
+	    		<span th:if="${type=='thisMonth'}">(本月)</span>
+	    		<span th:if="${type=='all'}">(全部)</span>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+    	<tr style="height: 25px;padding:0 10px 0 10px">
+    		<td style="text-align:right;">
+	    		<div th:insert="common::orderNav"></div>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+    	<tr >
+	        <td style="width:40%;">品种</td>
+	        <td style="width:25%;text-align:right;">交易量</td>
+	        <td style="width:35%;text-align:right;padding:0 20px 0 0;">利润</td>
+		</tr>
+    	<tr th:each="item : ${sum}" >
+	        <td style="width:40%;;">
+	        	<a th:href="'orderList?sort=closeTime&sortOrder=desc&account=' + ${account} + '&symbol=' + ${item.symbol} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${item.symbol}"></a>
+	        </td>
+	        <td style="width:25%;text-align:right;">
+	        	<a th:href="'orderList?sort=lots&sortOrder=desc&account=' + ${account} + '&symbol=' + ${item.symbol} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
+	        		<span style="color:black" th:text="${item.lots}"></span>
+	        	</a>
+	        </td>
+	        <td style="width:35%;text-align:right;padding:0 20px 0 0;">
+	        	<a th:if="${item.realProfit>=0}" th:href="'orderList?sort=realProfit&sortOrder=desc&account=' + ${account} + '&symbol=' + ${item.symbol} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
+	        		<span class="g" th:text="${item.realProfit}"></span>
+	        	</a>
+	        	<a th:if="${item.realProfit<0}" th:href="'orderList?sort=realProfit&sortOrder=asc&account=' + ${account} + '&symbol=' + ${item.symbol} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
+	        		<span class="r" th:text="${item.realProfit}"></span>
+	        	</a>
+	        </td>
+	    </tr>
+	    <tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+	        <td style="width:40%;">
+	        	<a th:href="'orderList?account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}+ '&sort=closeTime&sortOrder=desc' + '&type=' + ${type}">总计(<span th:text="${totalSum.orderNum}"></span>)</a>
+	        </td>
+	        <td style="width:25%;text-align:right;">
+       			<a th:if="${totalSum.lots != null}" th:href="'orderList?sort=lots&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
+	        		<span style="color:black" th:text="${totalSum.lots}"></span>
+	        	</a>
+       			<span th:if="${totalSum.lots == null}">-</span>
+	        </td>
+	        <td style="width:35%;text-align:right;padding:0 20px 0 0;">
+	        	<a th:if="${totalSum.lots != null&&totalSum.realProfit>=0}" th:href="'orderList?sort=realProfit&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
+	        		<span class="g" th:text="${totalSum.realProfit}"></span>
+	        	</a>
+		        <a th:if="${totalSum.lots != null&&totalSum.realProfit<0}" th:href="'orderList?sort=realProfit&sortOrder=asc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
+	        		<span class="r" th:text="${totalSum.realProfit}"></span>
+	        	</a>
+        		<span th:if="${totalSum.realProfit == null}">-</span>
+        	</td>
+	    </tr>
+	    <tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	</table>
+</body>
+</html>
