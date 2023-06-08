@@ -176,7 +176,7 @@ public class TradeOrderController extends BaseController {
 			@RequestParam(name="type", required = false, defaultValue="week") String type,
 			@RequestParam(name="sort", required = false, defaultValue="startDate") String sort,
 			@RequestParam(name="sortType", required = false, defaultValue="desc") String sortType,
-			@RequestParam(name="col", required = false, defaultValue="lots") String col,
+			@RequestParam(name="col", required = false, defaultValue="balance") String col,
 			@RequestParam(name="pageNum", required = false) Integer pageNum) {
 		
 		// 账户列表

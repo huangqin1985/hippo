@@ -196,7 +196,7 @@
 	    				<span th:class="${item.realProfit>=0?'g':'r'}" th:text="${item.realProfit}"></span>
 			        </td>
 			    </tr>
-			    <tr th:style="${item.thisWeek?'display:visible':'display:none'}"  class="orderDetail moreInfo">
+			    <tr style="display:none"  class="orderDetail moreInfo">
 					<td style="font-size: 15px;text-align:right;width:85px;">最小利润：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.minRealProfit != null}" th:text="${item.minRealProfit}"></span>
@@ -209,7 +209,7 @@
 						<span th:if="${item.minRealProfit == null}">-</span>
 					</td>
 				</tr>
-				<tr th:style="${item.thisWeek?'display:visible':'display:none'}"  class="orderDetail moreInfo">
+				<tr style="display:none"  class="orderDetail moreInfo">
 					<td style="font-size: 15px;text-align:right;width:85px">最小净值：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.minEquity != null}" th:text="${item.minEquity}"></span>
@@ -221,7 +221,7 @@
 						<span th:if="${item.maxEquity == null}">-</span>
 					</td>
 				</tr>
-				<tr th:style="${item.thisWeek?'display:visible':'display:none'}"  class="orderDetail moreInfo">
+				<tr style="display:none"  class="orderDetail moreInfo">
 					<td style="font-size: 15px;text-align:right;width:85px">最小盈亏：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.minProfit != null}" th:text="${item.minProfit}"></span>
@@ -233,14 +233,14 @@
 						<span th:if="${item.maxProfit == null}">-</span>
 					</td>
 				</tr>
-				<tr th:style="${item.thisWeek?'display:visible':'display:none'}"  class="orderDetail moreInfo">
+				<tr style="display:none"  class="orderDetail moreInfo">
 					<td style="font-size: 15px;text-align:left;width:125px;">最小预付款比率：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.minMarginRateStr != null}" th:text="${item.minMarginRateStr}"></span>
 						<span th:if="${item.minMarginRateStr == null}">-</span>
 					</td>
 				</tr>
-				<tr th:style="${item.thisWeek?'display:visible':'display:none'}"  class="orderDetail moreInfo">
+				<tr style="display:none" class="orderDetail moreInfo">
 					<td style="font-size: 15px;text-align:left;width:125px;">交易时长：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.tradeDuration != null}" th:text="${item.tradeDuration}"></span>

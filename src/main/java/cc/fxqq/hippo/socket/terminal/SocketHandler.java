@@ -84,7 +84,7 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
 			if (acc == null) {
 				acc = accountService.addAccount(name, connectMQL);
 			} else {
-				acc = accountService.updateAccount(acc, connectMQL);
+				accountService.updateAccount(acc, connectMQL);
 			}
 			log.info("账号" + name + "连接成功 connectId=" + id);
 
