@@ -77,7 +77,7 @@
 			and comment like '%[tp]%'
 		</if>
 		<if test="isSl">
-			and comment like '%[sl]%'
+			and (comment like '%[sl]%' or comment like '%so%')
 		</if>
 	</sql>
 

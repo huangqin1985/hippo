@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.Test;
 
 import com.alibaba.fastjson.JSON;
@@ -95,5 +96,15 @@ class ListTests {
 			result.add(mql);
 		}
 		System.out.println(result);
+	}
+	
+	@Test
+	void test55() {	
+		Map<String, String> map = Maps.newHashMap("query_date", "2023-05-28");
+		map.put("time difference", "5");
+		
+		String config = JSON.toJSONString(map);
+		
+		System.out.println(config);
 	}
 }

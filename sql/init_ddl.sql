@@ -10,7 +10,7 @@ CREATE TABLE account (
 	currency VARCHAR(10) NOT NULL,	--货币
 	leverage INTEGER NOT NULL,	--杠杆
 	balance DECIMAL(10,2) NOT NULL,	--余额
-	time_zone INTEGER NOT NULL,	--时区
+	time_zone INTEGER ,	--时区
 	client_name VARCHAR(100) NOT NULL, -- 客户名称
 	stop_out_level VARCHAR(50) NOT NULL, -- 爆仓条件
 	create_time VARCHAR(50) NOT NULL,	--创建时间
@@ -87,3 +87,12 @@ CREATE TABLE trade_order (
 	CONSTRAINT trade_order_PK UNIQUE (`account_id`, `ticket`)
 );
 CREATE INDEX trade_order_IDX ON trade_order (`account_id`, `close_time`);
+
+
+update trade_fund set open_time = DATETIME(open_time, '-5 hours') where account_id > 0; 
+update trade_order  set open_time = DATETIME(open_time, '-5 hours'), close_time  = DATETIME(close_time, '-5 hours') where account_id > 0;
+
+delete from account  where id  > 1;
+delete from report  where account_id  > 1;
+delete from trade_fund  where account_id  > 1;
+delete from trade_order  where account_id  > 1;

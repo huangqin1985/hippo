@@ -59,7 +59,7 @@
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>
-	    <tr>
+	    <!-- <tr>
 			<td style="text-align:right;width:90px;">收益：</td>
 			<td style="font-weight:bold;text-align:right;padding:0 10px 0 0;">
 				<span th:class="${acc.income>=0?'g':'r'}" th:text="${acc.income}"></span>
@@ -68,11 +68,11 @@
 		<tr style="height:10px;">
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
-	    </tr>
+	    </tr> -->
 	    <tr>
 			<td style="text-align:right;width:90px;">余额：</td>
 			<td style="text-align:right;padding:0 10px 0 0;">
-				<span th:text="${acc.balance + ' ' + acc.currency}"></span>
+				<span style="font-weight:bold" th:text="${acc.balance}"></span>&nbsp;<span th:text="${acc.currency}"></span>
 			</td>
 		</tr>
 		<tr style="height:10px;">
@@ -139,10 +139,23 @@
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>
-	    <tr>
+	    <!-- <tr>
 			<td style="text-align:right;width:90px;">交易日期：</td>
 			<td style="text-align:right;padding:0 10px 0 0;">
 				<span th:text="${acc.tradeDate}"></span>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr> -->
+	    <tr>
+			<td style="text-align:right;width:90px;">时区：</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<div th:if="${acc.timeZone != null}">
+				UTC+<span th:text="${acc.timeZone}"></span><br/>
+				北京时间 = 服务器时间 + <span th:text="${timeDiff}"></span>小时<br/>
+				</div>
 			</td>
 		</tr>
 		<tr style="height:10px;">
@@ -160,7 +173,7 @@
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>
-	    <tr>
+	    <!-- <tr>
 			<td style="text-align:right;width:90px;">连接时间：</td>
 			<td style="text-align:right;padding:0 10px 0 0;">
 				<span th:text="${acc.connectTime}"></span>
@@ -169,7 +182,7 @@
     	<tr style="height:10px;">
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
-	    </tr>
+	    </tr> -->
 	</table>
 </body>
 </html>

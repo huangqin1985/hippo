@@ -155,7 +155,7 @@ public class TradeOrderService {
 				TradeFund bal = new TradeFund();
 				bal.setAccountId(acc.getId());
 				bal.setComment(comment);
-				bal.setOpenTime(DateUtil.getUTF8Time(order.getOpenTime(), acc.getTimeZone()));
+				bal.setOpenTime(DateUtil.formatDatetime(order.getOpenTime()));
 				bal.setProfit(order.getProfit());
 				bal.setTicket(order.getTicket());
 				bal.setType(balanceType);
@@ -167,8 +167,8 @@ public class TradeOrderService {
 				TradeOrder to = new TradeOrder();
 				to.setAccountId(acc.getId());
 				to.setTicket(order.getTicket());
-				to.setOpenTime(DateUtil.getUTF8Time(order.getOpenTime(), acc.getTimeZone()));
-				to.setCloseTime(DateUtil.getUTF8Time(order.getCloseTime(), acc.getTimeZone()));
+				to.setOpenTime(DateUtil.formatDatetime(order.getOpenTime()));
+				to.setCloseTime(DateUtil.formatDatetime(order.getCloseTime()));
 				to.setSymbol(order.getSymbol());
 				to.setLots(order.getLots());
 				
@@ -238,7 +238,7 @@ public class TradeOrderService {
 				TradeFund bal = new TradeFund();
 				bal.setAccountId(accountId);
 				bal.setComment(comment);
-				bal.setOpenTime(DateUtil.getUTF8Time(order.getOpenTime(), acc.getTimeZone()));
+				bal.setOpenTime(DateUtil.formatDatetime(order.getOpenTime()));
 				bal.setProfit(order.getProfit());
 				bal.setTicket(order.getTicket());
 				bal.setType(balanceType);
@@ -248,8 +248,8 @@ public class TradeOrderService {
 				TradeOrder to = new TradeOrder();
 				to.setAccountId(accountId);
 				to.setTicket(order.getTicket());
-				to.setOpenTime(DateUtil.getUTF8Time(order.getOpenTime(), acc.getTimeZone()));
-				to.setCloseTime(DateUtil.getUTF8Time(order.getCloseTime(), acc.getTimeZone()));
+				to.setOpenTime(DateUtil.formatDatetime(order.getOpenTime()));
+				to.setCloseTime(DateUtil.formatDatetime(order.getCloseTime()));
 				to.setSymbol(order.getSymbol());
 				to.setLots(order.getLots());
 				

@@ -69,11 +69,13 @@
 		</tr>
 		<tr style="height: 25px;padding:0 10px 0 10px">
     		<td style="text-align:center;">
-	    		<span th:text="${startDateStr + ' - ' + endDateStr}"></span>
-	    		<span th:if="${type=='today'}">(今日)</span>
-	    		<span th:if="${type=='thisWeek'}">(本周)</span>
-	    		<span th:if="${type=='thisMonth'}">(本月)</span>
-	    		<span th:if="${type=='all'}">(全部)</span>
+	    		<a th:href="'order?account=' + ${account}  + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
+		    		<span  th:text="${startDateStr + ' - ' + endDateStr}"></span>
+		    		<span th:if="${type=='today'}">(今日)</span>
+		    		<span th:if="${type=='thisWeek'}">(本周)</span>
+		    		<span th:if="${type=='thisMonth'}">(本月)</span>
+		    		<span th:if="${type=='all'}">(全部)</span>
+	    		</a>
     		</td>
     	</tr>
     	<tr style="height:10px;">

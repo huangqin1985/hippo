@@ -48,6 +48,7 @@ public class AccountService {
 		info.setServer(acc.getServer());
 		info.setCurrency(acc.getCurrency());
 		info.setClientName(acc.getClientName());
+		info.setTimeZone(acc.getTimeZone());
 		info.setStopOutLevel(acc.getStopOutLevel());
 		
 		Account accCache = AccountCache.getByAccountName(acc.getName());
@@ -141,6 +142,15 @@ public class AccountService {
 		acc.setBalance(accountInfo.getBalance());
 		String date = DateUtil.formatDatetime(new Date());
 		acc.setConnectTime(date);
+		acc.setUpdateTime(date);
+		accountMapper.updateByPrimaryKeySelective(acc);
+		
+		return acc;
+	}
+	
+	public Account setTimeZone(Account acc, Integer timeZone) {
+		acc.setTimeZone(timeZone);
+		String date = DateUtil.formatDatetime(new Date());
 		acc.setUpdateTime(date);
 		accountMapper.updateByPrimaryKeySelective(acc);
 		

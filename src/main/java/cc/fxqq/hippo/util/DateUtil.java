@@ -24,8 +24,12 @@ public class DateUtil {
 	
 	private static String[] WEEK_LABELS = { "日", "一", "二", "三", "四", "五", "六" };
 	
-	public static String getUTF8Time(Date time, Integer timeZone) {
+	public static String getUTC8Time(Date time, Integer timeZone) {
 		return addHour(time, 8 - timeZone);
+	}
+	
+	public static Integer getTimeDiffForUTC8(Integer timeZone) {
+		return 8 - timeZone;
 	}
 	
 	public static boolean isValidDate(String str) {
@@ -62,6 +66,16 @@ public class DateUtil {
 	
 	public static Date parseDatetime(String str) {
 		DateFormat df = new SimpleDateFormat(DATETIME_FORMAT);
+		
+		try {
+			return df.parse(str);
+		} catch (ParseException e) {
+			return null;
+		}
+	}
+	
+	public static Date parse(String str, String pattern) {
+		DateFormat df = new SimpleDateFormat(pattern);
 		
 		try {
 			return df.parse(str);

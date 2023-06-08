@@ -136,6 +136,13 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		//String json = JSON.toJSONString(new PositionDTO(position));
     		//webMessageHandler.sendMessage(account.getId(), json);
     		
+    	} else if (str.startsWith("setTimeZone:")) {
+    		String text = str.substring(str.indexOf(':') + 1);
+    		ConnectMQL connectMQL = JSON.parseObject(text, ConnectMQL.class);
+    		Account account = AccountCache.getByConnectId(id);
+    		
+			accountService.setTimeZone(account, connectMQL.getTimeZone());
+    		
     	}
     }
 

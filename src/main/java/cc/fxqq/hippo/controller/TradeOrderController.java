@@ -374,6 +374,10 @@ public class TradeOrderController extends BaseController {
 		model.addAttribute("account", accountId);
 		
 		AccountDTO acc = accountService.queryAccountInfo(accountId);
+		Integer timeZone = acc.getTimeZone();
+		if (timeZone != null) {
+			model.addAttribute("timeDiff", DateUtil.getTimeDiffForUTC8(timeZone));
+		}
 		model.addAttribute("acc", acc);
 		
 		return "accountInfo";

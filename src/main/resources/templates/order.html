@@ -42,21 +42,21 @@
 			</td>
 		</tr>
 		<tr style="height: 25px;padding:0 10px 0 10px">
-    		<td style="text-align:center;">
-	    		<span th:text="${startDateStr + ' - ' + endDateStr}"></span>
-	    		<span th:if="${type=='today'}">(今日)</span>
-	    		<span th:if="${type=='thisWeek'}">(本周)</span>
-	    		<span th:if="${type=='thisMonth'}">(本月)</span>
-	    		<span th:if="${type=='all'}">(全部)</span>
+    		<td style="text-align:right;">
+	    		<div th:insert="common::orderNav"></div>
     		</td>
     	</tr>
     	<tr style="height:10px;">
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 			</td>
 		</tr>
-    	<tr style="height: 25px;padding:0 10px 0 10px">
-    		<td style="text-align:right;">
-	    		<div th:insert="common::orderNav"></div>
+		<tr style="height: 25px;padding:0 10px 0 10px">
+    		<td style="text-align:center;">
+	    		<span th:text="${startDateStr + ' - ' + endDateStr}"></span>
+	    		<span th:if="${type=='today'}">(今日)</span>
+	    		<span th:if="${type=='thisWeek'}">(本周)</span>
+	    		<span th:if="${type=='thisMonth'}">(本月)</span>
+	    		<span th:if="${type=='all'}">(全部)</span>
     		</td>
     	</tr>
     	<tr style="height:10px;">
@@ -114,8 +114,8 @@
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>
-	    <tr style="padding:0 20px 0 20px">
-    		<td style="text-align:right;padding:0 20px 0 20px">
+	    <tr>
+    		<td style="text-align:left;padding:0 10px 0 10px">
 	    			<a th:href="'orderList?tp=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'止盈(' + totalSum.tpCount + ')'}"></a>
 	        		&nbsp;<a th:href="'orderList?sl=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'止损(' + totalSum.slCount + ')'}"></a>
     		</td>

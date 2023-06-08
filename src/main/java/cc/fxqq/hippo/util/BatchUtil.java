@@ -16,7 +16,7 @@ public class BatchUtil {
 		int maxSend = 1000; // 数量
 		int size = list.size();
 		
-		Stream.iterate(0, n -> n + 1).limit((size + maxSend - 1) / maxSend).parallel().forEach(i -> {
+		Stream.iterate(0, n -> n + 1).limit((size + maxSend - 1) / maxSend).forEach(i -> {
 	          List<T> subList = list.stream().skip(i * maxSend).limit(maxSend).collect(Collectors.toList());
 	          oper.replaceBatch(subList);
 		});
