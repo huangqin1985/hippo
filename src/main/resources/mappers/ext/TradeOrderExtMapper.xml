@@ -79,6 +79,9 @@
 		<if test="isSl">
 			and (comment like '%[sl]%' or comment like '%so%')
 		</if>
+		<if test="noSl">
+			and CAST(stop_loss as INT) = 0
+		</if>
 	</sql>
 
 	<insert id="replaceBatch">

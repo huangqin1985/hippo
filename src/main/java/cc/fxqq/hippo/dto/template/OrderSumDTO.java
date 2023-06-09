@@ -26,5 +26,7 @@ public class OrderSumDTO {
 	private Integer slCount;
 	
 	private Integer tpCount;
+	
+	private Integer noSlCount;
 
 }

@@ -1,8 +1,10 @@
 package cc.fxqq.hippo.dto.json;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.annotation.JSONType;
 
 import lombok.Data;
@@ -11,7 +13,8 @@ import lombok.Data;
 @JSONType
 public class PositionMQL {
 	
-	//private String serverTime;
+	@JSONField (format="yyyy.MM.dd HH:mm:ss")
+	private Date serverTime;
 	
 	private BigDecimal equity; // 净值
 

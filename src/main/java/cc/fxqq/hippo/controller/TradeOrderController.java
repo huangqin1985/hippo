@@ -252,6 +252,7 @@ public class TradeOrderController extends BaseController {
 			@RequestParam(name="type", required = false) String type,
 			@RequestParam(name="sl", required = false, defaultValue="false") boolean sl,
 			@RequestParam(name="tp", required = false, defaultValue="false") boolean tp,
+			@RequestParam(name="noSl", required = false, defaultValue="false") boolean noSl,
 			@RequestParam(name="pageNum", required = false) Integer pageNum) {
 		
 		// 账户列表
@@ -317,6 +318,7 @@ public class TradeOrderController extends BaseController {
 		}
 		param.setTp(tp);
 		param.setSl(sl);
+		param.setNoSl(noSl);
 		
 		Pager<TradeOrderDTO> orderList = tradeOrderService.getTradeOrderList(param);
 		model.addAttribute("pager", orderList);

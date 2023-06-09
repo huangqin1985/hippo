@@ -23,6 +23,8 @@ public class TradeOrderParam extends PageParam {
 	
 	private boolean isSl;
 	
+	private boolean noSl;
+	
 	private String orderBy;
 	
 }

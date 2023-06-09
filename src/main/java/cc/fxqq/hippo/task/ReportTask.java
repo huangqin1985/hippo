@@ -54,14 +54,15 @@ public class ReportTask {
 	 * @param balance
 	 */
 	public void updateReportStatus(String reportType, Integer account, 
-			BigDecimal equity, BigDecimal currentProfit, BigDecimal margin) {
+			BigDecimal equity, BigDecimal currentProfit, BigDecimal margin,
+			Date serverTime) {
 		String startDate = null;
 		String endDate = null;
 		if (ReportTypeEnum.WEEK.getValue().equals(reportType)) {
-			startDate = DateUtil.getStartDateStrOfWeek();
-			endDate = DateUtil.getEndDateStrOfWeek();
+			startDate = DateUtil.getStartDateStrOfWeek(serverTime);
+			endDate = DateUtil.getEndDateStrOfWeek(serverTime);
 		} else {
-			return;
+			
 		}
 		
 		Report report = reportExtMapper.selectUnique(account, reportType, startDate);
@@ -135,18 +136,15 @@ public class ReportTask {
 				report.setMinProfit(DecimalUtil.min(minProfit, currentProfit));
 			}
 			
-			BigDecimal maxMargin = report.getMaxMargin();
-			if (maxMargin == null) {
-				report.setMaxMargin(margin);
-			} else {
-				report.setMaxMargin(DecimalUtil.max(maxMargin, margin));
-			}
-			
 			BigDecimal minMarginRate = report.getMinMarginRate();
 			if (minMarginRate == null) {
 				report.setMinMarginRate(DecimalUtil.getPercent2(equity, margin));
 			} else {
 				report.setMinMarginRate(DecimalUtil.min(minMarginRate, DecimalUtil.getPercent2(equity, margin)));
+				
+				if (margin.compareTo(minMarginRate) < 0) {
+					report.setMaxMargin(margin);
+				}
 			}
 			
 			reportMapper.updateByPrimaryKeySelective(report);
@@ -225,6 +223,8 @@ public class ReportTask {
 			
 			report.setPreBalance(preBalance);
 			report.setBalance(balance);
+			report.setPreEquity(preBalance);
+			report.setEquity(balance);
 			balance = report.getPreBalance();
 		}
 	}

@@ -153,8 +153,7 @@
 			<td style="text-align:right;width:90px;">时区：</td>
 			<td style="text-align:right;padding:0 10px 0 0;">
 				<div th:if="${acc.timeZone != null}">
-				UTC+<span th:text="${acc.timeZone}"></span><br/>
-				北京时间 = 服务器时间 + <span th:text="${timeDiff}"></span>小时<br/>
+				GMT + <span th:text="${acc.timeZone}"></span>.00<br/>
 				</div>
 			</td>
 		</tr>

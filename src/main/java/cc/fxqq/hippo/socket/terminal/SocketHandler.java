@@ -131,7 +131,8 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		StringCache.put("position_" + account.getId(), text);
 
     		reportService.updateReportStatus(account.getId(),
-    				position.getEquity(), position.getProfit(), position.getMargin());
+    				position.getEquity(), position.getProfit(), position.getMargin(),
+    				position.getServerTime());
     		
     		//String json = JSON.toJSONString(new PositionDTO(position));
     		//webMessageHandler.sendMessage(account.getId(), json);

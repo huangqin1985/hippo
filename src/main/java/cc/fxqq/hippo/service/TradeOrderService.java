@@ -344,13 +344,21 @@ public class TradeOrderService {
 		
 		param.setTp(false);
 		param.setSl(true);
+		param.setNoSl(false);
 		int slCount = tradeOrderExtMapper.selectTotal(param);
+		dto.setSlCount(slCount);
 		
 		param.setSl(false);
 		param.setTp(true);
+		param.setNoSl(false);
 		int tpCount = tradeOrderExtMapper.selectTotal(param);
-		dto.setSlCount(slCount);
 		dto.setTpCount(tpCount);
+		
+		param.setSl(false);
+		param.setTp(false);
+		param.setNoSl(true);
+		int noSlCount = tradeOrderExtMapper.selectTotal(param);
+		dto.setNoSlCount(noSlCount);
 		
 		return dto;
 	}

@@ -51,9 +51,9 @@ public class ReportService {
 	 * @param equity
 	 */
 	public void updateReportStatus(Integer account, BigDecimal equity,
-			BigDecimal profit, BigDecimal margin) {
+			BigDecimal profit, BigDecimal margin, Date serverTime) {
 		reportTask.updateReportStatus(ReportTypeEnum.WEEK.getValue(),
-				account, equity, profit, margin);
+				account, equity, profit, margin, serverTime);
 	}
 	
 	/**
