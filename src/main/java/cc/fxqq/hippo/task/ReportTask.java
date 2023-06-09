@@ -78,11 +78,14 @@ public class ReportTask {
 				rpt.setPreBalance(acc.getBalance());
 				rpt.setBalance(acc.getBalance());
 			}
+			rpt.setPreEquity(equity);
 			rpt.setUpdateTime(DateUtil.formatDatetime(new Date()));
 			rpt.setCreateTime(DateUtil.formatDatetime(new Date()));
 			
 			reportMapper.insertSelective(rpt);
 		} else {
+			report.setEquity(equity);
+			
 			BigDecimal maxEquity = report.getMaxEquity();
 			BigDecimal minEquity = report.getMinEquity();
 			
@@ -101,8 +104,10 @@ public class ReportTask {
 			param.setAccountId(account);
 			param.setCloseStartDate(startDate);
 			param.setCloseEndDate(endDate);
+			// 未完成订单利润
+			BigDecimal preProfit = report.getEquity().subtract(report.getBalance());
 			BigDecimal realProfit = DecimalUtil.get(tradeOrderExtMapper.selectRealProfit(param));
-			BigDecimal totalProfit = DecimalUtil.add(realProfit, currentProfit);
+			BigDecimal totalProfit = DecimalUtil.add(realProfit, currentProfit, preProfit);
 			
 			BigDecimal maxRealProfit = report.getMaxRealProfit();
 			BigDecimal minRealProfit = report.getMinRealProfit();
@@ -143,10 +148,6 @@ public class ReportTask {
 			} else {
 				report.setMinMarginRate(DecimalUtil.min(minMarginRate, DecimalUtil.getPercent2(equity, margin)));
 			}
-			
-			Integer tradeDuration = report.getTradeDuration();
-			
-			report.setTradeDuration(++tradeDuration);
 			
 			reportMapper.updateByPrimaryKeySelective(report);
 		}

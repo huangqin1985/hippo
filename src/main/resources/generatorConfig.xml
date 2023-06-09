@@ -118,7 +118,9 @@
                enableDeleteByExample="false"
                enableUpdateByExample="false">
                <columnOverride column="pre_balance" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
+               <columnOverride column="pre_equity" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
                <columnOverride column="balance" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
+               <columnOverride column="equity" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
                <columnOverride column="real_profit" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
                <columnOverride column="commission" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
         	   <columnOverride column="swap" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>

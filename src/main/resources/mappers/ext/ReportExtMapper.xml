@@ -9,7 +9,9 @@
 	    <result column="start_date" jdbcType="VARCHAR" property="startDate" />
 	    <result column="end_date" jdbcType="VARCHAR" property="endDate" />
 	    <result column="pre_balance" jdbcType="DECIMAL" property="preBalance" />
+	    <result column="pre_equity" jdbcType="DECIMAL" property="preEquity" />
 	    <result column="balance" jdbcType="DECIMAL" property="balance" />
+	    <result column="equity" jdbcType="DECIMAL" property="equity" />
 	    <result column="real_profit" jdbcType="DECIMAL" property="realProfit" />
 	    <result column="commission" jdbcType="DECIMAL" property="commission" />
 	    <result column="swap" jdbcType="DECIMAL" property="swap" />
@@ -23,11 +25,10 @@
 	    <result column="min_equity" jdbcType="DECIMAL" property="minEquity" />
 	    <result column="max_real_profit" jdbcType="DECIMAL" property="maxRealProfit" />
 	    <result column="min_real_profit" jdbcType="DECIMAL" property="minRealProfit" />
-	    <result column="max_profit" jdbcType="FLOAT" property="maxProfit" />
-	    <result column="min_profit" jdbcType="FLOAT" property="minProfit" />
+	    <result column="max_profit" jdbcType="DECIMAL" property="maxProfit" />
+	    <result column="min_profit" jdbcType="DECIMAL" property="minProfit" />
 	    <result column="max_margin" jdbcType="DECIMAL" property="maxMargin" />
 	    <result column="min_margin_rate" jdbcType="DECIMAL" property="minMarginRate" />
-	    <result column="trade_duration" jdbcType="INTEGER" property="tradeDuration" />
 	    <result column="extra" jdbcType="INTEGER" property="extra" />
 	    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
 	    <result column="create_time" jdbcType="VARCHAR" property="createTime" />

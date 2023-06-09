@@ -240,13 +240,6 @@
 						<span th:if="${item.minMarginRateStr == null}">-</span>
 					</td>
 				</tr>
-				<tr style="display:none" class="orderDetail moreInfo">
-					<td style="font-size: 15px;text-align:left;width:125px;">交易时长：</td>
-					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
-						<span th:if="${item.tradeDuration != null}" th:text="${item.tradeDuration}"></span>
-						<span th:if="${item.tradeDuration == null}">-</span>
-					</td>
-				</tr>
 			    <tr style="height:10px;">
 		    		<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 		    	</td>

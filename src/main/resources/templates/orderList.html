@@ -67,6 +67,15 @@
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 			</td>
 		</tr>
+    	<tr style="height: 25px;padding:0 10px 0 10px">
+    		<td style="text-align:right;">
+	    		<div th:insert="common::orderNav"></div>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
 		<tr style="height: 25px;padding:0 10px 0 10px">
     		<td style="text-align:center;">
 	    		<a th:href="'order?account=' + ${account}  + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
@@ -82,15 +91,6 @@
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 			</td>
 		</tr>
-    	<!-- <tr style="height: 25px;padding:0 10px 0 10px">
-    		<td style="text-align:right;">
-	    		<div th:insert="common::orderNav"></div>
-    		</td>
-    	</tr>
-    	<tr style="height:10px;">
-			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
-			</td>
-		</tr> -->
 	    <tr>
     		<td style="text-align:left;width:40%">
 		    	<select id="sel2" class="last_center">
@@ -183,7 +183,7 @@
 						<td style="text-align: right;"><span
 							style="font-size: 15px" th:text="${item.points}"></span></td>
 						<td style="text-align: right;"><span
-							style="font-size: 15px">获利：</span></td>
+							style="font-size: 15px">盈亏：</span></td>
 						<td style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px" th:text="${item.profit}"></span></td>
 					</tr>

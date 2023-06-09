@@ -50,8 +50,6 @@ public class ReportDTO {
 	private BigDecimal maxMargin;
 
 	private String minMarginRateStr;
-
-	private String tradeDuration;
 	
 	private boolean thisWeek;
 }

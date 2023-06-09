@@ -8,7 +8,9 @@
     <result column="start_date" jdbcType="VARCHAR" property="startDate" />
     <result column="end_date" jdbcType="VARCHAR" property="endDate" />
     <result column="pre_balance" jdbcType="DECIMAL" property="preBalance" />
+    <result column="pre_equity" jdbcType="DECIMAL" property="preEquity" />
     <result column="balance" jdbcType="DECIMAL" property="balance" />
+    <result column="equity" jdbcType="DECIMAL" property="equity" />
     <result column="real_profit" jdbcType="DECIMAL" property="realProfit" />
     <result column="commission" jdbcType="DECIMAL" property="commission" />
     <result column="swap" jdbcType="DECIMAL" property="swap" />
@@ -26,16 +28,15 @@
     <result column="min_profit" jdbcType="DECIMAL" property="minProfit" />
     <result column="max_margin" jdbcType="DECIMAL" property="maxMargin" />
     <result column="min_margin_rate" jdbcType="DECIMAL" property="minMarginRate" />
-    <result column="trade_duration" jdbcType="INTEGER" property="tradeDuration" />
     <result column="extra" jdbcType="INTEGER" property="extra" />
     <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
     <result column="create_time" jdbcType="VARCHAR" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, account_id, type, start_date, end_date, pre_balance, balance, real_profit, commission, 
-    swap, profit, lots, order_num, deposit, withdraw, other, max_equity, min_equity, 
-    max_real_profit, min_real_profit, max_profit, min_profit, max_margin, min_margin_rate, 
-    trade_duration, extra, update_time, create_time
+    id, account_id, type, start_date, end_date, pre_balance, pre_equity, balance, equity, 
+    real_profit, commission, swap, profit, lots, order_num, deposit, withdraw, other, 
+    max_equity, min_equity, max_real_profit, min_real_profit, max_profit, min_profit, 
+    max_margin, min_margin_rate, extra, update_time, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -50,24 +51,24 @@
   <insert id="insert" parameterType="cc.fxqq.hippo.entity.Report">
     insert into report (id, account_id, type, 
       start_date, end_date, pre_balance, 
-      balance, real_profit, commission, 
-      swap, profit, lots, 
-      order_num, deposit, withdraw, 
-      other, max_equity, min_equity, 
-      max_real_profit, min_real_profit, max_profit, 
-      min_profit, max_margin, min_margin_rate, 
-      trade_duration, extra, update_time, 
-      create_time)
+      pre_equity, balance, equity, 
+      real_profit, commission, swap, 
+      profit, lots, order_num, 
+      deposit, withdraw, other, 
+      max_equity, min_equity, max_real_profit, 
+      min_real_profit, max_profit, min_profit, 
+      max_margin, min_margin_rate, extra, 
+      update_time, create_time)
     values (#{id,jdbcType=INTEGER}, #{accountId,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, 
       #{startDate,jdbcType=VARCHAR}, #{endDate,jdbcType=VARCHAR}, #{preBalance,jdbcType=DECIMAL}, 
-      #{balance,jdbcType=DECIMAL}, #{realProfit,jdbcType=DECIMAL}, #{commission,jdbcType=DECIMAL}, 
-      #{swap,jdbcType=DECIMAL}, #{profit,jdbcType=DECIMAL}, #{lots,jdbcType=DECIMAL}, 
-      #{orderNum,jdbcType=INTEGER}, #{deposit,jdbcType=DECIMAL}, #{withdraw,jdbcType=DECIMAL}, 
-      #{other,jdbcType=DECIMAL}, #{maxEquity,jdbcType=DECIMAL}, #{minEquity,jdbcType=DECIMAL}, 
-      #{maxRealProfit,jdbcType=DECIMAL}, #{minRealProfit,jdbcType=DECIMAL}, #{maxProfit,jdbcType=DECIMAL}, 
-      #{minProfit,jdbcType=DECIMAL}, #{maxMargin,jdbcType=DECIMAL}, #{minMarginRate,jdbcType=DECIMAL}, 
-      #{tradeDuration,jdbcType=INTEGER}, #{extra,jdbcType=INTEGER}, #{updateTime,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=VARCHAR})
+      #{preEquity,jdbcType=DECIMAL}, #{balance,jdbcType=DECIMAL}, #{equity,jdbcType=DECIMAL}, 
+      #{realProfit,jdbcType=DECIMAL}, #{commission,jdbcType=DECIMAL}, #{swap,jdbcType=DECIMAL}, 
+      #{profit,jdbcType=DECIMAL}, #{lots,jdbcType=DECIMAL}, #{orderNum,jdbcType=INTEGER}, 
+      #{deposit,jdbcType=DECIMAL}, #{withdraw,jdbcType=DECIMAL}, #{other,jdbcType=DECIMAL}, 
+      #{maxEquity,jdbcType=DECIMAL}, #{minEquity,jdbcType=DECIMAL}, #{maxRealProfit,jdbcType=DECIMAL}, 
+      #{minRealProfit,jdbcType=DECIMAL}, #{maxProfit,jdbcType=DECIMAL}, #{minProfit,jdbcType=DECIMAL}, 
+      #{maxMargin,jdbcType=DECIMAL}, #{minMarginRate,jdbcType=DECIMAL}, #{extra,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cc.fxqq.hippo.entity.Report">
     insert into report
@@ -90,8 +91,14 @@
       <if test="preBalance != null">
         pre_balance,
       </if>
+      <if test="preEquity != null">
+        pre_equity,
+      </if>
       <if test="balance != null">
         balance,
+      </if>
+      <if test="equity != null">
+        equity,
       </if>
       <if test="realProfit != null">
         real_profit,
@@ -144,9 +151,6 @@
       <if test="minMarginRate != null">
         min_margin_rate,
       </if>
-      <if test="tradeDuration != null">
-        trade_duration,
-      </if>
       <if test="extra != null">
         extra,
       </if>
@@ -176,8 +180,14 @@
       <if test="preBalance != null">
         #{preBalance,jdbcType=DECIMAL},
       </if>
+      <if test="preEquity != null">
+        #{preEquity,jdbcType=DECIMAL},
+      </if>
       <if test="balance != null">
         #{balance,jdbcType=DECIMAL},
+      </if>
+      <if test="equity != null">
+        #{equity,jdbcType=DECIMAL},
       </if>
       <if test="realProfit != null">
         #{realProfit,jdbcType=DECIMAL},
@@ -230,9 +240,6 @@
       <if test="minMarginRate != null">
         #{minMarginRate,jdbcType=DECIMAL},
       </if>
-      <if test="tradeDuration != null">
-        #{tradeDuration,jdbcType=INTEGER},
-      </if>
       <if test="extra != null">
         #{extra,jdbcType=INTEGER},
       </if>
@@ -262,8 +269,14 @@
       <if test="preBalance != null">
         pre_balance = #{preBalance,jdbcType=DECIMAL},
       </if>
+      <if test="preEquity != null">
+        pre_equity = #{preEquity,jdbcType=DECIMAL},
+      </if>
       <if test="balance != null">
         balance = #{balance,jdbcType=DECIMAL},
+      </if>
+      <if test="equity != null">
+        equity = #{equity,jdbcType=DECIMAL},
       </if>
       <if test="realProfit != null">
         real_profit = #{realProfit,jdbcType=DECIMAL},
@@ -316,9 +329,6 @@
       <if test="minMarginRate != null">
         min_margin_rate = #{minMarginRate,jdbcType=DECIMAL},
       </if>
-      <if test="tradeDuration != null">
-        trade_duration = #{tradeDuration,jdbcType=INTEGER},
-      </if>
       <if test="extra != null">
         extra = #{extra,jdbcType=INTEGER},
       </if>
@@ -338,7 +348,9 @@
       start_date = #{startDate,jdbcType=VARCHAR},
       end_date = #{endDate,jdbcType=VARCHAR},
       pre_balance = #{preBalance,jdbcType=DECIMAL},
+      pre_equity = #{preEquity,jdbcType=DECIMAL},
       balance = #{balance,jdbcType=DECIMAL},
+      equity = #{equity,jdbcType=DECIMAL},
       real_profit = #{realProfit,jdbcType=DECIMAL},
       commission = #{commission,jdbcType=DECIMAL},
       swap = #{swap,jdbcType=DECIMAL},
@@ -356,7 +368,6 @@
       min_profit = #{minProfit,jdbcType=DECIMAL},
       max_margin = #{maxMargin,jdbcType=DECIMAL},
       min_margin_rate = #{minMarginRate,jdbcType=DECIMAL},
-      trade_duration = #{tradeDuration,jdbcType=INTEGER},
       extra = #{extra,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=VARCHAR}

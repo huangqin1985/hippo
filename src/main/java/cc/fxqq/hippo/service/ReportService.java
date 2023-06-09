@@ -143,13 +143,6 @@ public class ReportService {
 						dto.setMinMarginRateStr(minMarginRate + "%");
 					}
 					
-					Integer tradeDuration = item.getTradeDuration();
-					
-					if (tradeDuration > 0) {
-						String tradeDurationStr = DateUtil.getHourDurationDesc(tradeDuration);
-						dto.setTradeDuration(tradeDurationStr);
-					}
-					
 					dto.setThisWeek(DateUtil.inThisWeek(DateUtil.parseDate(item.getStartDate())));
 					
 					return dto;

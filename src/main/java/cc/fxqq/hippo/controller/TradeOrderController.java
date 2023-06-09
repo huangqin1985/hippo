@@ -1,5 +1,6 @@
 package cc.fxqq.hippo.controller;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -75,7 +76,13 @@ public class TradeOrderController extends BaseController {
 		String endDateStr = null;
 		if (StringUtils.isNotEmpty(type)) {
 			if ("today".equals(type)) {
-				String date = DateUtil.formatDate(new Date());
+				Calendar cal = Calendar.getInstance();
+				AccountDTO acc = accountService.queryAccountInfo(accountId);
+				Integer timeZone = acc.getTimeZone();
+				if (timeZone != null) {
+					cal.add(Calendar.HOUR, -DateUtil.getTimeDiffForUTC8(timeZone));
+				}
+				String date = DateUtil.formatDate(cal.getTime());
 				startDateStr = date;
 				endDateStr = date;
 			} else if ("thisWeek".equals(type)) {

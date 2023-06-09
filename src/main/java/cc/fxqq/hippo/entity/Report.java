@@ -15,7 +15,11 @@ public class Report {
 
     private BigDecimal preBalance;
 
+    private BigDecimal preEquity;
+
     private BigDecimal balance;
+
+    private BigDecimal equity;
 
     private BigDecimal realProfit;
 
@@ -50,8 +54,6 @@ public class Report {
     private BigDecimal maxMargin;
 
     private BigDecimal minMarginRate;
-
-    private Integer tradeDuration;
 
     private Integer extra;
 
@@ -107,12 +109,28 @@ public class Report {
         this.preBalance = preBalance;
     }
 
+    public BigDecimal getPreEquity() {
+        return preEquity;
+    }
+
+    public void setPreEquity(BigDecimal preEquity) {
+        this.preEquity = preEquity;
+    }
+
     public BigDecimal getBalance() {
         return balance;
     }
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public BigDecimal getEquity() {
+        return equity;
+    }
+
+    public void setEquity(BigDecimal equity) {
+        this.equity = equity;
     }
 
     public BigDecimal getRealProfit() {
@@ -251,14 +269,6 @@ public class Report {
         this.minMarginRate = minMarginRate;
     }
 
-    public Integer getTradeDuration() {
-        return tradeDuration;
-    }
-
-    public void setTradeDuration(Integer tradeDuration) {
-        this.tradeDuration = tradeDuration;
-    }
-
     public Integer getExtra() {
         return extra;
     }
@@ -295,7 +305,9 @@ public class Report {
         sb.append(", startDate=").append(startDate);
         sb.append(", endDate=").append(endDate);
         sb.append(", preBalance=").append(preBalance);
+        sb.append(", preEquity=").append(preEquity);
         sb.append(", balance=").append(balance);
+        sb.append(", equity=").append(equity);
         sb.append(", realProfit=").append(realProfit);
         sb.append(", commission=").append(commission);
         sb.append(", swap=").append(swap);
@@ -313,7 +325,6 @@ public class Report {
         sb.append(", minProfit=").append(minProfit);
         sb.append(", maxMargin=").append(maxMargin);
         sb.append(", minMarginRate=").append(minMarginRate);
-        sb.append(", tradeDuration=").append(tradeDuration);
         sb.append(", extra=").append(extra);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", createTime=").append(createTime);

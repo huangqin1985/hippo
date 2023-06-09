@@ -26,7 +26,9 @@ CREATE TABLE report (
 	start_date VARCHAR(50) NOT NULL,	--开始日期
 	end_date VARCHAR(50) NOT NULL,	--结束日期
 	pre_balance DECIMAL(10,2) NOT NULL DEFAULT 0,	--上期余额
+	pre_equity DECIMAL(10,2) NOT NULL DEFAULT 0,	--上期净值
 	balance DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 余额
+	equity DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 净值
 	real_profit DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 真实利润
 	commission DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 手续费
 	swap DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 过夜费
@@ -44,7 +46,6 @@ CREATE TABLE report (
 	min_profit DECIMAL(10,2) ,	-- 最小盈亏
 	max_margin DECIMAL(10,2) ,	-- 最大预付款
 	min_margin_rate DECIMAL(10,2) ,	-- 最小预付款比率
-	trade_duration INTEGER NOT NULL DEFAULT 0,	--交易时长(秒)
 	extra INTEGER text,	--额外
 	update_time VARCHAR(50) NOT NULL,	--更新时间
 	create_time VARCHAR(50) NOT NULL,	--创建时间
