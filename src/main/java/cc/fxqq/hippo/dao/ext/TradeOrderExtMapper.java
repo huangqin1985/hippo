@@ -6,6 +6,7 @@ import java.util.Map;
 
 import cc.fxqq.hippo.entity.TradeOrder;
 import cc.fxqq.hippo.entity.param.TradeOrderParam;
+import cc.fxqq.hippo.entity.result.OrderDayResult;
 import cc.fxqq.hippo.entity.result.OrderSumResult;
 
 public interface TradeOrderExtMapper extends BatchOperator<TradeOrder>, PageQuery<TradeOrder> {
@@ -23,4 +24,6 @@ public interface TradeOrderExtMapper extends BatchOperator<TradeOrder>, PageQuer
     Integer selectTradeDays(Integer accountId);
     
     String selectMinOpenTime(Integer accountId);
+    
+    List<OrderDayResult> selectGroupByDay(TradeOrderParam param);
 }

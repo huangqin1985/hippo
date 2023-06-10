@@ -69,15 +69,6 @@
 				<span th:text="${report.withdraw}"></span>
 			</td>
 		</tr>
-	    <tr>
-			<td style="text-align:right;width:90px;">其他：</td>
-			<td style="text-align:right;padding:0 10px 0 0;">
-				<span th:text="${report.other}"></span>
-			</td>
-			<td style="text-align:right;width:90px;"></td>
-			<td style="text-align:right;padding:0 10px 0 0;">
-			</td>
-		</tr>
 		<tr style="height:10px;">
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
@@ -86,9 +77,8 @@
     		<td style="text-align:left;width:40%">
 		    <select id="sel2" class="last_center">
 		    	<option th:selected="${type == 'all'}" value="all">&nbsp;全部&nbsp;</option>
-		    	<option th:selected="${type == 'deposit'}" value="deposit">&nbsp;存款&nbsp;</option>
-	    		<option th:selected="${type == 'withdraw'}" value="withdraw">&nbsp;取款&nbsp;</option>
-	    		<option th:selected="${type == 'other'}" value="other">&nbsp;其他&nbsp;</option>
+		    	<option th:selected="${type == 'deposit'}" value="deposit">&nbsp;入金&nbsp;</option>
+	    		<option th:selected="${type == 'withdraw'}" value="withdraw">&nbsp;出金&nbsp;</option>
 		    </select>
 		    <form id="form2" name="form2" action="fund">
 		    	<input type="hidden" th:value="${account}" name = "account"/>

@@ -31,6 +31,8 @@ public class Account {
 
     private String connectTime;
 
+    private String symbolMargin;
+
     public Integer getId() {
         return id;
     }
@@ -143,6 +145,14 @@ public class Account {
         this.connectTime = connectTime == null ? null : connectTime.trim();
     }
 
+    public String getSymbolMargin() {
+        return symbolMargin;
+    }
+
+    public void setSymbolMargin(String symbolMargin) {
+        this.symbolMargin = symbolMargin == null ? null : symbolMargin.trim();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -163,6 +173,7 @@ public class Account {
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", connectTime=").append(connectTime);
+        sb.append(", symbolMargin=").append(symbolMargin);
         sb.append("]");
         return sb.toString();
     }

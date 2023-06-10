@@ -73,9 +73,10 @@
 	        	<a th:href="'orderList?sort=closeTime&sortOrder=desc&account=' + ${account} + '&symbol=' + ${item.symbol} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${item.symbol}"></a>
 	        </td>
 	        <td style="width:25%;text-align:right;">
-	        	<a th:href="'orderList?sort=lots&sortOrder=desc&account=' + ${account} + '&symbol=' + ${item.symbol} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
+	        	<!-- <a th:href="'orderList?sort=lots&sortOrder=desc&account=' + ${account} + '&symbol=' + ${item.symbol} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
 	        		<span style="color:black" th:text="${item.lots}"></span>
-	        	</a>
+	        	</a> -->
+	        	<span style="color:black" th:text="${item.lots}"></span>
 	        </td>
 	        <td style="width:35%;text-align:right;padding:0 20px 0 0;">
 	        	<a th:if="${item.realProfit>=0}" th:href="'orderList?sort=realProfit&sortOrder=desc&account=' + ${account} + '&symbol=' + ${item.symbol} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
@@ -95,9 +96,10 @@
 	        	<a th:href="'orderList?account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}+ '&sort=closeTime&sortOrder=desc' + '&type=' + ${type}">总计(<span th:text="${totalSum.orderNum}"></span>)</a>
 	        </td>
 	        <td style="width:25%;text-align:right;">
-       			<a th:if="${totalSum.lots != null}" th:href="'orderList?sort=lots&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
+       			<!-- <a th:if="${totalSum.lots != null}" th:href="'orderList?sort=lots&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}">
 	        		<span style="color:black" th:text="${totalSum.lots}"></span>
-	        	</a>
+	        	</a> -->
+	        	<span style="color:black" th:text="${totalSum.lots}"></span>
        			<span th:if="${totalSum.lots == null}">-</span>
 	        </td>
 	        <td style="width:35%;text-align:right;padding:0 20px 0 0;">
@@ -118,7 +120,7 @@
     		<td style="text-align:left;padding:0 10px 0 10px">
 	    			<a th:href="'orderList?tp=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'止盈(' + totalSum.tpCount + ')'}"></a>
 	        		&nbsp;<a th:href="'orderList?sl=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'止损(' + totalSum.slCount + ')'}"></a>
-    				&nbsp;<a th:href="'orderList?noSl=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'未设止损(' + totalSum.noSlCount + ')'}"></a>
+    				<!-- &nbsp;<a th:href="'orderList?noSl=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'未设止损(' + totalSum.noSlCount + ')'}"></a> -->
     		</td>
     	</tr>
     	<tr style="height:10px;">

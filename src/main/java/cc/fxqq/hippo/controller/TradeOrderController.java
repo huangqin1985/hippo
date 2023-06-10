@@ -3,6 +3,7 @@ package cc.fxqq.hippo.controller;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import com.alibaba.fastjson.JSON;
 import cc.fxqq.hippo.cache.AccountCache;
 import cc.fxqq.hippo.cache.StringCache;
 import cc.fxqq.hippo.dto.json.PositionMQL;
+import cc.fxqq.hippo.dto.json.SymbolMarginMQL;
 import cc.fxqq.hippo.dto.template.AccountDTO;
 import cc.fxqq.hippo.dto.template.OrderSumDTO;
 import cc.fxqq.hippo.dto.template.Pager;
@@ -34,6 +36,7 @@ import cc.fxqq.hippo.service.AccountService;
 import cc.fxqq.hippo.service.ReportService;
 import cc.fxqq.hippo.service.TradeFundService;
 import cc.fxqq.hippo.service.TradeOrderService;
+import cc.fxqq.hippo.util.CommonUtil;
 import cc.fxqq.hippo.util.DateUtil;
 
 @Controller
@@ -390,5 +393,39 @@ public class TradeOrderController extends BaseController {
 		model.addAttribute("acc", acc);
 		
 		return "accountInfo";
+	}
+	
+	@GetMapping("/margin")
+	public String margin(Model model,
+			@RequestParam(name="account", required = false) Integer accountId,
+			@RequestParam(name="type", required = false, defaultValue="buy") String type) {
+		
+		// 账户列表
+		List<AccountDTO> accounts = accountService.getAccounts();
+		
+		if (accountId == null) {
+			if (accounts.size() > 0) {
+				accountId = accounts.get(0).getId();
+			} else {
+				return "error";
+			}
+		}
+		
+		model.addAttribute("accounts", accounts);
+		
+		Account acc = accountService.getAccountById(accountId);
+		
+		String symbolMargin = acc.getSymbolMargin();
+		if (StringUtils.isNotEmpty(symbolMargin)) {
+			Map<String, List> symbolMargins = 
+					CommonUtil.parseToMap(symbolMargin, String.class, List.class);
+			List list = symbolMargins.get(type);
+			model.addAttribute("margins", list);
+		}
+		
+		model.addAttribute("account", accountId);
+		model.addAttribute("type", type);
+		
+		return "margin";
 	}
 }

@@ -218,7 +218,7 @@ public class DateUtil {
 	}
 	
 	public static String formatForChWeek(Date date) { 
-        SimpleDateFormat sf = new SimpleDateFormat("M月dd日星期"); 
+        SimpleDateFormat sf = new SimpleDateFormat("MM-dd 周"); 
         
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

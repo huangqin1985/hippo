@@ -150,14 +150,14 @@
 							<!-- <span style="font-size: 15px" th:text="${item.points}"></span> -->
 						</td>
 					</tr>
-					<tr style="display:none" class="orderDetail moreInfo">
+					<tr style="display:none" class="moreInfo">
 						<td th:class="${item.closeType}" style="text-align: left;width:50%;padding: 0 5px 0 5px"><span
 							style="font-size: 15px" th:text="${item.openTime}"></span>
 						<td style="width: 120px; text-align: right;width:50%;padding: 0 5px 0 5px">
 							<span th:text="${item.closeTime}" style="font-size:15px;"></span> 
 						</td>
 					</tr>
-					<tr style="display:none" class="orderDetail moreInfo">
+					<tr style="display:none" class="moreInfo">
 						<td th:class="${item.closeType}" style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px">止损价：</span></td>
 						<td style="text-align: right;"><span
@@ -167,7 +167,7 @@
 						<td style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px" th:text="${item.takeProfit}"></span></td>
 					</tr>
-					<tr style="display:none" class="orderDetail moreInfo">
+					<tr style="display:none" class="moreInfo">
 						<td th:class="${item.closeType}" style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px">手续费：</span></td>
 						<td style="text-align: right;"><span
@@ -177,7 +177,7 @@
 						<td style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px" th:text="${item.swap}"></span></td>
 					</tr>
-					<tr style="display:none" class="orderDetail moreInfo">
+					<tr style="display:none" class="moreInfo">
 						<td th:class="${item.closeType}" style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px">点数：</span></td>
 						<td style="text-align: right;"><span
@@ -187,7 +187,7 @@
 						<td style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px" th:text="${item.profit}"></span></td>
 					</tr>
-					<tr style="display:none" class="orderDetail moreInfo">
+					<tr style="display:none" class="moreInfo">
 						<td th:class="${item.closeType}" style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px">单号：</span></td>
 						<td style="text-align: right;"><span
@@ -197,7 +197,7 @@
 						<td style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px" th:text="${item.duration}"></span></td>
 					</tr>
-					<tr th:if="${item.comment != null && item.comment != ''}" style="display:none" class="orderDetail moreInfo">
+					<tr th:if="${item.comment != null && item.comment != ''}" style="display:none" class="moreInfo">
 						<td th:class="${item.closeType}" style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px">注释：</span></td>
 						<td colspan="3" style="text-align: right;padding: 0 5px 0 5px">

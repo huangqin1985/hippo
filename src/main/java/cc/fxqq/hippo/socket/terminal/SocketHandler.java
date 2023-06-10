@@ -117,6 +117,7 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
         		
     			tradeOrderService.updateOrder(account, list);
     		}
+    		
     	} else if (str.startsWith("position:")) {
     		String text = str.substring(str.indexOf(':') + 1);
     		PositionMQL position = JSON.parseObject(text, PositionMQL.class);
@@ -124,7 +125,6 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		Account account = AccountCache.getByConnectId(id);
     		
     		if (account == null) {
-    			log.info("连接账号不存在");
     			return;
     		}
     		
@@ -142,7 +142,18 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		ConnectMQL connectMQL = JSON.parseObject(text, ConnectMQL.class);
     		Account account = AccountCache.getByConnectId(id);
     		
-			accountService.setTimeZone(account, connectMQL.getTimeZone());
+    		if (account != null) {
+    			accountService.setTimeZone(account, connectMQL.getTimeZone());
+    		}
+    		
+    	} else if (str.startsWith("margin:")) {
+    		String text = str.substring(str.indexOf(':') + 1);
+    		ConnectMQL connectMQL = JSON.parseObject(text, ConnectMQL.class);
+    		Account account = AccountCache.getByConnectId(id);
+    		
+    		if (account != null) {
+    			accountService.setSymbolMargin(account.getName(), connectMQL.getSymbolMargins());
+    		}
     		
     	}
     }

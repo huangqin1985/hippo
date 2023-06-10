@@ -35,6 +35,14 @@
 		<result column="cur_date" jdbcType="INTEGER" property="curDate" />
 	</resultMap>
 	
+	<resultMap id="orderDayResult"
+		type="cc.fxqq.hippo.entity.result.OrderDayResult">
+		<result column="date" jdbcType="VARCHAR" property="date" />
+		<result column="lots" jdbcType="DECIMAL" property="lots" />
+		<result column="order_num" jdbcType="DECIMAL" property="orderNum" />
+		<result column="real_profit" jdbcType="DECIMAL" property="realProfit" />
+	</resultMap>
+	
 	<sql id="Base_Column_List">
 		account_id, ticket, open_time, close_time, symbol, lots, commission, swap, profit, 
 		real_profit, type, open_price, close_price, stop_loss, take_profit, comment
@@ -219,5 +227,22 @@
 			group by
 				date(close_time)
 		)
+	</select>
+	
+	<select id="selectGroupByDay"
+		parameterType="cc.fxqq.hippo.entity.param.TradeOrderParam"
+		resultMap="orderDayResult">
+		select
+			date(close_time) as date,
+			sum(real_profit) as real_profit,
+			sum(lots) as lots,
+			count(*) as order_num
+		from
+			trade_order
+		where
+			account_id = #{accountId}
+			and DATE(close_time) BETWEEN #{closeStartDate} and #{closeEndDate}
+		group by
+			date(close_time)
 	</select>
 </mapper>

@@ -30,7 +30,6 @@ public class TradeFundMapperTest {
 		fund.setOpenTime("2022-09-08 22:00:08");
 		fund.setProfit(new BigDecimal("1000.25"));
 		fund.setTicket(ticket);
-		fund.setType("deposit");
 		fund.setComment("-----");
 		return fund;
 	}
@@ -54,12 +53,7 @@ public class TradeFundMapperTest {
 	
 	@Test
 	public void testSelectSumByType() {
-		List<FundSumResult> list = 
-				tradeFundExtMapper.selectSumByType(account, "2021-09-01", "2022-09-30");
 		
-		Map<String, BigDecimal> map = list.stream().collect(Collectors.toMap(FundSumResult::getType, FundSumResult::getProfit));
-		
-		System.out.println(map);
 		
 //		map = tradeFundExtMapper.selectSumByType(account, null, "2022-09-09");
 //		

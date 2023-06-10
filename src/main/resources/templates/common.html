@@ -23,6 +23,7 @@
 	<a th:href="'fund?account=' + ${account}">资金</a>&nbsp;&nbsp;&nbsp;
 	<!-- <a th:href="'position?account=' + ${account}">持仓</a>&nbsp;&nbsp;&nbsp; -->
 	<a th:href="'accountInfo?account=' + ${account}">账户</a>&nbsp;&nbsp;&nbsp;
+	<a th:href="'margin?account=' + ${account}">预付款</a>&nbsp;&nbsp;&nbsp;
 </div>
 <div th:fragment="orderNav">
 	<a th:href="'order?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=today'" >
@@ -33,10 +34,10 @@
 		<span>本周</span>
 	</a>
 	&nbsp;
-	<!-- <a th:href="'order?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=thisMonth'" >
+	<a th:href="'order?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=thisMonth'" >
 		<span>本月</span>
 	</a>
-	&nbsp; -->
+	&nbsp;
 	<a th:href="'order?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=all'" >
 		<span>全部</span>
 	</a>

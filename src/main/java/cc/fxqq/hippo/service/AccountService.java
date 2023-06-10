@@ -3,17 +3,21 @@ package cc.fxqq.hippo.service;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+
 import cc.fxqq.hippo.cache.AccountCache;
 import cc.fxqq.hippo.dao.AccountMapper;
 import cc.fxqq.hippo.dao.ext.AccountExtMapper;
 import cc.fxqq.hippo.dao.ext.TradeOrderExtMapper;
 import cc.fxqq.hippo.dto.json.ConnectMQL;
+import cc.fxqq.hippo.dto.json.SymbolMarginMQL;
 import cc.fxqq.hippo.dto.template.AccountDTO;
 import cc.fxqq.hippo.dto.template.ReportDTO;
 import cc.fxqq.hippo.entity.Account;
@@ -117,6 +121,18 @@ public class AccountService {
 		return accountExtMapper.selectUnique(symbol);
 	}
 	
+	public Account setSymbolMargin(String name, Map<String, List<SymbolMarginMQL>> symbolMargins) {
+		Account acc = new Account();
+		acc.setName(name);
+		acc.setSymbolMargin(JSON.toJSONString(symbolMargins));
+		
+		String date = DateUtil.formatDatetime(new Date());
+		acc.setUpdateTime(date);
+		accountMapper.updateByPrimaryKeySelective(acc);
+		
+		return acc;
+	}
+	
 	public Account addAccount(String name, ConnectMQL accountInfo) {
 		Account acc = new Account();
 		acc.setName(name);
@@ -129,6 +145,9 @@ public class AccountService {
 		acc.setTimeZone(accountInfo.getTimeZone());
 		acc.setClientName(accountInfo.getClientName());
 		acc.setStopOutLevel(accountInfo.getStopOutLevel());
+		Map<String, List<SymbolMarginMQL>> symbolMargins = accountInfo.getSymbolMargins();
+		acc.setSymbolMargin(JSON.toJSONString(symbolMargins));
+		
 		String date = DateUtil.formatDatetime(new Date());
 		acc.setCreateTime(date);
 		acc.setConnectTime(date);
@@ -139,7 +158,18 @@ public class AccountService {
 	}
 	
 	public Account updateAccount(Account acc, ConnectMQL accountInfo) {
+		acc.setNumber(accountInfo.getNumber());
+		acc.setCurrency(accountInfo.getCurrency());
+		acc.setLeverage(accountInfo.getLeverage());
 		acc.setBalance(accountInfo.getBalance());
+		acc.setCompany(accountInfo.getCompany());
+		acc.setServer(accountInfo.getServer());
+		acc.setTimeZone(accountInfo.getTimeZone());
+		acc.setClientName(accountInfo.getClientName());
+		acc.setStopOutLevel(accountInfo.getStopOutLevel());
+		Map<String, List<SymbolMarginMQL>> symbolMargins = accountInfo.getSymbolMargins();
+		acc.setSymbolMargin(JSON.toJSONString(symbolMargins));
+		
 		String date = DateUtil.formatDatetime(new Date());
 		acc.setConnectTime(date);
 		acc.setUpdateTime(date);

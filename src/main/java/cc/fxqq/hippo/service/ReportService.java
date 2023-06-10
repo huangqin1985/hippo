@@ -10,18 +10,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
+
 import cc.fxqq.hippo.consts.FundType;
 import cc.fxqq.hippo.consts.ReportTypeEnum;
 import cc.fxqq.hippo.dao.AccountMapper;
 import cc.fxqq.hippo.dao.ext.ReportExtMapper;
 import cc.fxqq.hippo.dao.ext.TradeFundExtMapper;
 import cc.fxqq.hippo.dao.ext.TradeOrderExtMapper;
+import cc.fxqq.hippo.dto.template.OrderDayDTO;
 import cc.fxqq.hippo.dto.template.Pager;
 import cc.fxqq.hippo.dto.template.ReportDTO;
-import cc.fxqq.hippo.entity.Account;
 import cc.fxqq.hippo.entity.param.ReportParam;
 import cc.fxqq.hippo.entity.param.TradeOrderParam;
 import cc.fxqq.hippo.entity.result.FundSumResult;
+import cc.fxqq.hippo.entity.result.OrderDayResult;
 import cc.fxqq.hippo.task.ReportTask;
 import cc.fxqq.hippo.util.DateUtil;
 import cc.fxqq.hippo.util.DecimalUtil;
@@ -80,17 +83,10 @@ public class ReportService {
 	public ReportDTO querySummary(Integer account) {
 		ReportDTO report = new ReportDTO();
 		
-		List<FundSumResult> list = 
-				tradeFundExtMapper.selectSumByType(account,
-						null, null);
-		Map<String, BigDecimal> map = list.stream().collect(
-				Collectors.toMap(FundSumResult::getType, FundSumResult::getProfit));
-		BigDecimal deposit = DecimalUtil.get(map.get(FundType.DEPOSIT));
-		BigDecimal withdraw = DecimalUtil.get(map.get(FundType.WITHDRAW));
-		BigDecimal other = DecimalUtil.get(map.get(FundType.OTHER));
+		BigDecimal deposit = DecimalUtil.get(tradeFundExtMapper.selectDeposit(account, null, null));
+		BigDecimal withdraw = DecimalUtil.get(tradeFundExtMapper.selectWithdraw(account, null, null));
 		report.setDeposit(deposit);
 		report.setWithdraw(withdraw);
-		report.setOther(other);
 		
 		return report;
 	}
@@ -108,6 +104,12 @@ public class ReportService {
 					dto.setBalance(item.getBalance());
 					dto.setRealProfit(realProfit);
 					dto.setPreBalance(preBalance);
+					if (item.getDeposit().compareTo(BigDecimal.ZERO) > 0) {
+						dto.setDeposit(item.getDeposit());
+					}
+					if (item.getWithdraw().compareTo(BigDecimal.ZERO) > 0) {
+						dto.setWithdraw(item.getWithdraw());
+					}
 					
 					Date start = DateUtil.parseDate(item.getStartDate());
 
@@ -144,6 +146,31 @@ public class ReportService {
 					}
 					
 					dto.setThisWeek(DateUtil.inThisWeek(DateUtil.parseDate(item.getStartDate())));
+					
+					TradeOrderParam orderParam = new TradeOrderParam();
+					orderParam.setAccountId(item.getAccountId());
+					orderParam.setCloseStartDate(item.getStartDate());
+					orderParam.setCloseEndDate(item.getEndDate());
+					List<OrderDayResult> dayResults = tradeOrderExtMapper.selectGroupByDay(orderParam);
+					
+					BigDecimal weekBalance = item.getPreBalance();
+					List<OrderDayDTO> dayLists = Lists.newArrayList();
+					for (OrderDayResult result : dayResults) {
+						OrderDayDTO day = new OrderDayDTO();
+						
+						day.setStartDate(result.getDate());
+						day.setEndDate(result.getDate());
+						day.setLots(DecimalUtil.get(result.getLots()));
+						day.setOrderNum(result.getOrderNum());
+						day.setRealProfit(result.getRealProfit());
+						day.setDescription(DateUtil.formatForChWeek(DateUtil.parseDate(result.getDate())));
+						
+						BigDecimal dayBalance = DecimalUtil.add(weekBalance, result.getRealProfit());
+						day.setBalance(dayBalance);
+						weekBalance = dayBalance;
+						dayLists.add(day);
+					}
+					dto.setDayResults(dayLists);
 					
 					return dto;
 				});

@@ -13,6 +13,7 @@ CREATE TABLE account (
 	time_zone INTEGER ,	--时区
 	client_name VARCHAR(100) NOT NULL, -- 客户名称
 	stop_out_level VARCHAR(50) NOT NULL, -- 爆仓条件
+	symbol_margin TEXT NOT NULL, -- 产品预付款
 	create_time VARCHAR(50) NOT NULL,	--创建时间
 	update_time VARCHAR(50) NOT NULL,	--更新时间
 	connect_time VARCHAR(50) NOT NULL,	--连接时间
@@ -59,7 +60,6 @@ CREATE TABLE trade_fund (
 	ticket VARCHAR(50) NOT NULL,	--订单号
 	open_time VARCHAR(50) NOT NULL,	--开盘时间
 	profit DECIMAL(10,2) NOT NULL,	--利润
-	"type" VARCHAR(50) NOT NULL,	--类型 deposit-入金 withdraw-出金 other 其他收益
 	comment VARCHAR(50),	--注释
 	CONSTRAINT trade_fund_PK UNIQUE (`account_id`, `ticket`)
 );

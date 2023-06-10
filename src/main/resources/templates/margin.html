@@ -1,0 +1,100 @@
+
+<!doctype html>
+
+<!--注意：引入thymeleaf的名称空间-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>历史</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my.css} "/>
+    
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script>
+    $(function() {
+
+    	$("#sel2").change(function() {
+    		var type = $("#sel2").val();
+    		
+    		$("#type").val(type);
+        	$("#form2").submit();
+    	});
+    	
+    	$("a").click(function(evt) {
+    		evt.stopPropagation();
+    	});
+
+    });
+    </script>
+</head>
+<body>
+<table>
+	<table style="margin: 0 8px 0 8px;">
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:25px;">
+			<td colspan="3" style="text-align:center;width:100%;padding:0 10px 0 10px;">
+				<div th:insert="common::account"></div>
+			</td> 	
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;text-align:left;padding:0 0 0 10px;">
+				<div th:insert="common::nav"></div>
+			</td>
+		</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr>
+    		<td style="text-align:left;width:40%">
+		    <select id="sel2" class="last_center">
+		    	<option th:selected="${type == 'buy'}" value="buy">买入</option>
+		    	<option th:selected="${type == 'sell'}" value="sell">卖出</option>
+		    </select>
+		    <form id="form2" name="form2" action="margin">
+		    	<input type="hidden" th:value="${account}" name = "account"/>
+		    	<input type="hidden" id="type" value="" name = "type"/>
+	    	</form>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+    	<tr>
+    	<td>
+    		<table th:each="item : ${margins}">
+	    	<tr>
+		        <td width="34%" style = "text-align:left;font-size:16px;padding:0 10px 0 10px" >
+			        <span style="font-weight: bold" th:text="${item.symbol}"></span>
+		        </td>
+		        <td width="30%" style = "text-align:left;padding:0 10px 0 10px" >
+		       		<span th:if="${type == 'buy'}" 
+								th:text="${type} + ' ' + ${item.lots}"></span> 
+					<span th:if="${type == 'sell'}"
+						th:text="${type} + ' ' + ${item.lots}"></span>
+		        </td>
+		        <td style="text-align:right;padding:0 10px 0 10px">
+        			<span style="" th:text="${item.margin}"></span>
+        		</td>
+		    </tr>
+       		<tr style="height:10px;">
+		    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+		    	</td>
+		    </tr>
+	    </table>
+    	</td>
+    	</tr>
+	</table>
+</body>
+</html>

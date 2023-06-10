@@ -156,11 +156,11 @@
 	    	</form>
     		</td>
     		<td  colspan="2" style="text-align:right;width:60%">
-    		<span th:text="${pager.totalRecord}"></span>条&nbsp;<span th:if="${pager.pageCount gt 0}"><span th:text="${pager.pageNum}"></span>/<span th:text="${pager.pageCount}"></span></span>
-    		<a th:if="${pager.hasPrePage}"
-    			  th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType} + '&pageNum=' + ${pager.prePage}">上页</a>
-    		<a th:if="${pager.hasNextPage}" 
-    			 th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType}  + '&pageNum=' + ${pager.nextPage}">下页</a>
+	    		<span th:text="${pager.totalRecord}"></span>条&nbsp;<span th:if="${pager.pageCount gt 0}"><span th:text="${pager.pageNum}"></span>/<span th:text="${pager.pageCount}"></span></span>
+	    		<a th:if="${pager.hasPrePage}"
+	    			  th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType} + '&pageNum=' + ${pager.prePage}">上页</a>
+	    		<a th:if="${pager.hasNextPage}" 
+	    			 th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType}  + '&pageNum=' + ${pager.nextPage}">下页</a>
     		</td>
     	</tr>
     	<tr style="height:10px;">
@@ -176,16 +176,17 @@
        		
        		<td style="width:34%;text-align:right;padding:0 5px 0 0;"><a href="javascript:;" id="aProfit">利润</a><span th:if="${sort=='realProfit'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='realProfit'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
 	    </tr>
-	    <tr style="height:10px;">
-	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
-	    	</td>
-	    </tr>
 	    <tr>
 		    <td>
 		    <table th:each="item : ${pager.data}">
-			    <tr class="orderDetail">
-			        <td style = "width:32%;text-align:center;" >
-			        <a th:href="'order?account=' + ${account} + '&startDate=' + ${item.startDate} + '&endDate=' + ${item.endDate} + ${item.thisWeek ? '&type=thisWeek':''}" th:text="${item.description}"></a>
+		    	
+			    <tr style="height:10px;">
+		    		<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+		    		</td>
+			    </tr>
+			    <tr style="height:31px;" class="orderDetail">
+			        <td style = "width:32%;text-align:left;padding: 0 10px 0 10px" >
+			        	<a target="_blank" th:href="'order?account=' + ${account} + '&startDate=' + ${item.startDate} + '&endDate=' + ${item.endDate} + ${item.thisWeek ? '&type=thisWeek':''}" th:text="${item.description}"></a>
 			        </td>
 		       		<td style="width:34%;text-align:right;">
 	    				<span th:if="${col=='balance'}" th:text="${item.balance}"></span>
@@ -196,7 +197,7 @@
 	    				<span th:class="${item.realProfit>=0?'g':'r'}" th:text="${item.realProfit}"></span>
 			        </td>
 			    </tr>
-			    <tr style="display:none"  class="orderDetail moreInfo">
+			    <tr style="display:none"  class="moreInfo">
 					<td style="font-size: 15px;text-align:right;width:85px;">最小利润：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.minRealProfit != null}" th:text="${item.minRealProfit}"></span>
@@ -209,7 +210,7 @@
 						<span th:if="${item.minRealProfit == null}">-</span>
 					</td>
 				</tr>
-				<tr style="display:none"  class="orderDetail moreInfo">
+				<tr style="display:none"  class="moreInfo">
 					<td style="font-size: 15px;text-align:right;width:85px">最小净值：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.minEquity != null}" th:text="${item.minEquity}"></span>
@@ -221,7 +222,7 @@
 						<span th:if="${item.maxEquity == null}">-</span>
 					</td>
 				</tr>
-				<tr style="display:none"  class="orderDetail moreInfo">
+				<tr style="display:none"  class="moreInfo">
 					<td style="font-size: 15px;text-align:right;width:85px">最小盈亏：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.minProfit != null}" th:text="${item.minProfit}"></span>
@@ -233,19 +234,64 @@
 						<span th:if="${item.maxProfit == null}">-</span>
 					</td>
 				</tr>
-				<tr style="display:none"  class="orderDetail moreInfo">
+				<tr style="display:none"  class="moreInfo">
+					<td style="font-size: 15px;text-align:left;width:125px;">最大预付款：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.maxMargin != null}" th:text="${item.maxMargin}"></span>
+						<span th:if="${item.maxMargin == null}">-</span>
+					</td>
+				</tr>
+				<tr style="display:none"  class="moreInfo">
 					<td style="font-size: 15px;text-align:left;width:125px;">最小预付款比率：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.minMarginRateStr != null}" th:text="${item.minMarginRateStr}"></span>
 						<span th:if="${item.minMarginRateStr == null}">-</span>
 					</td>
 				</tr>
-			    <tr style="height:10px;">
-		    		<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
-		    	</td>
+				<tr th:if="${item.dayResults.size > 0}" style="display:none;height:8px;"  class="moreInfo">
+			    	<td colspan="3" style="width:100%;">
+			    	</td>
 			    </tr>
+				<tr style="display:none;" class="moreInfo">
+					<td>
+						<table  th:each="result : ${item.dayResults}" >
+						    <tr style="height:28px">
+								<td style="width:32%;text-align:left;padding: 0 10px 0 10px" >
+						        	<a target="_blank" th:href="'order?account=' + ${account} + '&startDate=' + ${result.startDate} + '&endDate=' + ${result.endDate}"
+						        		 th:text="${result.description}"></a>
+						        </td>
+						        <td style="width:34%;text-align:right;">
+				    				<span th:if="${col=='balance'}" th:text="${result.balance}"></span>
+				    				<span th:if="${col=='lots'}" th:text="${result.lots}"></span>
+				    				<span th:if="${col=='orderNum'}" th:text="${result.orderNum}"></span>
+					       		</td>
+					       		<td style = "width:34%;text-align:right;padding:0 5px 0 0;" >
+				    				<span th:class="${result.realProfit>=0?'g':'r'}"  th:text="${result.realProfit}"></span>
+						        </td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr th:if="${item.dayResults.size > 0}" style="display:none;height:10px;"  class="moreInfo">
+			    	<td colspan="3" style="width:100%;">
+			    	</td>
+			    </tr>
+			    <tr style="display:none" th:if="${item.deposit != null || item.withdraw != null}" class="moreInfo">
+					<td style="font-size: 15px;text-align:right;width:85px">入金：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:text="${item.deposit}"></span>
+					</td>
+					<td style="font-size: 15px;text-align:right;width:85px;">出金：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:text="${item.withdraw}"></span>
+					</td>
+				</tr>
 		    </table>
 		    </td>
+	    </tr>
+	    <tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
 	    </tr>
 	    <tr th:if="${pager.totalRecord > 0}">
     		<td style="text-align:left;width:40%">
