@@ -121,18 +121,6 @@ public class AccountService {
 		return accountExtMapper.selectUnique(symbol);
 	}
 	
-	public Account setSymbolMargin(String name, Map<String, List<SymbolMarginMQL>> symbolMargins) {
-		Account acc = new Account();
-		acc.setName(name);
-		acc.setSymbolMargin(JSON.toJSONString(symbolMargins));
-		
-		String date = DateUtil.formatDatetime(new Date());
-		acc.setUpdateTime(date);
-		accountMapper.updateByPrimaryKeySelective(acc);
-		
-		return acc;
-	}
-	
 	public Account addAccount(String name, ConnectMQL accountInfo) {
 		Account acc = new Account();
 		acc.setName(name);
@@ -145,8 +133,6 @@ public class AccountService {
 		acc.setTimeZone(accountInfo.getTimeZone());
 		acc.setClientName(accountInfo.getClientName());
 		acc.setStopOutLevel(accountInfo.getStopOutLevel());
-		Map<String, List<SymbolMarginMQL>> symbolMargins = accountInfo.getSymbolMargins();
-		acc.setSymbolMargin(JSON.toJSONString(symbolMargins));
 		
 		String date = DateUtil.formatDatetime(new Date());
 		acc.setCreateTime(date);
@@ -167,8 +153,6 @@ public class AccountService {
 		acc.setTimeZone(accountInfo.getTimeZone());
 		acc.setClientName(accountInfo.getClientName());
 		acc.setStopOutLevel(accountInfo.getStopOutLevel());
-		Map<String, List<SymbolMarginMQL>> symbolMargins = accountInfo.getSymbolMargins();
-		acc.setSymbolMargin(JSON.toJSONString(symbolMargins));
 		
 		String date = DateUtil.formatDatetime(new Date());
 		acc.setConnectTime(date);

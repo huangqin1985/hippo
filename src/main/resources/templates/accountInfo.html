@@ -59,7 +59,7 @@
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>
-	    <!-- <tr>
+	    <tr>
 			<td style="text-align:right;width:90px;">收益：</td>
 			<td style="font-weight:bold;text-align:right;padding:0 10px 0 0;">
 				<span th:class="${acc.income>=0?'g':'r'}" th:text="${acc.income}"></span>
@@ -68,7 +68,7 @@
 		<tr style="height:10px;">
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
-	    </tr> -->
+	    </tr>
 	    <tr>
 			<td style="text-align:right;width:90px;">余额：</td>
 			<td style="text-align:right;padding:0 10px 0 0;">
@@ -162,7 +162,7 @@
 	    	</td>
 	    </tr>
 	    <tr>
-			<td style="text-align:right;width:90px;">订单同步：</td>
+			<td style="text-align:right;width:90px;">同步：</td>
 			<td style="text-align:right;padding:0 10px 0 0;">
 				<span th:if="${acc.status == 0}" class="r">未开启</span>
 				<span th:if="${acc.status == 1}" class="g">已开启</span>

@@ -68,6 +68,10 @@
 	        <td style="width:25%;text-align:right;">交易量</td>
 	        <td style="width:35%;text-align:right;padding:0 20px 0 0;">利润</td>
 		</tr>
+		<tr style="height:5px;">
+	    	<td colspan="3" style="width:100%;">
+	    	</td>
+	    </tr>
     	<tr th:each="item : ${sum}" >
 	        <td style="width:40%;;">
 	        	<a th:href="'orderList?sort=closeTime&sortOrder=desc&account=' + ${account} + '&symbol=' + ${item.symbol} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${item.symbol}"></a>

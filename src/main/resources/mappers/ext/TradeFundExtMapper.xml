@@ -8,6 +8,7 @@
 	    <result column="ticket" jdbcType="VARCHAR" property="ticket" />
 	    <result column="open_time" jdbcType="VARCHAR" property="openTime" />
 	    <result column="profit" jdbcType="DECIMAL" property="profit" />
+	    <result column="type" jdbcType="VARCHAR" property="type" />
 	    <result column="comment" jdbcType="VARCHAR" property="comment" />
 	  </resultMap>
 	  
@@ -20,13 +21,9 @@
 	<sql id="cond">
 		where
 			account_id = #{accountId}
-			<if test="type == 'deposit'">
-              and profit &gt; 0
-            </if>
-			<if test="type == 'withdraw'">
-              and profit &lt; 0
-            </if>
-			
+			<if test="type != null and type != null">
+				and type = #{type}
+			</if>
 			<if test="startDate != null and endDate != null">
               and date(open_time) BETWEEN #{startDate} and #{endDate}
             </if>
@@ -62,6 +59,7 @@
         	`ticket`,
         	`open_time`,
         	`profit`,
+        	`type`,
         	`comment`
         	)
         VALUES
@@ -71,35 +69,40 @@
         		#{item.ticket},
         		#{item.openTime},
         		#{item.profit},
+        		#{item.type},
         		#{item.comment}
         	)
         </foreach>
     </insert>
 	
-	<select id="selectDeposit" resultType="java.math.BigDecimal">
+	<select id="selectProfitByType" resultType="java.math.BigDecimal">
 		select
 			sum(profit) as profit
 		from
 			trade_fund
 		where
 			account_id = #{accountId}
-			and profit &gt; 0
+			<if test="type != null">
+			and type = #{type}
+			</if>
 			<if test="startDate != null and endDate != null">
               and date(open_time) BETWEEN #{startDate} and #{endDate}
             </if>
 	</select>
 	
-	<select id="selectWithdraw" resultType="java.math.BigDecimal">
+	<select id="selectSumByType" resultMap="fundSumResult">
 		select
+			type,
 			sum(profit) as profit
 		from
 			trade_fund
 		where
 			account_id = #{accountId}
-			and profit &lt; 0
 			<if test="startDate != null and endDate != null">
               and date(open_time) BETWEEN #{startDate} and #{endDate}
             </if>
+		group by
+			type
 	</select>
 	
 	<select id="selectTradeOpenTime" resultType="string">

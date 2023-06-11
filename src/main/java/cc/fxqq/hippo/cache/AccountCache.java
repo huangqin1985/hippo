@@ -18,23 +18,23 @@ public class AccountCache {
 		return cache;
 	}
 	
-	public static void add(String connectId, String accountName, Account acc) {
-		getCache().put("connectId_" + connectId, acc);
-		getCache().put("accountName_" + acc.getName(), acc);
+	public static void addAccount(String connectId, Account acc) {
+		getCache().put(StringCache.CONNECT_ID + connectId, acc);
+		getCache().put(StringCache.ACCOUNT_NAME + acc.getName(), acc);
 	}
 	
-	public static void remove(String connectId) {
-		Account acc = getCache().getIfPresent("connectId_" + connectId);
-		getCache().invalidate("connectId_" + connectId);
-		getCache().invalidate("accountName_" + acc.getName());
+	public static void removeByConnectId(String connectId) {
+		Account acc = getCache().getIfPresent(StringCache.CONNECT_ID + connectId);
+		getCache().invalidate(StringCache.CONNECT_ID + connectId);
+		getCache().invalidate(StringCache.ACCOUNT_NAME + acc.getName());
 	}
 	
 	public static Account getByAccountName(String accountName) {
-		return getCache().getIfPresent("accountName_" + accountName);
+		return getCache().getIfPresent(StringCache.ACCOUNT_NAME + accountName);
 	}
 	
 	public static Account getByConnectId(String connectId) {
-		return getCache().getIfPresent("connectId_" + connectId);
+		return getCache().getIfPresent(StringCache.CONNECT_ID + connectId);
 	}
 	
 }

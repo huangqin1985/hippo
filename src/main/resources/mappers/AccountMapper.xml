@@ -16,11 +16,10 @@
     <result column="create_time" jdbcType="VARCHAR" property="createTime" />
     <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
     <result column="connect_time" jdbcType="VARCHAR" property="connectTime" />
-    <result column="symbol_margin" jdbcType="VARCHAR" property="symbolMargin" />
   </resultMap>
   <sql id="Base_Column_List">
     id, name, number, company, server, currency, leverage, balance, time_zone, client_name, 
-    stop_out_level, create_time, update_time, connect_time, symbol_margin
+    stop_out_level, create_time, update_time, connect_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -40,12 +39,12 @@
       server, currency, leverage, 
       balance, time_zone, client_name, 
       stop_out_level, create_time, update_time, 
-      connect_time, symbol_margin)
+      connect_time)
     values (#{name,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER}, #{company,jdbcType=VARCHAR}, 
       #{server,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR}, #{leverage,jdbcType=INTEGER}, 
       #{balance,jdbcType=DECIMAL}, #{timeZone,jdbcType=INTEGER}, #{clientName,jdbcType=VARCHAR}, 
       #{stopOutLevel,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, 
-      #{connectTime,jdbcType=VARCHAR}, #{symbolMargin,jdbcType=VARCHAR})
+      #{connectTime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cc.fxqq.hippo.entity.Account">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -92,9 +91,6 @@
       <if test="connectTime != null">
         connect_time,
       </if>
-      <if test="symbolMargin != null">
-        symbol_margin,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -135,9 +131,6 @@
       </if>
       <if test="connectTime != null">
         #{connectTime,jdbcType=VARCHAR},
-      </if>
-      <if test="symbolMargin != null">
-        #{symbolMargin,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -183,9 +176,6 @@
       <if test="connectTime != null">
         connect_time = #{connectTime,jdbcType=VARCHAR},
       </if>
-      <if test="symbolMargin != null">
-        symbol_margin = #{symbolMargin,jdbcType=VARCHAR},
-      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -203,8 +193,7 @@
       stop_out_level = #{stopOutLevel,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=VARCHAR},
-      connect_time = #{connectTime,jdbcType=VARCHAR},
-      symbol_margin = #{symbolMargin,jdbcType=VARCHAR}
+      connect_time = #{connectTime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -11,6 +11,8 @@ public class TradeFund {
 
     private BigDecimal profit;
 
+    private String type;
+
     private String comment;
 
     public Integer getAccountId() {
@@ -45,6 +47,14 @@ public class TradeFund {
         this.profit = profit;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type == null ? null : type.trim();
+    }
+
     public String getComment() {
         return comment;
     }
@@ -63,6 +73,7 @@ public class TradeFund {
         sb.append(", ticket=").append(ticket);
         sb.append(", openTime=").append(openTime);
         sb.append(", profit=").append(profit);
+        sb.append(", type=").append(type);
         sb.append(", comment=").append(comment);
         sb.append("]");
         return sb.toString();

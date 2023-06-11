@@ -29,6 +29,9 @@ public class ReportDTO {
 	
 	private BigDecimal withdraw;
 
+	private BigDecimal other;
+
+	private BigDecimal all;
 	/*
 	 * 最大净值
 	 */

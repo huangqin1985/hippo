@@ -12,10 +12,10 @@ import com.alibaba.fastjson.JSON;
 import cc.fxqq.hippo.cache.AccountCache;
 import cc.fxqq.hippo.cache.StringCache;
 import cc.fxqq.hippo.dto.json.ConnectMQL;
-import cc.fxqq.hippo.dto.json.PositionMQL;
 import cc.fxqq.hippo.dto.json.OrderMQL;
+import cc.fxqq.hippo.dto.json.PositionMQL;
+import cc.fxqq.hippo.dto.json.SymbolMarginMQL;
 import cc.fxqq.hippo.dto.json.TradeOrderMQL;
-import cc.fxqq.hippo.dto.template.PositionDTO;
 import cc.fxqq.hippo.entity.Account;
 import cc.fxqq.hippo.service.AccountService;
 import cc.fxqq.hippo.service.ReportService;
@@ -88,7 +88,7 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
 			}
 			log.info("账号" + name + "连接成功 connectId=" + id);
 
-			AccountCache.add(id, name, acc);
+			AccountCache.addAccount(id, acc);
 			
 			// 更新历史订单
 			List<TradeOrderMQL> list = connectMQL.getHistories();
@@ -96,6 +96,8 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		if (list != null && list.size() > 0) {
     			tradeOrderService.updateHistoryOrders(acc, list);
     		}
+    		//缓存symbolMargin
+    		StringCache.put(StringCache.SYMBOL_MARGIN + name, JSON.toJSONString(connectMQL.getSymbolMargins()));
 			
     	} else if (str.startsWith("orders:")) {
     		String text = str.substring(str.indexOf(':') + 1);
@@ -128,7 +130,7 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     			return;
     		}
     		
-    		StringCache.put("position_" + account.getId(), text);
+    		//StringCache.put(StringCache.POSITION + account.getName(), text);
 
     		reportService.updateReportStatus(account.getId(),
     				position.getEquity(), position.getProfit(), position.getMargin(),
@@ -148,13 +150,13 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		
     	} else if (str.startsWith("margin:")) {
     		String text = str.substring(str.indexOf(':') + 1);
-    		ConnectMQL connectMQL = JSON.parseObject(text, ConnectMQL.class);
+    		SymbolMarginMQL marginMQL = JSON.parseObject(text, SymbolMarginMQL.class);
     		Account account = AccountCache.getByConnectId(id);
     		
     		if (account != null) {
-    			accountService.setSymbolMargin(account.getName(), connectMQL.getSymbolMargins());
+    			//缓存symbolMargin
+    			StringCache.put(StringCache.SYMBOL_MARGIN + account.getName(), JSON.toJSONString(marginMQL));
     		}
-    		
     	}
     }
 
@@ -166,10 +168,14 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
     	String id = ctx.channel().id().asShortText();
     	Account acc = AccountCache.getByConnectId(id);
+    	if (acc == null) {
+    		return;
+    	}
     	log.info("账号" + acc.getName() + "连接已断开");
     	
-    	StringCache.remove("position_" + acc.getId());
-    	AccountCache.remove(id);
+    	//StringCache.remove(StringCache.POSITION + acc.getName());
+    	StringCache.remove(StringCache.SYMBOL_MARGIN + acc.getName());
+    	AccountCache.removeByConnectId(id);
     }
 
     @Override
@@ -177,10 +183,14 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
         cause.printStackTrace();
         String id = ctx.channel().id().asShortText();
     	Account acc = AccountCache.getByConnectId(id);
+    	if (acc == null) {
+    		return;
+    	}
     	log.info("账号" + acc.getName() + "连接异常");
-    	
-    	StringCache.remove("position_" + acc.getId());
-    	AccountCache.remove(id);
+
+    	//StringCache.remove(StringCache.POSITION + acc.getName());
+    	StringCache.remove(StringCache.SYMBOL_MARGIN + acc.getName());
+    	AccountCache.removeByConnectId(id);
         ctx.channel().close();
     }
 }

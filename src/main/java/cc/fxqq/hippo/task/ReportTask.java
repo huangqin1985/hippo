@@ -220,8 +220,9 @@ public class ReportTask {
 		for (Report report : reports) {
 			BigDecimal deposit = report.getDeposit();
 			BigDecimal withdraw = report.getWithdraw();
+			BigDecimal other = report.getOther();
 			BigDecimal preBalance = DecimalUtil.subtract(
-					balance, deposit, withdraw, report.getRealProfit());
+					balance, deposit, withdraw, other, report.getRealProfit());
 			
 			report.setPreBalance(preBalance);
 			report.setBalance(balance);
@@ -259,13 +260,19 @@ public class ReportTask {
 	 * 
 	 */
 	private void setFund(Integer account, Report report) {
-		BigDecimal deposit = DecimalUtil.get(
-				tradeFundExtMapper.selectDeposit(account, report.getStartDate(), report.getEndDate()));
-		BigDecimal withdraw = DecimalUtil.get(
-				tradeFundExtMapper.selectWithdraw(account, report.getStartDate(), report.getEndDate()));
+		List<FundSumResult> list = 
+				tradeFundExtMapper.selectSumByType(account,
+						report.getStartDate(), report.getEndDate());
+		Map<String, BigDecimal> map = list.stream().collect(
+				Collectors.toMap(FundSumResult::getType, FundSumResult::getProfit));
 		
-		report.setDeposit(deposit);
+		BigDecimal depostit = DecimalUtil.get(map.get(FundType.DEPOSIT));
+		BigDecimal withdraw = DecimalUtil.get(map.get(FundType.WITHDRAW));
+		BigDecimal other = DecimalUtil.get(map.get(FundType.OTHER));
+		
+		report.setDeposit(depostit);
 		report.setWithdraw(withdraw);
+		report.setOther(other);
 	}
 	
 }

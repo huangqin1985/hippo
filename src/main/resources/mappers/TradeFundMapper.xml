@@ -6,13 +6,16 @@
     <result column="ticket" jdbcType="VARCHAR" property="ticket" />
     <result column="open_time" jdbcType="VARCHAR" property="openTime" />
     <result column="profit" jdbcType="DECIMAL" property="profit" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
   </resultMap>
   <insert id="insert" parameterType="cc.fxqq.hippo.entity.TradeFund">
     insert into trade_fund (account_id, ticket, open_time, 
-      profit, comment)
+      profit, type, comment
+      )
     values (#{accountId,jdbcType=INTEGER}, #{ticket,jdbcType=VARCHAR}, #{openTime,jdbcType=VARCHAR}, 
-      #{profit,jdbcType=DECIMAL}, #{comment,jdbcType=VARCHAR})
+      #{profit,jdbcType=DECIMAL}, #{type,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cc.fxqq.hippo.entity.TradeFund">
     insert into trade_fund
@@ -28,6 +31,9 @@
       </if>
       <if test="profit != null">
         profit,
+      </if>
+      <if test="type != null">
+        type,
       </if>
       <if test="comment != null">
         comment,
@@ -45,6 +51,9 @@
       </if>
       <if test="profit != null">
         #{profit,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
       </if>
       <if test="comment != null">
         #{comment,jdbcType=VARCHAR},

@@ -145,16 +145,20 @@ public class TradeOrderService {
 			String type = order.getType();
 			// 订单类型为余额
 			if (OrderTypeEnum.BALANCE.getValue().equals(type)) {
-				if (!FundType.filter(order)) {
+				String comment = order.getComment();
+				String balanceType = FundType.parse(comment);
+				
+				if (balanceType == null) {
 					continue;
 				}
 				
 				TradeFund bal = new TradeFund();
 				bal.setAccountId(acc.getId());
-				bal.setComment(acc.getCompany());
+				bal.setComment(comment);
 				bal.setOpenTime(DateUtil.formatDatetime(order.getOpenTime()));
 				bal.setProfit(order.getProfit());
 				bal.setTicket(order.getTicket());
+				bal.setType(balanceType);
 				
 				tradeFundExtMapper.replaceBatch(Lists.newArrayList(bal));
 				fundCount++;
@@ -224,16 +228,20 @@ public class TradeOrderService {
 			String type = order.getType();
 			// 订单类型为余额
 			if (OrderTypeEnum.BALANCE.getValue().equals(type)) {
-				if (!FundType.filter(order)) {
+				String comment = order.getComment();
+				String balanceType = FundType.parse(comment);
+				
+				if (balanceType == null) {
 					continue;
 				}
 				
 				TradeFund bal = new TradeFund();
 				bal.setAccountId(accountId);
-				bal.setComment(order.getComment());
+				bal.setComment(comment);
 				bal.setOpenTime(DateUtil.formatDatetime(order.getOpenTime()));
 				bal.setProfit(order.getProfit());
 				bal.setTicket(order.getTicket());
+				bal.setType(balanceType);
 				funds.add(bal);
 			} else if (OrderTypeEnum.BUY.getValue().equals(type) ||
 					OrderTypeEnum.SELL.getValue().equals(type)) {

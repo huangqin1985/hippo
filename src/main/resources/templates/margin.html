@@ -56,37 +56,41 @@
 	    	</td>
 	    </tr>
 	    <tr>
-    		<td style="text-align:left;width:40%">
-		    <select id="sel2" class="last_center">
-		    	<option th:selected="${type == 'buy'}" value="buy">买入</option>
-		    	<option th:selected="${type == 'sell'}" value="sell">卖出</option>
-		    </select>
-		    <form id="form2" name="form2" action="margin">
-		    	<input type="hidden" th:value="${account}" name = "account"/>
-		    	<input type="hidden" id="type" value="" name = "type"/>
-	    	</form>
-    		</td>
-    	</tr>
+			<td style="text-align:right;width:120px;">
+				可用预付款：
+			</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:if="${symbolMargin != null}" th:text="${symbolMargin.freeMargin}"></span>
+				<span th:if="${symbolMargin == null}">-</span>
+			</td>
+		</tr>
     	<tr style="height:10px;">
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>
     	<tr>
-    	<td>
-    		<table th:each="item : ${margins}">
+   			<td style="width:36%;text-align:center;">品种</td>
+	        <td style="width:36%;text-align:right;">每手买入</td>
+	        <td style="width:28%;text-align:right;padding:0 10px 0 0;">最大手</td>
+   		</tr>
+   		<tr style="height:5px;">
+	    	<td colspan="3" style="width:100%;">
+	    	</td>
+	    </tr>
+    	<td th:if="${symbolMargin != null}" >
+    		<table th:each="item : ${symbolMargin.data}">
 	    	<tr>
-		        <td width="34%" style = "text-align:left;font-size:16px;padding:0 10px 0 10px" >
-			        <span style="font-weight: bold" th:text="${item.symbol}"></span>
+		        <td width="34%" style = "text-align:center;font-size:16px;padding:0 10px 0 10px" >
+			        <a href="javascript:;" th:text="${item.symbol}"></a>
 		        </td>
-		        <td width="30%" style = "text-align:left;padding:0 10px 0 10px" >
-		       		<span th:if="${type == 'buy'}" 
-								th:text="${type} + ' ' + ${item.lots}"></span> 
-					<span th:if="${type == 'sell'}"
-						th:text="${type} + ' ' + ${item.lots}"></span>
-		        </td>
-		        <td style="text-align:right;padding:0 10px 0 10px">
-        			<span style="" th:text="${item.margin}"></span>
+		        <td style="width:36%;text-align:right;">
+        			<span th:if="${item.allowTrade}" th:text="${item.margin}"></span>
+        			<span th:if="${!item.allowTrade}">-</span>
         		</td>
+		        <td style="width:30%;text-align:right;padding:0 10px 0 10px">
+		       		<span th:if="${item.allowTrade}" th:text="${item.maxLots}"></span>
+		       		<span th:if="${!item.allowTrade}">-</span>
+		        </td>
 		    </tr>
        		<tr style="height:10px;">
 		    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">

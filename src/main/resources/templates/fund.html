@@ -60,13 +60,31 @@
 	    	</td>
 	    </tr>
 	    <tr>
-			<td style="text-align:right;width:90px;">入金：</td>
+			<td style="text-align:right;width:90px;">
+				<a th:href="'fund?account=' + ${account} + '&type=deposit'">存款：</a>
+			</td>
 			<td style="text-align:right;padding:0 10px 0 0;">
 				<span th:text="${report.deposit}"></span>
 			</td>
-			<td style="text-align:right;width:90px">出金：</td>
+			<td style="text-align:right;width:90px">
+				<a th:href="'fund?account=' + ${account} + '&type=withdraw'">取款：</a>
+			</td>
 			<td style="text-align:right;padding:0 10px 0 0;">
 				<span th:text="${report.withdraw}"></span>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:right;width:90px;">
+				<a th:href="'fund?account=' + ${account} + '&type=other'">其他：</a>
+			</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${report.other}"></span>
+			</td>
+			<td style="text-align:right;width:90px">
+				<a th:href="'fund?account=' + ${account} + '&type=all'">全部：</a>
+			</td>
+			<td style="text-align:right;padding:0 10px 0 0;">
+				<span th:text="${report.all}"></span>
 			</td>
 		</tr>
 		<tr style="height:10px;">
@@ -75,15 +93,15 @@
 	    </tr>
 	    <tr>
     		<td style="text-align:left;width:40%">
-		    <select id="sel2" class="last_center">
+		    <!-- <select id="sel2" class="last_center">
 		    	<option th:selected="${type == 'all'}" value="all">&nbsp;全部&nbsp;</option>
-		    	<option th:selected="${type == 'deposit'}" value="deposit">&nbsp;入金&nbsp;</option>
-	    		<option th:selected="${type == 'withdraw'}" value="withdraw">&nbsp;出金&nbsp;</option>
+		    	<option th:selected="${type == 'deposit'}" value="deposit">&nbsp;存款&nbsp;</option>
+	    		<option th:selected="${type == 'withdraw'}" value="withdraw">&nbsp;取款&nbsp;</option>
 		    </select>
 		    <form id="form2" name="form2" action="fund">
 		    	<input type="hidden" th:value="${account}" name = "account"/>
 		    	<input type="hidden" id="type" value="" name = "type"/>
-	    	</form>
+	    	</form> -->
     		</td>
     		<td  colspan="2" style="text-align:right;width:60%">
     		<span th:text="${pager.totalRecord}"></span>条&nbsp;<span th:if="${pager.pageCount gt 0}"><span th:text="${pager.pageNum}"></span>/<span th:text="${pager.pageCount}"></span></span>

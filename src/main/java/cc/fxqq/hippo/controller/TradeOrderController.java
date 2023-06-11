@@ -1,9 +1,10 @@
 package cc.fxqq.hippo.controller;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.alibaba.fastjson.JSON;
 
-import cc.fxqq.hippo.cache.AccountCache;
 import cc.fxqq.hippo.cache.StringCache;
 import cc.fxqq.hippo.dto.json.PositionMQL;
 import cc.fxqq.hippo.dto.json.SymbolMarginMQL;
@@ -36,8 +36,8 @@ import cc.fxqq.hippo.service.AccountService;
 import cc.fxqq.hippo.service.ReportService;
 import cc.fxqq.hippo.service.TradeFundService;
 import cc.fxqq.hippo.service.TradeOrderService;
-import cc.fxqq.hippo.util.CommonUtil;
 import cc.fxqq.hippo.util.DateUtil;
+import cc.fxqq.hippo.util.DecimalUtil;
 
 @Controller
 @RequestMapping("/")
@@ -135,6 +135,8 @@ public class TradeOrderController extends BaseController {
 	public String fund(Model model,
 			@RequestParam(name="account", required = false) Integer accountId,
 			@RequestParam(name="type", required = false, defaultValue="all") String type,
+			@RequestParam(name="startDate", required = false) Date startDate,
+			@RequestParam(name="endDate", required = false) Date endDate,
 			@RequestParam(name="pageNum", required = false) Integer pageNum) {
 		
 		// 账户列表
@@ -158,6 +160,12 @@ public class TradeOrderController extends BaseController {
 			param.setType(null);
 		} else {
 			param.setType(type);
+		}
+		if (startDate != null) {
+			param.setStartDate(DateUtil.formatDate(startDate));
+		}
+		if (endDate != null) {
+			param.setEndDate(DateUtil.formatDate(endDate));
 		}
 		
 		param.setOrderBy("open_time desc");
@@ -230,6 +238,7 @@ public class TradeOrderController extends BaseController {
 		} else {
 			param.setPage(pageNum);
 		}
+		param.setRows(25);
 		Pager<ReportDTO> pager = reportService.queryReportList(param);
 		model.addAttribute("pager", pager);
 		
@@ -415,12 +424,25 @@ public class TradeOrderController extends BaseController {
 		
 		Account acc = accountService.getAccountById(accountId);
 		
-		String symbolMargin = acc.getSymbolMargin();
-		if (StringUtils.isNotEmpty(symbolMargin)) {
-			Map<String, List> symbolMargins = 
-					CommonUtil.parseToMap(symbolMargin, String.class, List.class);
-			List list = symbolMargins.get(type);
-			model.addAttribute("margins", list);
+		if (acc != null) {
+			String text = StringCache.get(StringCache.SYMBOL_MARGIN + acc.getName());
+			
+			if (StringUtils.isNotEmpty(text)) {
+				SymbolMarginMQL symbolMargin = JSON.parseObject(text, SymbolMarginMQL.class);
+				
+				symbolMargin.getData().stream().forEach(t-> {
+					BigDecimal freeMargin = new BigDecimal(symbolMargin.getFreeMargin());
+					BigDecimal maxLots = freeMargin.divide(t.getMargin(), RoundingMode.DOWN);
+					
+					if (maxLots.compareTo(t.getVolumeMin()) < 0) {
+						t.setMaxLots(BigDecimal.ZERO);
+					} else {
+						t.setMaxLots(maxLots);
+					}
+				});
+				
+				model.addAttribute("symbolMargin", symbolMargin);
+			}
 		}
 		
 		model.addAttribute("account", accountId);

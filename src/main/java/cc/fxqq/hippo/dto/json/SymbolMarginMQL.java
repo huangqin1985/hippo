@@ -1,6 +1,6 @@
 package cc.fxqq.hippo.dto.json;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import com.alibaba.fastjson.annotation.JSONType;
 
@@ -10,11 +10,7 @@ import lombok.Data;
 @JSONType
 public class SymbolMarginMQL {
 
-	private String symbol;
+	private String freeMargin;
 	
-	private BigDecimal margin;
-	
-	private BigDecimal lots;
-
-	private String type;
+	private List<SymbolMarginDataMQL> data;
 }

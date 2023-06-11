@@ -248,6 +248,18 @@
 						<span th:if="${item.minMarginRateStr == null}">-</span>
 					</td>
 				</tr>
+				<tr style="display:none" th:if="${item.all != null}" class="moreInfo">
+					<td style="font-size: 15px;text-align:right;width:85px">
+						<a target="_blank"  th:href="'fund?account=' + ${account}  + '&startDate=' + ${item.startDate} + '&endDate=' + ${item.endDate} + '&type=all'">资金：</a>
+					</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:text="${item.all}"></span>
+					</td>
+					<td style="font-size: 15px;text-align:right;width:85px;"></td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span></span>
+					</td>
+				</tr>
 				<tr th:if="${item.dayResults.size > 0}" style="display:none;height:8px;"  class="moreInfo">
 			    	<td colspan="3" style="width:100%;">
 			    	</td>
@@ -276,16 +288,6 @@
 			    	<td colspan="3" style="width:100%;">
 			    	</td>
 			    </tr>
-			    <tr style="display:none" th:if="${item.deposit != null || item.withdraw != null}" class="moreInfo">
-					<td style="font-size: 15px;text-align:right;width:85px">入金：</td>
-					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
-						<span th:text="${item.deposit}"></span>
-					</td>
-					<td style="font-size: 15px;text-align:right;width:85px;">出金：</td>
-					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
-						<span th:text="${item.withdraw}"></span>
-					</td>
-				</tr>
 		    </table>
 		    </td>
 	    </tr>
@@ -305,7 +307,7 @@
     			 th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType}  + '&pageNum=' + ${pager.nextPage}">下页</a>
     		</td>
     	</tr>
-    	<tr style="height:10px;">
+    	<tr th:if="${pager.totalRecord > 0}" style="height:10px;">
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>

@@ -83,10 +83,18 @@ public class ReportService {
 	public ReportDTO querySummary(Integer account) {
 		ReportDTO report = new ReportDTO();
 		
-		BigDecimal deposit = DecimalUtil.get(tradeFundExtMapper.selectDeposit(account, null, null));
-		BigDecimal withdraw = DecimalUtil.get(tradeFundExtMapper.selectWithdraw(account, null, null));
+		List<FundSumResult> list = 
+				tradeFundExtMapper.selectSumByType(account,
+						null, null);
+		Map<String, BigDecimal> map = list.stream().collect(
+				Collectors.toMap(FundSumResult::getType, FundSumResult::getProfit));
+		BigDecimal deposit = DecimalUtil.get(map.get(FundType.DEPOSIT));
+		BigDecimal withdraw = DecimalUtil.get(map.get(FundType.WITHDRAW));
+		BigDecimal other = DecimalUtil.get(map.get(FundType.OTHER));
 		report.setDeposit(deposit);
 		report.setWithdraw(withdraw);
+		report.setOther(other);
+		report.setAll(DecimalUtil.add(deposit, withdraw, other));
 		
 		return report;
 	}
@@ -104,11 +112,9 @@ public class ReportService {
 					dto.setBalance(item.getBalance());
 					dto.setRealProfit(realProfit);
 					dto.setPreBalance(preBalance);
-					if (item.getDeposit().compareTo(BigDecimal.ZERO) > 0) {
-						dto.setDeposit(item.getDeposit());
-					}
-					if (item.getWithdraw().compareTo(BigDecimal.ZERO) > 0) {
-						dto.setWithdraw(item.getWithdraw());
+					BigDecimal all = DecimalUtil.add(item.getDeposit(), item.getWithdraw(), item.getOther());
+					if (all.compareTo(BigDecimal.ZERO) > 0) {
+						dto.setAll(all);
 					}
 					
 					Date start = DateUtil.parseDate(item.getStartDate());
