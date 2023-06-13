@@ -106,9 +106,9 @@ public class ReportTask {
 			param.setCloseStartDate(startDate);
 			param.setCloseEndDate(endDate);
 			// 未完成订单利润
-			BigDecimal preProfit = report.getEquity().subtract(report.getBalance());
+			//BigDecimal preProfit = report.getPreEquity().subtract(report.getPreBalance());
 			BigDecimal realProfit = DecimalUtil.get(tradeOrderExtMapper.selectRealProfit(param));
-			BigDecimal totalProfit = DecimalUtil.add(realProfit, currentProfit, preProfit);
+			BigDecimal totalProfit = DecimalUtil.add(realProfit, currentProfit);
 			
 			BigDecimal maxRealProfit = report.getMaxRealProfit();
 			BigDecimal minRealProfit = report.getMinRealProfit();

@@ -17,7 +17,7 @@ import cc.fxqq.hippo.dao.AccountMapper;
 import cc.fxqq.hippo.dao.ext.AccountExtMapper;
 import cc.fxqq.hippo.dao.ext.TradeOrderExtMapper;
 import cc.fxqq.hippo.dto.json.ConnectMQL;
-import cc.fxqq.hippo.dto.json.SymbolMarginMQL;
+import cc.fxqq.hippo.dto.json.MarketMQL;
 import cc.fxqq.hippo.dto.template.AccountDTO;
 import cc.fxqq.hippo.dto.template.ReportDTO;
 import cc.fxqq.hippo.entity.Account;

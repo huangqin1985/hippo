@@ -100,15 +100,15 @@
 		    		<!-- <option th:selected="${sort == 'holdTime'}" value="holdTime">持仓时长</option> -->
 		    	</select>&nbsp;&nbsp;<a id="sa" th:if="${sortType == 'desc'}" href="javascript:;">↓</a><a id="sa" th:if="${sortType == 'asc'}" href="javascript:;">↑</a>
 		    	<form id="form2" name="form2" action="orderList">
-		    	<input type="hidden" th:value="${account}" name = "account"/>
-		    	<input type="hidden" th:value="${startDate}" name = "startDate"/>
-		    	<input type="hidden" th:value="${endDate}" name = "endDate"/>
-		    	<input type="hidden" th:value="${symbol}" name = "symbol"/>
-		    	<input type="hidden" id="sort" th:value="${sort}" name = "sort"/>
-		    	<input type="hidden" id="sortOrder" th:value="${sortType}" name = "sortOrder"/>
-		    	<input type="hidden" id="tp" th:value="${tp}" name = "tp"/>
-		    	<input type="hidden" id="sl" th:value="${sl}" name = "sl"/>
-	    	</form>
+			    	<input type="hidden" th:value="${account}" name = "account"/>
+			    	<input type="hidden" th:value="${startDate}" name = "startDate"/>
+			    	<input type="hidden" th:value="${endDate}" name = "endDate"/>
+			    	<input type="hidden" th:value="${symbol}" name = "symbol"/>
+			    	<input type="hidden" id="sort" th:value="${sort}" name = "sort"/>
+			    	<input type="hidden" id="sortOrder" th:value="${sortType}" name = "sortOrder"/>
+			    	<input type="hidden" id="tp" th:value="${tp}" name = "tp"/>
+			    	<input type="hidden" id="sl" th:value="${sl}" name = "sl"/>
+		    	</form>
     		</td>
     		<td  colspan="2" style="text-align:right;width:60%">
     		<span th:text="${pager.totalRecord}"></span>条&nbsp;<span th:if="${pager.pageCount gt 0}"><span th:text="${pager.pageNum}"></span>/<span th:text="${pager.pageCount}"></span></span>
@@ -173,7 +173,7 @@
 						<td style="text-align: right;"><span
 							style="font-size: 15px" th:text="${item.commission}"></span></td>
 						<td style="text-align: right;"><span
-							style="font-size: 15px">库存费：</span></td>
+							style="font-size: 15px">过夜费：</span></td>
 						<td style="text-align: right;padding: 0 5px 0 5px"><span
 							style="font-size: 15px" th:text="${item.swap}"></span></td>
 					</tr>

@@ -1,0 +1,159 @@
+
+<!doctype html>
+
+<!--注意：引入thymeleaf的名称空间-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>历史</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my.css} "/>
+    
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script>
+    $(function() {
+
+    	$("#sel2").change(function() {
+    		var lots = $("#sel2").val();
+    		
+    		$("#lots").val(lots);
+        	$("#form2").submit();
+    	});
+    	
+    	$("a").click(function(evt) {
+    		evt.stopPropagation();
+    	});
+
+    });
+    </script>
+</head>
+<body>
+<table>
+	<table style="margin: 0 8px 0 8px;">
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:25px;">
+			<td colspan="3" style="text-align:center;width:100%;padding:0 10px 0 10px;">
+				<div th:insert="common::account"></div>
+			</td> 	
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;text-align:left;padding:0 0 0 10px;">
+				<div th:insert="common::nav"></div>
+			</td>
+		</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr th:if="${!isConnect}">
+			<td colspan="3" style="width:100%;text-align:center;padding:0 0 0 10px;">
+				<span class="r">未同步</span>
+			</td>
+		</tr>
+		<tr th:if="${!isConnect}" style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr th:if="${isConnect}">
+			<td colspan="3" style="text-align:right;">
+				交易量:
+			</td>
+			<td style="text-align:right;width:80px;padding:0 10px 0 0;">
+				<select id="sel2" class="last_center">
+		    		<option th:selected="${lots == '1.0'}" value="1.0">&nbsp;1.0</option>
+		    		<option th:selected="${lots == '0.9'}" value="0.9">&nbsp;0.9</option>
+		    		<option th:selected="${lots == '0.8'}" value="0.8">&nbsp;0.8</option>
+		    		<option th:selected="${lots == '0.7'}" value="0.7">&nbsp;0.7</option>
+		    		<option th:selected="${lots == '0.6'}" value="0.6">&nbsp;0.6</option>
+		    		<option th:selected="${lots == '0.5'}" value="0.5">&nbsp;0.5</option>
+		    		<option th:selected="${lots == '0.4'}" value="0.4">&nbsp;0.4</option>
+		    		<option th:selected="${lots == '0.3'}" value="0.3">&nbsp;0.3</option>
+		    		<option th:selected="${lots == '0.2'}" value="0.2">&nbsp;0.2</option>
+		    		<option th:selected="${lots == '0.1'}" value="0.1">&nbsp;0.1</option>
+		    		<!-- <option th:selected="${lots == '0.05'}" value="lots">0.05</option>
+		    		<option th:selected="${lots == '0.02'}" value="lots">0.02</option>
+		    		<option th:selected="lots == '0.01'}" value="lots">0.01</option> -->
+		    	</select>
+		    	<form id="form2" name="form2" action="market">
+			    	<input type="hidden" th:value="${account}" name = "account"/>
+			    	<input type="hidden" th:value="${lots}" id="lots" name = "lots"/>
+		    	</form>
+			</td>
+		</tr>
+    	<tr th:if="${isConnect}" style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr th:if="${isConnect}">
+	        <td width="34%" style = "text-align:center;" >
+		        品种
+	        </td>
+	        <td style="width:36%;text-align:center;">
+       			预付款
+       		</td>
+	        <td style="width:30%;text-align:center;">
+	       		每点利润
+	        </td>
+		</tr>
+		<tr th:if="${isConnect}">
+	        <td width="34%" style = "text-align:center;" >
+		        
+	        </td>
+	        <td style="width:36%;text-align:center;">
+       			过夜费/卖
+       		</td>
+	        <td style="width:30%;text-align:center;">
+	       		过夜费/买
+	        </td>
+		</tr>
+		<tr th:if="${isConnect}" style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr th:if="${isConnect}">
+    	<td th:if="${markets != null}" >
+    		<table th:each="item : ${markets}">
+	    	<tr>
+		        <td width="34%" style = "text-align:center;" >
+			        <a style="font-size: 18px;" href="javascript:;" th:text="${item.symbol}"></a>
+		        </td>
+		        <td style="width:36%;text-align:center;">
+        			<span th:text="${item.requiredMargin}"></span>
+        		</td>
+		        <td style="width:30%;text-align:center;">
+		       		<span th:text="${item.pointProfit}"></span>
+		        </td>
+		    </tr>
+		    <tr>
+		        <td width="34%" style = "text-align:center;" >
+		        </td>
+		        <td style="width:36%;text-align:center;">
+        			<span class="g" th:if="${item.sellSwapProfit>=0}" th:text="${item.sellSwapProfit}"></span>
+        			<span class="r" th:if="${item.sellSwapProfit<0}" th:text="${item.sellSwapProfit}"></span>
+        		
+        		</td>
+		        <td style="width:30%;text-align:center;">
+		       		<span class="g" th:if="${item.buySwapProfit>=0}"  th:text="${item.buySwapProfit}"></span>
+		       		<span class="r" th:if="${item.buySwapProfit<0}"  th:text="${item.buySwapProfit}"></span>
+		        </td>
+		    </tr>
+       		<tr style="height:10px;">
+		    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+		    	</td>
+		    </tr>
+	    </table>
+    	</td>
+    	</tr>
+	</table>
+</body>
+</html>

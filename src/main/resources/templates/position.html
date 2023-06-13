@@ -17,22 +17,22 @@
         {{for orders}}
       <table>
 		<tr class="orderDetail">
-			<td style="text-align: left;padding: 0 5px 0 5px;width:75%">
+			<td style="text-align: left;padding: 0 10px 0 10px;width:75%">
 				<span style="font-weight: bold">{{:symbol}}</span>, 
 				<span class="{{:typeColor}}"
 					style="font-weight: bold">{{:typeStr}}</span> 
 				<span  class="{{:typeColor}}"
 					style="font-weight: bold">{{:lots}}</span>
 			</td>
-			<td  style="padding: 0 5px 0 5px; text-align: right;width:25%;">
+			<td  style="padding: 0 10px 0 10px; text-align: right;width:25%;">
 				<span style="font-weight: bold;" class="{{:profitColor}}">{{:profit}}</span>
 			</td>
 		</tr>
 		<tr class="orderDetail" >
-			<td style="text-align: left;width:75%;padding: 0 5px 0 5px">
+			<td style="text-align: left;width:75%;padding: 0 10px 0 10px">
 				<span style="font-size:17px;">{{:closePrice}}</span> 
 			</td>
-			<td style="padding: 0 5px 0 5px; text-align: right;width:25%;">
+			<td style="padding: 0 10px 0 10px; text-align: right;width:25%;">
 				
 			</td>
 		</tr>
@@ -56,8 +56,8 @@
     <script>
     function createSocket() {
     	var accountId = $("#accountId").val();
-    	//var url = "ws://121.41.119.155//ws?accountId=" + accountId;
-    	var url = "ws://localhost//ws?accountId=" + accountId;
+    	var url = "ws://121.41.119.155//ws?accountId=" + accountId;
+    	//var url = "ws://localhost//ws?accountId=" + accountId;
         var websocket;
         if ('WebSocket' in window) {
             websocket = new WebSocket(url);
@@ -89,7 +89,7 @@
     }
     
     $(function() {
-    	createSocket();
+    	//createSocket();
     });
     </script>
 </head>
@@ -118,47 +118,55 @@
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 			</td>
 		</tr>
-		<tr>
-			<td style="text-align:left;width:50%;padding: 0 5px 0 5px;">
-				净值：<span id="equity" th:text="${position.equity}"></span>
-			</td>
-			<td th:class="${statusColor}" style="width:50%;text-align:right;padding: 0 5px 0 5px;">
-				盈亏：<span style="font-weight:bold" id="totalProfit" th:class="${position.profitColor}" th:text="${position.profit}"></span>
+		<tr th:if="${!isConnect}">
+			<td colspan="3" style="width:100%;text-align:center;padding:0 0 0 10px;">
+				<span class="r">未同步</span>
 			</td>
 		</tr>
-		<tr style="height:6px;">
+		<tr th:if="${!isConnect}" style="height:10px;">
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>
-		<tr>
-			<td th:if="${position.trading.size == 0}" id="orderPanel">
-				<table>
-				    <tr>
-						<td style="text-align:center;">
-							-
-						</td>
-					</tr>
-				</table>
+		<tr th:if="${isConnect}">
+			<td th:class="${statusColor}" style="width:50%;text-align:left;padding: 0 10px 0 10px;">
+				盈亏：<span style="font-weight:bold" id="totalProfit" th:class="${position.profitColor}" th:text="${position.profit}"></span>
 			</td>
-			<td th:if="${position.trading.size > 0}" id="orderPanel">
+			<td style="text-align:right;width:50%;padding: 0 10px 0 10px;">
+				净值：<span id="equity" th:text="${position.equity}"></span>
+			</td>
+		</tr>
+		<tr th:if="${isConnect}">
+			<td th:class="${statusColor}" style="width:50%;text-align:left;padding: 0 10px 0 10px;">
+				预估过夜费：
+			</td>
+			<td style="text-align:right;width:50%;padding: 0 10px 0 10px;">
+				<span id="totalProfit" th:text="${position.swap}"></span>
+			</td>
+		</tr>
+		<tr th:if="${isConnect}" style="height:6px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+		<tr th:if="${isConnect}">
+			<td th:if="${position.trading != null && position.trading.size > 0}" id="orderPanel">
 				<table th:each="item : ${position.trading}">
 					<tr class="orderDetail">
-						<td style="text-align: left;padding: 0 5px 0 5px;width:75%">
+						<td style="text-align: left;padding: 0 10px 0 10px;width:75%">
 							<span style="font-weight: bold" th:text="${item.symbol}"></span>, 
 							<span  th:class="${item.typeColor}"
 								style="font-weight: bold" th:text="${item.typeStr}"></span> 
 							<span th:class="${item.typeColor}"
 								style="font-weight: bold" th:text="${item.lots}"></span>
 						</td>
-						<td  style="padding: 0 5px 0 5px; text-align: right;width:25%;">
+						<td  style="padding: 0 10px 0 10px; text-align: right;width:25%;">
 							<span th:class="${item.profitColor}" style="font-weight:bold" th:text="${item.profit}"></span>
 						</td>
 					</tr>
 					<tr class="orderDetail" >
-						<td style="text-align: left;width:75%;padding: 0 5px 0 5px">
-							<span style="font-size:17px;" th:text="${item.closePrice}"></span> 
+						<td style="text-align: left;width:75%;padding: 0 10px 0 10px">
+							平仓价: <span style="font-size:17px;" th:text="${item.closePrice}"></span> 
 						</td>
-						<td style="padding: 0 5px 0 5px; text-align: right;width:25%;">
+						<td style="padding: 0 10px 0 10px; text-align: right;width:25%;">
 							<!-- <span style="font-size: 15px" th:text="${item.points}"></span> -->
 						</td>
 					</tr>
@@ -168,11 +176,6 @@
 				    </tr>
 				</table>
 			</td>
-		</tr>
-		<tr style="height:25px;">
-			<td style="text-align:right;width:100%;padding:0 10px 0 10px;">
-				<span id="serverTime" style="font-style:italic;font-size:15px;" th:text="${position.serverTime}"></span>
-			</td> 	
 		</tr>
 	</table>
 </body>

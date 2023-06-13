@@ -8,6 +8,8 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import cc.fxqq.hippo.dto.template.AccountDTO;
+
 public class DateUtil {
 	
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -122,6 +124,14 @@ public class DateUtil {
 		return getStartDateStrOfWeek(new Date());
 	}
 	
+	public static String getStartDateStrOfWeek(Integer timeZone) {
+		Calendar cal = Calendar.getInstance();
+		if (timeZone != null) {
+			cal.add(Calendar.HOUR, -DateUtil.getTimeDiffForUTC8(timeZone));
+		}
+		return getStartDateStrOfWeek(cal.getTime());
+	}
+	
 	public static String getStartDateStrOfWeek(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setFirstDayOfWeek(Calendar.MONDAY);
@@ -146,6 +156,14 @@ public class DateUtil {
 		return getEndDateStrOfWeek(new Date());
 	}
 	
+	public static String getEndDateStrOfWeek(Integer timeZone) {
+		Calendar cal = Calendar.getInstance();
+		if (timeZone != null) {
+			cal.add(Calendar.HOUR, -DateUtil.getTimeDiffForUTC8(timeZone));
+		}
+		return getEndDateStrOfWeek(cal.getTime());
+	}
+	
 	public static String getStartDateStrOfMonth(Date date) {
 		Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -159,6 +177,14 @@ public class DateUtil {
 	
 	public static String getStartDateStrOfMonth() {
 		return getStartDateStrOfMonth(new Date());
+	}
+	
+	public static String getStartDateStrOfMonth(Integer timeZone) {
+		Calendar cal = Calendar.getInstance();
+		if (timeZone != null) {
+			cal.add(Calendar.HOUR, -DateUtil.getTimeDiffForUTC8(timeZone));
+		}
+		return getStartDateStrOfMonth(cal.getTime());
 	}
 	
 	public static String getEndDateStrOfMonth(Date date) {
@@ -175,6 +201,14 @@ public class DateUtil {
 	
 	public static String getEndDateStrOfMonth() {
 		return getEndDateStrOfMonth(new Date());
+	}
+	
+	public static String getEndDateStrOfMonth(Integer timeZone) {
+		Calendar cal = Calendar.getInstance();
+		if (timeZone != null) {
+			cal.add(Calendar.HOUR, -DateUtil.getTimeDiffForUTC8(timeZone));
+		}
+		return getEndDateStrOfMonth(cal.getTime());
 	}
 	
 	public static Date getEndDateOfWeek() {

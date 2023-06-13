@@ -30,7 +30,7 @@ public class ConnectMQL {
 	
 	private String clientName;
 	
-	private SymbolMarginMQL symbolMargins;
+	private List<MarketMQL> market;
 	
 	private List<TradeOrderMQL> histories; //  历史订单
 }

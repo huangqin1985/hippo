@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 public class StringCache {
 	
-	public static final String SYMBOL_MARGIN = "symbolMargin_";
+	public static final String MARKET = "market_";
 
 	public static final String CONNECT_ID = "connectId_";
 

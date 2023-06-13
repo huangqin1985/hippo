@@ -47,6 +47,14 @@ public class DecimalUtil {
 		}
 	}
 	
+	public static BigDecimal get(BigDecimal bd, Integer newScale) {
+		if (bd == null) {
+			return BigDecimal.ZERO; 
+		} else {
+			return bd.setScale(newScale, RoundingMode.HALF_DOWN);
+		}
+	}
+	
 	public static BigDecimal add(BigDecimal... bds) {
 		BigDecimal result = BigDecimal.ZERO;
 		

@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.alibaba.fastjson.JSON;
 
+import cc.fxqq.hippo.cache.AccountCache;
 import cc.fxqq.hippo.cache.StringCache;
 import cc.fxqq.hippo.dto.json.PositionMQL;
-import cc.fxqq.hippo.dto.json.SymbolMarginMQL;
+import cc.fxqq.hippo.dto.json.MarketMQL;
 import cc.fxqq.hippo.dto.template.AccountDTO;
 import cc.fxqq.hippo.dto.template.OrderSumDTO;
 import cc.fxqq.hippo.dto.template.Pager;
@@ -78,22 +79,24 @@ public class TradeOrderController extends BaseController {
 		String startDateStr = null;
 		String endDateStr = null;
 		if (StringUtils.isNotEmpty(type)) {
+			AccountDTO acc = accountService.queryAccountInfo(accountId);
+			Integer timeZone = acc.getTimeZone();
+			if (timeZone == null) {
+				timeZone = 0;
+			}
+			
 			if ("today".equals(type)) {
 				Calendar cal = Calendar.getInstance();
-				AccountDTO acc = accountService.queryAccountInfo(accountId);
-				Integer timeZone = acc.getTimeZone();
-				if (timeZone != null) {
-					cal.add(Calendar.HOUR, -DateUtil.getTimeDiffForUTC8(timeZone));
-				}
+				cal.add(Calendar.HOUR, -DateUtil.getTimeDiffForUTC8(timeZone));
 				String date = DateUtil.formatDate(cal.getTime());
 				startDateStr = date;
 				endDateStr = date;
 			} else if ("thisWeek".equals(type)) {
-				startDateStr = DateUtil.getStartDateStrOfWeek();
-				endDateStr = DateUtil.getEndDateStrOfWeek();
+				startDateStr = DateUtil.getStartDateStrOfWeek(timeZone);
+				endDateStr = DateUtil.getEndDateStrOfWeek(timeZone);
 			} else if ("thisMonth".equals(type)) {
-				startDateStr = DateUtil.getStartDateStrOfMonth();
-				endDateStr = DateUtil.getEndDateStrOfMonth();
+				startDateStr = DateUtil.getStartDateStrOfMonth(timeZone);
+				endDateStr = DateUtil.getEndDateStrOfMonth(timeZone);
 			}  else if ("all".equals(type)) {
 				startDateStr = tradeOrderService.queryFirstOrderDate(accountId);
 				String date = DateUtil.formatDate(new Date());
@@ -364,14 +367,23 @@ public class TradeOrderController extends BaseController {
 				return "error";
 			}
 		}
-		String text = StringCache.get("position_" + accountId);
+		Account acc = accountService.getAccountById(accountId);
+		Account accCache = AccountCache.getByAccountName(acc.getName());
+		if (accCache == null) {
+			model.addAttribute("isConnect", false);
+		} else {
+			model.addAttribute("isConnect", true);
+		}
 		
-		PositionMQL position = JSON.parseObject(text, PositionMQL.class);
-		PositionDTO dto = new PositionDTO(position);
+		if (acc != null) {
+			String text = StringCache.get(StringCache.POSITION + acc.getName());
+			PositionMQL position = JSON.parseObject(text, PositionMQL.class);
+			PositionDTO dto = new PositionDTO(position);
+			model.addAttribute("position", dto);
+		}
 		
 		model.addAttribute("accounts", accounts);
 		model.addAttribute("account", accountId);
-		model.addAttribute("position", dto);
 		
 		return "position";
 	}
@@ -404,10 +416,10 @@ public class TradeOrderController extends BaseController {
 		return "accountInfo";
 	}
 	
-	@GetMapping("/margin")
-	public String margin(Model model,
+	@GetMapping("/market")
+	public String market(Model model,
 			@RequestParam(name="account", required = false) Integer accountId,
-			@RequestParam(name="type", required = false, defaultValue="buy") String type) {
+			@RequestParam(name="lots", required = false, defaultValue="1.0") String lots) {
 		
 		// 账户列表
 		List<AccountDTO> accounts = accountService.getAccounts();
@@ -423,31 +435,40 @@ public class TradeOrderController extends BaseController {
 		model.addAttribute("accounts", accounts);
 		
 		Account acc = accountService.getAccountById(accountId);
+
+		Account accCache = AccountCache.getByAccountName(acc.getName());
+		if (accCache == null) {
+			model.addAttribute("isConnect", false);
+		} else {
+			model.addAttribute("isConnect", true);
+		}
 		
 		if (acc != null) {
-			String text = StringCache.get(StringCache.SYMBOL_MARGIN + acc.getName());
+			String text = StringCache.get(StringCache.MARKET + acc.getName());
 			
 			if (StringUtils.isNotEmpty(text)) {
-				SymbolMarginMQL symbolMargin = JSON.parseObject(text, SymbolMarginMQL.class);
+				List<MarketMQL> markets = JSON.parseArray(text, MarketMQL.class);
 				
-				symbolMargin.getData().stream().forEach(t-> {
-					BigDecimal freeMargin = new BigDecimal(symbolMargin.getFreeMargin());
-					BigDecimal maxLots = freeMargin.divide(t.getMargin(), RoundingMode.DOWN);
-					
-					if (maxLots.compareTo(t.getVolumeMin()) < 0) {
-						t.setMaxLots(BigDecimal.ZERO);
-					} else {
-						t.setMaxLots(maxLots);
-					}
-				});
+				BigDecimal volumn = new BigDecimal("1.0");
+				try {
+					volumn = new BigDecimal(lots);
+				} catch(NumberFormatException e) {
+				}
 				
-				model.addAttribute("symbolMargin", symbolMargin);
+				for(MarketMQL t : markets) {
+					t.setRequiredMargin(DecimalUtil.get(t.getRequiredMargin().multiply(volumn)));
+					t.setPointProfit(DecimalUtil.get(t.getPointProfit(), 3));
+					t.setBuySwapProfit(DecimalUtil.get(t.getBuySwapProfit().multiply(volumn), 3));
+					t.setSellSwapProfit(DecimalUtil.get(t.getSellSwapProfit().multiply(volumn), 3));
+				}
+				
+				model.addAttribute("markets", markets);
 			}
 		}
 		
 		model.addAttribute("account", accountId);
-		model.addAttribute("type", type);
+		model.addAttribute("lots", lots);
 		
-		return "margin";
+		return "market";
 	}
 }

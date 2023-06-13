@@ -21,9 +21,9 @@
 	<a th:href="'order?account=' + ${account} + '&type=thisWeek'">订单</a>&nbsp;&nbsp;&nbsp;
 	<a th:href="'report?account=' + ${account}">报表</a>&nbsp;&nbsp;&nbsp;
 	<a th:href="'fund?account=' + ${account}">资金</a>&nbsp;&nbsp;&nbsp;
-	<!-- <a th:href="'position?account=' + ${account}">持仓</a>&nbsp;&nbsp;&nbsp; -->
 	<a th:href="'accountInfo?account=' + ${account}">账户</a>&nbsp;&nbsp;&nbsp;
-	<a th:href="'margin?account=' + ${account}">预付款</a>&nbsp;&nbsp;&nbsp;
+	<a th:href="'market?account=' + ${account}">市场</a>&nbsp;&nbsp;&nbsp;
+	<a th:href="'position?account=' + ${account}">持仓</a>&nbsp;&nbsp;&nbsp;
 </div>
 <div th:fragment="orderNav">
 	<a th:href="'order?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=today'" >
