@@ -19,5 +19,8 @@ public class MarketMQL {
 	private BigDecimal sellSwapProfit;
 
 	private BigDecimal pointProfit;
-	
+
+	private BigDecimal price;
+
+	private Integer digits;
 }

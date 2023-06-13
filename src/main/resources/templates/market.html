@@ -65,36 +65,19 @@
 	    	</td>
 	    </tr>
 	    <tr th:if="${isConnect}">
-			<td colspan="3" style="text-align:right;">
-				交易量:
+			<td colspan="4" style="text-align:left;padding: 0 10px 0 10px">
+				<!-- <a th:href="'market?account=' + ${account}" >全部</a>&nbsp;&nbsp; -->
+				<span th:each="item : ${subfixList}">
+					<a th:href="'market?account=' + ${account} + '&subfix=' + ${item}" th:text="${item}"></a>&nbsp;&nbsp;
+				</span>
 			</td>
-			<td style="text-align:right;width:80px;padding:0 10px 0 0;">
-				<select id="sel2" class="last_center">
-		    		<option th:selected="${lots == '1.0'}" value="1.0">&nbsp;1.0</option>
-		    		<option th:selected="${lots == '0.9'}" value="0.9">&nbsp;0.9</option>
-		    		<option th:selected="${lots == '0.8'}" value="0.8">&nbsp;0.8</option>
-		    		<option th:selected="${lots == '0.7'}" value="0.7">&nbsp;0.7</option>
-		    		<option th:selected="${lots == '0.6'}" value="0.6">&nbsp;0.6</option>
-		    		<option th:selected="${lots == '0.5'}" value="0.5">&nbsp;0.5</option>
-		    		<option th:selected="${lots == '0.4'}" value="0.4">&nbsp;0.4</option>
-		    		<option th:selected="${lots == '0.3'}" value="0.3">&nbsp;0.3</option>
-		    		<option th:selected="${lots == '0.2'}" value="0.2">&nbsp;0.2</option>
-		    		<option th:selected="${lots == '0.1'}" value="0.1">&nbsp;0.1</option>
-		    		<!-- <option th:selected="${lots == '0.05'}" value="lots">0.05</option>
-		    		<option th:selected="${lots == '0.02'}" value="lots">0.02</option>
-		    		<option th:selected="lots == '0.01'}" value="lots">0.01</option> -->
-		    	</select>
-		    	<form id="form2" name="form2" action="market">
-			    	<input type="hidden" th:value="${account}" name = "account"/>
-			    	<input type="hidden" th:value="${lots}" id="lots" name = "lots"/>
-		    	</form>
-			</td>
+			
 		</tr>
     	<tr th:if="${isConnect}" style="height:10px;">
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>
-	    <tr th:if="${isConnect}">
+	    <!-- <tr th:if="${isConnect}">
 	        <td width="34%" style = "text-align:center;" >
 		        品种
 	        </td>
@@ -119,7 +102,7 @@
 		<tr th:if="${isConnect}" style="height:10px;">
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
-	    </tr>
+	    </tr> -->
 	    <tr th:if="${isConnect}">
     	<td th:if="${markets != null}" >
     		<table th:each="item : ${markets}">
@@ -128,23 +111,24 @@
 			        <a style="font-size: 18px;" href="javascript:;" th:text="${item.symbol}"></a>
 		        </td>
 		        <td style="width:36%;text-align:center;">
-        			<span th:text="${item.requiredMargin}"></span>
+        			<span th:text="${item.requiredMarginStr}"></span>
         		</td>
 		        <td style="width:30%;text-align:center;">
-		       		<span th:text="${item.pointProfit}"></span>
+		       		<span th:text="${item.pointProfitStr}"></span>
 		        </td>
 		    </tr>
 		    <tr>
 		        <td width="34%" style = "text-align:center;" >
+		        	<span th:text="${item.price}"></span>
 		        </td>
 		        <td style="width:36%;text-align:center;">
-        			<span class="g" th:if="${item.sellSwapProfit>=0}" th:text="${item.sellSwapProfit}"></span>
-        			<span class="r" th:if="${item.sellSwapProfit<0}" th:text="${item.sellSwapProfit}"></span>
+        			<span class="g" th:if="${item.sellSwapProfit>=0}" th:text="${item.sellSwapProfitStr}"></span>
+        			<span class="r" th:if="${item.sellSwapProfit<0}" th:text="${item.sellSwapProfitStr}"></span>
         		
         		</td>
 		        <td style="width:30%;text-align:center;">
-		       		<span class="g" th:if="${item.buySwapProfit>=0}"  th:text="${item.buySwapProfit}"></span>
-		       		<span class="r" th:if="${item.buySwapProfit<0}"  th:text="${item.buySwapProfit}"></span>
+		       		<span class="g" th:if="${item.buySwapProfit>=0}"  th:text="${item.buySwapProfitStr}"></span>
+		       		<span class="r" th:if="${item.buySwapProfit<0}"  th:text="${item.buySwapProfitStr}"></span>
 		        </td>
 		    </tr>
        		<tr style="height:10px;">

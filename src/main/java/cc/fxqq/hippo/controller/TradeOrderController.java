@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 
 import cc.fxqq.hippo.cache.AccountCache;
 import cc.fxqq.hippo.cache.StringCache;
 import cc.fxqq.hippo.dto.json.PositionMQL;
 import cc.fxqq.hippo.dto.json.MarketMQL;
 import cc.fxqq.hippo.dto.template.AccountDTO;
+import cc.fxqq.hippo.dto.template.MarketDTO;
 import cc.fxqq.hippo.dto.template.OrderSumDTO;
 import cc.fxqq.hippo.dto.template.Pager;
 import cc.fxqq.hippo.dto.template.PositionDTO;
@@ -419,7 +422,7 @@ public class TradeOrderController extends BaseController {
 	@GetMapping("/market")
 	public String market(Model model,
 			@RequestParam(name="account", required = false) Integer accountId,
-			@RequestParam(name="lots", required = false, defaultValue="1.0") String lots) {
+			@RequestParam(name="subfix", required = false, defaultValue="") String subfix) {
 		
 		// 账户列表
 		List<AccountDTO> accounts = accountService.getAccounts();
@@ -449,25 +452,45 @@ public class TradeOrderController extends BaseController {
 			if (StringUtils.isNotEmpty(text)) {
 				List<MarketMQL> markets = JSON.parseArray(text, MarketMQL.class);
 				
-				BigDecimal volumn = new BigDecimal("1.0");
-				try {
-					volumn = new BigDecimal(lots);
-				} catch(NumberFormatException e) {
+				List<String> subfixList = markets.stream().map(
+						t -> t.getSymbol().substring(0, 1)).distinct().sorted().collect(Collectors.toList());
+
+				model.addAttribute("subfixList", subfixList);
+				
+				if (StringUtils.isNotEmpty(subfix)) {
+					markets = markets.stream().filter(t -> t.getSymbol().startsWith(subfix)).collect(Collectors.toList());
 				}
 				
+				List<MarketDTO> dtos = Lists.newArrayList();
 				for(MarketMQL t : markets) {
-					t.setRequiredMargin(DecimalUtil.get(t.getRequiredMargin().multiply(volumn)));
-					t.setPointProfit(DecimalUtil.get(t.getPointProfit(), 3));
-					t.setBuySwapProfit(DecimalUtil.get(t.getBuySwapProfit().multiply(volumn), 3));
-					t.setSellSwapProfit(DecimalUtil.get(t.getSellSwapProfit().multiply(volumn), 3));
+					MarketDTO dto = new MarketDTO();
+					dto.setSymbol(t.getSymbol());
+					
+					BigDecimal requiredMargin = DecimalUtil.get(t.getRequiredMargin());
+					dto.setRequiredMarginStr(DecimalUtil.format(requiredMargin));
+					
+					BigDecimal pointProfit = DecimalUtil.get(t.getPointProfit(), 3);
+					dto.setPointProfitStr(DecimalUtil.format3Digit(pointProfit));
+					
+					BigDecimal buySwapProfit = DecimalUtil.get(t.getBuySwapProfit(), 3);
+					dto.setBuySwapProfit(buySwapProfit);
+					dto.setBuySwapProfitStr(DecimalUtil.format3Digit(buySwapProfit));
+
+					BigDecimal sellSwapProfit = DecimalUtil.get(t.getSellSwapProfit(), 3);
+					dto.setSellSwapProfit(sellSwapProfit);
+					dto.setSellSwapProfitStr(DecimalUtil.format3Digit(sellSwapProfit));
+					
+					dto.setPrice(DecimalUtil.get(t.getPrice(), t.getDigits()));
+					
+					dtos.add(dto);
 				}
 				
-				model.addAttribute("markets", markets);
+				model.addAttribute("markets", dtos);
 			}
 		}
 		
 		model.addAttribute("account", accountId);
-		model.addAttribute("lots", lots);
+		model.addAttribute("subfix", subfix);
 		
 		return "market";
 	}

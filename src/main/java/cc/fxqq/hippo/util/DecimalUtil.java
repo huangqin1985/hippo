@@ -9,10 +9,16 @@ import com.google.common.collect.Lists;
 public class DecimalUtil {
 	
 	private static DecimalFormat percentPattern = new DecimalFormat("0.##%");
-	private static DecimalFormat pattern = new DecimalFormat("0.00");
+	private static DecimalFormat pattern = new DecimalFormat("0.##");
+	
+	private static DecimalFormat digits3 = new DecimalFormat("0.###");
 	
 	public static String format(BigDecimal b) {
 		return pattern.format(b);
+	}
+	
+	public static String format3Digit(BigDecimal b) {
+		return digits3.format(b);
 	}
 
 	public static BigDecimal max(BigDecimal... arg) {
