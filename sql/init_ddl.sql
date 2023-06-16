@@ -10,7 +10,6 @@ CREATE TABLE account (
 	currency VARCHAR(10) NOT NULL,	--货币
 	leverage INTEGER NOT NULL,	--杠杆
 	balance DECIMAL(10,2) NOT NULL,	--余额
-	time_zone INTEGER ,	--时区
 	client_name VARCHAR(100) NOT NULL, -- 客户名称
 	stop_out_level VARCHAR(50) NOT NULL, -- 爆仓条件
 	create_time VARCHAR(50) NOT NULL,	--创建时间

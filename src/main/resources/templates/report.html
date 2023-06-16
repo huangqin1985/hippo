@@ -15,10 +15,21 @@
     <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
     <script>
     $(function() {
-    	
-    	$("#sel2").change(function() {
+    	$("#sel1").change(function() {
+    		var type = $("#sel1").val();
     		var col = $("#sel2").val();
-    		
+
+    		$("#type").val(type);
+    		$("#col").val(col);
+    		$("#sort").val("");
+    		$("#sortType").val("");
+        	$("#form2").submit();
+    	});
+    	$("#sel2").change(function() {
+    		var type = $("#sel1").val();
+    		var col = $("#sel2").val();
+
+    		$("#type").val(type);
     		$("#col").val(col);
     		$("#sort").val("");
     		$("#sortType").val("");
@@ -33,86 +44,6 @@
     		evt.stopPropagation();
     	});
     	
-    	$("#aDate").click(function(evt) {
-    		var sort = $("#sort").val();
-    		var sortType = $("#sortType").val();
-    		
-    		if ("startDate" == sort) {
-    			if ("desc" == sortType) {
-    				$("#sortType").val("asc");
-    			} else {
-    				$("#sortType").val("desc");
-    			}
-    		} else {
-    			$("#sort").val("startDate");
-    			$("#sortType").val("desc");
-    		}
-    		$("#form2").submit();
-    	});
-    	$("#aBalance").click(function(evt) {
-    		var sort = $("#sort").val();
-    		var sortType = $("#sortType").val();
-    		
-    		if ("balance" == sort) {
-    			if ("desc" == sortType) {
-    				$("#sortType").val("asc");
-    			} else {
-    				$("#sortType").val("desc");
-    			}
-    		} else {
-    			$("#sort").val("balance");
-    			$("#sortType").val("desc");
-    		}
-    		$("#form2").submit();
-    	});
-    	$("#aOrderNum").click(function(evt) {
-    		var sort = $("#sort").val();
-    		var sortType = $("#sortType").val();
-    		
-    		if ("orderNum" == sort) {
-    			if ("desc" == sortType) {
-    				$("#sortType").val("asc");
-    			} else {
-    				$("#sortType").val("desc");
-    			}
-    		} else {
-    			$("#sort").val("orderNum");
-    			$("#sortType").val("desc");
-    		}
-    		$("#form2").submit();
-    	});
-    	$("#aLots").click(function(evt) {
-    		var sort = $("#sort").val();
-    		var sortType = $("#sortType").val();
-    		
-    		if ("lots" == sort) {
-    			if ("desc" == sortType) {
-    				$("#sortType").val("asc");
-    			} else {
-    				$("#sortType").val("desc");
-    			}
-    		} else {
-    			$("#sort").val("lots");
-    			$("#sortType").val("desc");
-    		}
-    		$("#form2").submit();
-    	});
-    	$("#aProfit").click(function(evt) {
-    		var sort = $("#sort").val();
-    		var sortType = $("#sortType").val();
-    		
-    		if ("realProfit" == sort) {
-    			if ("desc" == sortType) {
-    				$("#sortType").val("asc");
-    			} else {
-    				$("#sortType").val("desc");
-    			}
-    		} else {
-    			$("#sort").val("realProfit");
-    			$("#sortType").val("desc");
-    		}
-    		$("#form2").submit();
-    	});
     });
     </script>
 </head>
@@ -142,14 +73,10 @@
 	    	</td>
 	    </tr>
 		<tr>
-    		<td style="text-align:left;width:40%">
-		    <select id="sel2" class="last_center">
-	    		<option th:selected="${col == 'balance'}" value="balance">&nbsp;余额&nbsp;</option>
-	    		<option th:selected="${col == 'lots'}" value="lots">&nbsp;交易量&nbsp;</option>
-	    		<option th:selected="${col == 'orderNum'}" value="orderNum">&nbsp;订单数&nbsp;</option>
-		    </select>
-		    <form id="form2" name="form2" action="report">
+    		<td style="text-align:left;width:50%">
+    		<form id="form2" name="form2" action="report">
 		    	<input type="hidden" th:value="${account}" name = "account"/>
+		    	<input type="hidden" id="type" th:value="${type}" name = "type"/>
 		    	<input type="hidden" id="col" th:value="${col}" name = "col"/>
 				<input type="hidden" th:value="${sort}" id = "sort" name="sort"/>
 				<input type="hidden" th:value="${sortType}" id = "sortType" name="sortType"/>
@@ -168,13 +95,33 @@
 	    	</td>
 	    </tr>
 	    <tr style="height:10px;">
-	    	<td style = "width:32%;text-align:center;"><a href="javascript:;" id="aDate">周</a><span th:if="${sort=='startDate'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='startDate'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
-       		
-       		<td th:if="${col=='balance'}" style="width:34%;text-align:right;"><a href="javascript:;" id="aBalance">余额</a><span th:if="${sort=='balance'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='balance'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
-       		<td th:if="${col=='lots'}" style="width:34%;text-align:right;"><a href="javascript:;" id="aLots">交易量</a><span th:if="${sort=='lots'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='lots'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
-       		<td th:if="${col=='orderNum'}" style="width:34%;text-align:right;"><a href="javascript:;" id="aOrderNum">订单数</a><span th:if="${sort=='orderNum'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='orderNum'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
-       		
-       		<td style="width:34%;text-align:right;padding:0 5px 0 0;"><a href="javascript:;" id="aProfit">利润</a><span th:if="${sort=='realProfit'&&sortType=='desc'}">&nbsp;&nbsp;↓</span><span th:if="${sort=='realProfit'&&sortType=='asc'}">&nbsp;&nbsp;↑</span></td>
+	    	<td style = "width:32%;text-align:center;">
+	    		<select id="sel1" class="last_center">
+		    		<option th:selected="${type == 'day'}" value="day">&nbsp;天&nbsp;</option>
+		    		<option th:selected="${type == 'week'}" value="week">&nbsp;周&nbsp;</option>
+		    		<option th:selected="${type == 'month'}" value="month">&nbsp;月&nbsp;</option>
+			    </select>
+			    <a th:if="${sort=='startDate'&&sortType=='desc'}" th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=startDate' + '&sortType=asc'">&nbsp;↓&nbsp;</a>
+			    <a href="" th:if="${sort=='startDate'&&sortType=='asc'}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=startDate' + '&sortType=desc'">&nbsp;↑&nbsp;</a>
+			    <a th:if="${sort!='startDate'}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=startDate' + '&sortType=desc'">&nbsp;○&nbsp;</a>
+		    </td>
+       		<td style="width:34%;text-align:right;">
+	       		<select id="sel2" class="last_center">
+		    		<option th:selected="${col == 'balance'}" value="balance">余额</option>
+		    		<option th:selected="${col == 'lots'}" value="lots">&nbsp;交易量</option>
+		    		<option th:selected="${col == 'orderNum'}" value="orderNum">订单数</option>
+			    </select>
+			    <a th:if="${sort==col&&sortType=='desc'}" th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=' + ${col} + '&sortType=asc'">&nbsp;↓&nbsp;</a>
+			    <a href="" th:if="${sort==col&&sortType=='asc'}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=' + ${col} + '&sortType=desc'">&nbsp;↑&nbsp;</a>
+			    <a th:if="${sort!=col}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=' + ${col} + '&sortType=desc'">&nbsp;○&nbsp;</a>
+       		</td>
+       		<td style="width:34%;text-align:right;padding:0 5px 0 0;">
+       			<span>利润</span>
+       			<a th:if="${sort=='realProfit'&&sortType=='desc'}" th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=realProfit' + '&sortType=asc'">&nbsp;↓&nbsp;</a>
+			    <a href="" th:if="${sort=='realProfit'&&sortType=='asc'}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=realProfit' + '&sortType=desc'">&nbsp;↑&nbsp;</a>
+			    <a th:if="${sort!='realProfit'}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=realProfit' + '&sortType=desc'">&nbsp;○&nbsp;</a>
+       			
+       		</td>
 	    </tr>
 	    <tr>
 		    <td>
@@ -186,7 +133,7 @@
 			    </tr>
 			    <tr style="height:31px;" class="orderDetail">
 			        <td style = "width:32%;text-align:left;padding: 0 10px 0 10px" >
-			        	<a target="_blank" th:href="'order?account=' + ${account} + '&startDate=' + ${item.startDate} + '&endDate=' + ${item.endDate} + ${item.thisWeek ? '&type=thisWeek':''}" th:text="${item.description}"></a>
+			        	<a target="_blank" th:href="'order?account=' + ${account} + '&startDate=' + ${item.startDate} + '&endDate=' + ${item.endDate}" th:text="${item.description}"></a>
 			        </td>
 		       		<td style="width:34%;text-align:right;">
 	    				<span th:if="${col=='balance'}" th:text="${item.balance}"></span>
@@ -248,9 +195,21 @@
 						<span th:if="${item.minMarginRateStr == null}">-</span>
 					</td>
 				</tr>
+				<tr style="display:none"  class="moreInfo">
+					<td style="font-size: 15px;text-align:right;width:85px">净值：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.equity != null}" th:text="${item.equity}"></span>
+						<span th:if="${item.equity == null}">-</span>
+					</td>
+					<td style="font-size: 15px;text-align:right;width:85px;">盈亏：</td>
+					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
+						<span th:if="${item.profit != null}" th:text="${item.profit}"></span>
+						<span th:if="${item.profit == null}">-</span>
+					</td>
+				</tr>
 				<tr style="display:none" th:if="${item.all != null}" class="moreInfo">
-					<td style="font-size: 15px;text-align:right;width:85px">
-						<a target="_blank"  th:href="'fund?account=' + ${account}  + '&startDate=' + ${item.startDate} + '&endDate=' + ${item.endDate} + '&type=all'">资金：</a>
+					<td style="text-align:right;width:85px">
+						<a style="font-size:15px;" target="_blank"  th:href="'fund?account=' + ${account}  + '&startDate=' + ${item.startDate} + '&endDate=' + ${item.endDate} + '&type=all'">资金：</a>
 					</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:text="${item.all}"></span>
@@ -260,6 +219,7 @@
 						<span></span>
 					</td>
 				</tr>
+				<!-- 
 				<tr th:if="${item.dayResults.size > 0}" style="display:none;height:8px;"  class="moreInfo">
 			    	<td colspan="3" style="width:100%;">
 			    	</td>
@@ -287,7 +247,7 @@
 				<tr th:if="${item.dayResults.size > 0}" style="display:none;height:10px;"  class="moreInfo">
 			    	<td colspan="3" style="width:100%;">
 			    	</td>
-			    </tr>
+			    </tr> -->
 		    </table>
 		    </td>
 	    </tr>

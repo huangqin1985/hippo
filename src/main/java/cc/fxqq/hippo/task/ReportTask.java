@@ -61,6 +61,12 @@ public class ReportTask {
 		if (ReportTypeEnum.WEEK.getValue().equals(reportType)) {
 			startDate = DateUtil.getStartDateStrOfWeek(serverTime);
 			endDate = DateUtil.getEndDateStrOfWeek(serverTime);
+		} else if (ReportTypeEnum.DAY.getValue().equals(reportType)) {
+			startDate = DateUtil.formatDate(serverTime);
+			endDate = startDate;
+		} else if  (ReportTypeEnum.MONTH.getValue().equals(reportType)) {
+			startDate = DateUtil.getStartDateStrOfMonth(serverTime);
+			endDate = DateUtil.getEndDateStrOfMonth(serverTime);
 		} else {
 			
 		}
@@ -80,8 +86,8 @@ public class ReportTask {
 				rpt.setBalance(acc.getBalance());
 			}
 			rpt.setPreEquity(equity);
-			rpt.setUpdateTime(DateUtil.formatDatetime(new Date()));
-			rpt.setCreateTime(DateUtil.formatDatetime(new Date()));
+			rpt.setUpdateTime(DateUtil.formatDatetime(serverTime));
+			rpt.setCreateTime(DateUtil.formatDatetime(serverTime));
 			
 			reportMapper.insertSelective(rpt);
 		} else {
@@ -107,7 +113,7 @@ public class ReportTask {
 			param.setCloseEndDate(endDate);
 			// 未完成订单利润
 			//BigDecimal preProfit = report.getPreEquity().subtract(report.getPreBalance());
-			BigDecimal realProfit = DecimalUtil.get(tradeOrderExtMapper.selectRealProfit(param));
+			BigDecimal realProfit = report.getRealProfit();
 			BigDecimal totalProfit = DecimalUtil.add(realProfit, currentProfit);
 			
 			BigDecimal maxRealProfit = report.getMaxRealProfit();
@@ -149,6 +155,7 @@ public class ReportTask {
 			} else {
 				report.setMinMarginRate(DecimalUtil.min(minMarginRate, DecimalUtil.getPercent2(equity, margin)));
 			}
+			report.setUpdateTime(DateUtil.formatDatetime(serverTime));
 			
 			reportMapper.updateByPrimaryKeySelective(report);
 		}

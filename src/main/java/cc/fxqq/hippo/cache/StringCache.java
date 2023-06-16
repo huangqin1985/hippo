@@ -5,14 +5,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 public class StringCache {
 	
-	public static final String MARKET = "market_";
-
-	public static final String CONNECT_ID = "connectId_";
-
-	public static final String ACCOUNT_NAME = "accountName_";
-
-	public static final String POSITION = "position_";
-	
 	private static Cache<String, String> cache;
 	
 	private static Cache<String, String> getCache() {

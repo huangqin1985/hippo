@@ -68,6 +68,12 @@ a:hover {
 .tp {
 	border-left:3px solid #0078FF;
 }
+.sltp {
+	border-left:3px solid green;
+}
+.nosltp {
+	border-left:3px solid red;
+}
 .so {
 	border-left:3px solid #AB3439;
 }

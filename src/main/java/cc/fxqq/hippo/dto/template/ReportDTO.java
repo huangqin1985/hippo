@@ -1,9 +1,7 @@
 package cc.fxqq.hippo.dto.template;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import cc.fxqq.hippo.entity.result.OrderDayResult;
 import lombok.Data;
 
 @Data
@@ -49,6 +47,10 @@ public class ReportDTO {
 	private BigDecimal maxProfit;
 	
 	private BigDecimal minProfit;
+	
+	private BigDecimal equity;
+
+	private BigDecimal profit;
 
 	private BigDecimal maxMargin;
 
@@ -56,5 +58,5 @@ public class ReportDTO {
 	
 	private boolean thisWeek;
 	
-	private List<OrderDayDTO> dayResults;
+//	private List<OrderDayDTO> dayResults;
 }

@@ -38,6 +38,4 @@ public class AccountDTO {
 	private BigDecimal income;
 	
 	private String connectTime;
-
-	private Integer timeZone; // 时区
 }

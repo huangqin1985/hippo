@@ -10,7 +10,6 @@
     <result column="currency" jdbcType="VARCHAR" property="currency" />
     <result column="leverage" jdbcType="INTEGER" property="leverage" />
     <result column="balance" jdbcType="DECIMAL" property="balance" />
-    <result column="time_zone" jdbcType="INTEGER" property="timeZone" />
     <result column="client_name" jdbcType="VARCHAR" property="clientName" />
     <result column="stop_out_level" jdbcType="VARCHAR" property="stopOutLevel" />
     <result column="create_time" jdbcType="VARCHAR" property="createTime" />
@@ -18,8 +17,8 @@
     <result column="connect_time" jdbcType="VARCHAR" property="connectTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, number, company, server, currency, leverage, balance, time_zone, client_name, 
-    stop_out_level, create_time, update_time, connect_time
+    id, name, number, company, server, currency, leverage, balance, client_name, stop_out_level, 
+    create_time, update_time, connect_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -37,14 +36,14 @@
     </selectKey>
     insert into account (name, number, company, 
       server, currency, leverage, 
-      balance, time_zone, client_name, 
-      stop_out_level, create_time, update_time, 
-      connect_time)
+      balance, client_name, stop_out_level, 
+      create_time, update_time, connect_time
+      )
     values (#{name,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER}, #{company,jdbcType=VARCHAR}, 
       #{server,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR}, #{leverage,jdbcType=INTEGER}, 
-      #{balance,jdbcType=DECIMAL}, #{timeZone,jdbcType=INTEGER}, #{clientName,jdbcType=VARCHAR}, 
-      #{stopOutLevel,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, 
-      #{connectTime,jdbcType=VARCHAR})
+      #{balance,jdbcType=DECIMAL}, #{clientName,jdbcType=VARCHAR}, #{stopOutLevel,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, #{connectTime,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cc.fxqq.hippo.entity.Account">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -72,9 +71,6 @@
       </if>
       <if test="balance != null">
         balance,
-      </if>
-      <if test="timeZone != null">
-        time_zone,
       </if>
       <if test="clientName != null">
         client_name,
@@ -113,9 +109,6 @@
       </if>
       <if test="balance != null">
         #{balance,jdbcType=DECIMAL},
-      </if>
-      <if test="timeZone != null">
-        #{timeZone,jdbcType=INTEGER},
       </if>
       <if test="clientName != null">
         #{clientName,jdbcType=VARCHAR},
@@ -158,9 +151,6 @@
       <if test="balance != null">
         balance = #{balance,jdbcType=DECIMAL},
       </if>
-      <if test="timeZone != null">
-        time_zone = #{timeZone,jdbcType=INTEGER},
-      </if>
       <if test="clientName != null">
         client_name = #{clientName,jdbcType=VARCHAR},
       </if>
@@ -188,7 +178,6 @@
       currency = #{currency,jdbcType=VARCHAR},
       leverage = #{leverage,jdbcType=INTEGER},
       balance = #{balance,jdbcType=DECIMAL},
-      time_zone = #{timeZone,jdbcType=INTEGER},
       client_name = #{clientName,jdbcType=VARCHAR},
       stop_out_level = #{stopOutLevel,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=VARCHAR},

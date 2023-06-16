@@ -20,7 +20,15 @@ public class MarketMQL {
 
 	private BigDecimal pointProfit;
 
-	private BigDecimal price;
+	private BigDecimal buyPrice;
+
+	private BigDecimal sellPrice;
+	
+	private Integer spread;
+	
+	private String path;
 
 	private Integer digits;
+	
+	private Boolean allowTrade;
 }

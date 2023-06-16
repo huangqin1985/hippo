@@ -78,28 +78,27 @@ public class TradeOrderController extends BaseController {
 				return "error";
 			}
 		}
+		Account acc = accountService.getAccountById(accountId);
 		
 		String startDateStr = null;
 		String endDateStr = null;
 		if (StringUtils.isNotEmpty(type)) {
-			AccountDTO acc = accountService.queryAccountInfo(accountId);
-			Integer timeZone = acc.getTimeZone();
-			if (timeZone == null) {
-				timeZone = 0;
+			Date serverTime = AccountCache.getServerTime(acc.getName());
+			if (serverTime == null) {
+				serverTime = new Date();
 			}
 			
 			if ("today".equals(type)) {
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.HOUR, -DateUtil.getTimeDiffForUTC8(timeZone));
-				String date = DateUtil.formatDate(cal.getTime());
+				String date = DateUtil.formatDate(serverTime);
+
 				startDateStr = date;
 				endDateStr = date;
 			} else if ("thisWeek".equals(type)) {
-				startDateStr = DateUtil.getStartDateStrOfWeek(timeZone);
-				endDateStr = DateUtil.getEndDateStrOfWeek(timeZone);
+				startDateStr = DateUtil.getStartDateStrOfWeek(serverTime);
+				endDateStr = DateUtil.getEndDateStrOfWeek(serverTime);
 			} else if ("thisMonth".equals(type)) {
-				startDateStr = DateUtil.getStartDateStrOfMonth(timeZone);
-				endDateStr = DateUtil.getEndDateStrOfMonth(timeZone);
+				startDateStr = DateUtil.getStartDateStrOfMonth(serverTime);
+				endDateStr = DateUtil.getEndDateStrOfMonth(serverTime);
 			}  else if ("all".equals(type)) {
 				startDateStr = tradeOrderService.queryFirstOrderDate(accountId);
 				String date = DateUtil.formatDate(new Date());
@@ -244,7 +243,13 @@ public class TradeOrderController extends BaseController {
 		} else {
 			param.setPage(pageNum);
 		}
-		param.setRows(25);
+		if ("day".equals(type)) {
+			param.setRows(30);
+		} else if ("week".equals(type)) {
+			param.setRows(24);
+		} else if ("month".equals(type)) {
+			param.setRows(24);
+		}
 		Pager<ReportDTO> pager = reportService.queryReportList(param);
 		model.addAttribute("pager", pager);
 		
@@ -267,7 +272,6 @@ public class TradeOrderController extends BaseController {
 			@RequestParam(name="sortOrder", required = false, defaultValue="desc") String sortOrder,
 			@RequestParam(name="startDate", required = false) Date startDate,
 			@RequestParam(name="endDate", required = false) Date endDate,
-			@RequestParam(name="type", required = false) String type,
 			@RequestParam(name="sl", required = false, defaultValue="false") boolean sl,
 			@RequestParam(name="tp", required = false, defaultValue="false") boolean tp,
 			@RequestParam(name="noSl", required = false, defaultValue="false") boolean noSl,
@@ -345,7 +349,6 @@ public class TradeOrderController extends BaseController {
 		model.addAttribute("startDate", DateUtil.formatDate(startDate));
 		model.addAttribute("endDate", DateUtil.formatDate(endDate));
 		model.addAttribute("symbol", symbol);
-		model.addAttribute("type", type);
 		model.addAttribute("sort", sort);
 		model.addAttribute("sortType", sortOrder);
 		model.addAttribute("startDateStr", DateUtil.formatDate(startDate));
@@ -379,8 +382,7 @@ public class TradeOrderController extends BaseController {
 		}
 		
 		if (acc != null) {
-			String text = StringCache.get(StringCache.POSITION + acc.getName());
-			PositionMQL position = JSON.parseObject(text, PositionMQL.class);
+			PositionMQL position = AccountCache.getPosition(acc.getName());
 			PositionDTO dto = new PositionDTO(position);
 			model.addAttribute("position", dto);
 		}
@@ -410,10 +412,6 @@ public class TradeOrderController extends BaseController {
 		model.addAttribute("account", accountId);
 		
 		AccountDTO acc = accountService.queryAccountInfo(accountId);
-		Integer timeZone = acc.getTimeZone();
-		if (timeZone != null) {
-			model.addAttribute("timeDiff", DateUtil.getTimeDiffForUTC8(timeZone));
-		}
 		model.addAttribute("acc", acc);
 		
 		return "accountInfo";
@@ -422,6 +420,7 @@ public class TradeOrderController extends BaseController {
 	@GetMapping("/market")
 	public String market(Model model,
 			@RequestParam(name="account", required = false) Integer accountId,
+			@RequestParam(name="path", required = false) String path,
 			@RequestParam(name="subfix", required = false, defaultValue="") String subfix) {
 		
 		// 账户列表
@@ -447,24 +446,34 @@ public class TradeOrderController extends BaseController {
 		}
 		
 		if (acc != null) {
-			String text = StringCache.get(StringCache.MARKET + acc.getName());
+			List<MarketMQL> markets = AccountCache.getMarket(acc.getName());
 			
-			if (StringUtils.isNotEmpty(text)) {
-				List<MarketMQL> markets = JSON.parseArray(text, MarketMQL.class);
-				
+			if (markets != null) {
 				List<String> subfixList = markets.stream().map(
 						t -> t.getSymbol().substring(0, 1)).distinct().sorted().collect(Collectors.toList());
+				
+				List<String> pathList = markets.stream().map(
+						t -> t.getPath()).distinct().sorted().collect(Collectors.toList());
 
 				model.addAttribute("subfixList", subfixList);
+				model.addAttribute("pathList", pathList);
 				
-				if (StringUtils.isNotEmpty(subfix)) {
-					markets = markets.stream().filter(t -> t.getSymbol().startsWith(subfix)).collect(Collectors.toList());
+				if (markets.size() > 0) {
+					if (StringUtils.isNotEmpty(subfix)) {
+						markets = markets.stream().filter(t -> t.getSymbol().startsWith(subfix)).collect(Collectors.toList());
+					} 
+					else if (StringUtils.isNotEmpty(path)) {
+						markets = markets.stream().filter(t -> StringUtils.equals(path, t.getPath())).collect(Collectors.toList());
+					} else {
+						markets = markets.subList(0, Math.min(markets.size(), 20));
+					}
 				}
 				
 				List<MarketDTO> dtos = Lists.newArrayList();
 				for(MarketMQL t : markets) {
 					MarketDTO dto = new MarketDTO();
 					dto.setSymbol(t.getSymbol());
+					dto.setAllowTrade(t.getAllowTrade());
 					
 					BigDecimal requiredMargin = DecimalUtil.get(t.getRequiredMargin());
 					dto.setRequiredMarginStr(DecimalUtil.format(requiredMargin));
@@ -480,12 +489,22 @@ public class TradeOrderController extends BaseController {
 					dto.setSellSwapProfit(sellSwapProfit);
 					dto.setSellSwapProfitStr(DecimalUtil.format3Digit(sellSwapProfit));
 					
-					dto.setPrice(DecimalUtil.get(t.getPrice(), t.getDigits()));
+					dto.setBuyPrice(DecimalUtil.get(t.getBuyPrice(), t.getDigits()));
+					dto.setSellPrice(DecimalUtil.get(t.getSellPrice(), t.getDigits()));
+					
+					BigDecimal spreadProfit = DecimalUtil.get(
+							t.getPointProfit().multiply(new BigDecimal(t.getSpread())), 3);
+					dto.setSpreadProfitStr(DecimalUtil.format3Digit(spreadProfit));
+					dto.setSpread(t.getSpread());
 					
 					dtos.add(dto);
 				}
+				Date serverTime = AccountCache.getServerTime(acc.getName());
 				
+				model.addAttribute("serverTime", DateUtil.formatDatetime(serverTime));
 				model.addAttribute("markets", dtos);
+				model.addAttribute("path", path);
+				model.addAttribute("subfix", subfix);
 			}
 		}
 		

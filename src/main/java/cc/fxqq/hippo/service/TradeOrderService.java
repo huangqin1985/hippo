@@ -342,23 +342,23 @@ public class TradeOrderService {
 		OrderSumDTO dto = new OrderSumDTO();
 		BeanUtils.copyProperties(result, dto);
 		
-		param.setTp(false);
-		param.setSl(true);
-		param.setNoSl(false);
-		int slCount = tradeOrderExtMapper.selectTotal(param);
-		dto.setSlCount(slCount);
-		
-		param.setSl(false);
-		param.setTp(true);
-		param.setNoSl(false);
-		int tpCount = tradeOrderExtMapper.selectTotal(param);
-		dto.setTpCount(tpCount);
-		
-		param.setSl(false);
-		param.setTp(false);
-		param.setNoSl(true);
-		int noSlCount = tradeOrderExtMapper.selectTotal(param);
-		dto.setNoSlCount(noSlCount);
+//		param.setTp(false);
+//		param.setSl(true);
+//		param.setNoSl(false);
+//		int slCount = tradeOrderExtMapper.selectTotal(param);
+//		dto.setSlCount(slCount);
+//		
+//		param.setSl(false);
+//		param.setTp(true);
+//		param.setNoSl(false);
+//		int tpCount = tradeOrderExtMapper.selectTotal(param);
+//		dto.setTpCount(tpCount);
+//		
+//		param.setSl(false);
+//		param.setTp(false);
+//		param.setNoSl(true);
+//		int noSlCount = tradeOrderExtMapper.selectTotal(param);
+//		dto.setNoSlCount(noSlCount);
 		
 		return dto;
 	}

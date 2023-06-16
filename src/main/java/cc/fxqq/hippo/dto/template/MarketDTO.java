@@ -25,7 +25,15 @@ public class MarketDTO {
 
 	private String pointProfitStr;
 
-	private BigDecimal price;
+	private BigDecimal sellPrice;
 
-	private BigDecimal digits;
+	private BigDecimal buyPrice;
+	
+	private String spreadProfitStr;
+
+	private Integer digits;
+
+	private Integer spread;
+	
+	private Boolean allowTrade;
 }

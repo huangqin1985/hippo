@@ -52,7 +52,6 @@ public class AccountService {
 		info.setServer(acc.getServer());
 		info.setCurrency(acc.getCurrency());
 		info.setClientName(acc.getClientName());
-		info.setTimeZone(acc.getTimeZone());
 		info.setStopOutLevel(acc.getStopOutLevel());
 		
 		Account accCache = AccountCache.getByAccountName(acc.getName());
@@ -70,14 +69,11 @@ public class AccountService {
 			info.setTradeDate(tradeDate);
 		}
 		
-		BigDecimal balance = acc.getBalance();
-		ReportDTO report = reportService.querySummary(accountId);
 		TradeOrderParam param = new TradeOrderParam();
 		param.setAccountId(accountId);
-		BigDecimal income = balance.subtract(
-				DecimalUtil.add(report.getDeposit(), report.getWithdraw()));
+		BigDecimal totalRealProfit = tradeOrderExtMapper.selectRealProfit(param);
+		BigDecimal income = DecimalUtil.get(totalRealProfit);
 		info.setIncome(income);
-		
 		return info;
 	}
 	
@@ -130,7 +126,6 @@ public class AccountService {
 		acc.setBalance(accountInfo.getBalance());
 		acc.setCompany(accountInfo.getCompany());
 		acc.setServer(accountInfo.getServer());
-		acc.setTimeZone(accountInfo.getTimeZone());
 		acc.setClientName(accountInfo.getClientName());
 		acc.setStopOutLevel(accountInfo.getStopOutLevel());
 		
@@ -150,21 +145,11 @@ public class AccountService {
 		acc.setBalance(accountInfo.getBalance());
 		acc.setCompany(accountInfo.getCompany());
 		acc.setServer(accountInfo.getServer());
-		acc.setTimeZone(accountInfo.getTimeZone());
 		acc.setClientName(accountInfo.getClientName());
 		acc.setStopOutLevel(accountInfo.getStopOutLevel());
 		
 		String date = DateUtil.formatDatetime(new Date());
 		acc.setConnectTime(date);
-		acc.setUpdateTime(date);
-		accountMapper.updateByPrimaryKeySelective(acc);
-		
-		return acc;
-	}
-	
-	public Account setTimeZone(Account acc, Integer timeZone) {
-		acc.setTimeZone(timeZone);
-		String date = DateUtil.formatDatetime(new Date());
 		acc.setUpdateTime(date);
 		accountMapper.updateByPrimaryKeySelective(acc);
 		

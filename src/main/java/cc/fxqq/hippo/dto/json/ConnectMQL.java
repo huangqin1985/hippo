@@ -2,7 +2,6 @@ package cc.fxqq.hippo.dto.json;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import com.alibaba.fastjson.annotation.JSONType;
 
@@ -23,14 +22,10 @@ public class ConnectMQL {
 	private Integer leverage; // 杠杠
 	
 	private BigDecimal balance; // 余额
-
-	private Integer timeZone; // 时区
 	
 	private String stopOutLevel;
 	
 	private String clientName;
-	
-	private List<MarketMQL> market;
 	
 	private List<TradeOrderMQL> histories; //  历史订单
 }

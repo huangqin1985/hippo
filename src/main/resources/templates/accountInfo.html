@@ -60,9 +60,11 @@
 	    	</td>
 	    </tr>
 	    <tr>
-			<td style="text-align:right;width:90px;">收益：</td>
+			<td style="text-align:right;width:90px;">利润：</td>
 			<td style="font-weight:bold;text-align:right;padding:0 10px 0 0;">
-				<span th:class="${acc.income>=0?'g':'r'}" th:text="${acc.income}"></span>
+				<a th:href="'order?sort=closeTime&sortOrder=desc&account=' + ${account} + '&type=all'">
+					<span th:class="${acc.income>=0?'g':'r'}" th:text="${acc.income}"></span>
+				</a>
 			</td>
 		</tr>
 		<tr style="height:10px;">
@@ -149,18 +151,6 @@
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr> -->
-	    <tr>
-			<td style="text-align:right;width:90px;">时区：</td>
-			<td style="text-align:right;padding:0 10px 0 0;">
-				<div th:if="${acc.timeZone != null}">
-				GMT + <span th:text="${acc.timeZone}"></span>.00<br/>
-				</div>
-			</td>
-		</tr>
-		<tr style="height:10px;">
-	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
-	    	</td>
-	    </tr>
 	    <tr>
 			<td style="text-align:right;width:90px;">同步：</td>
 			<td style="text-align:right;padding:0 10px 0 0;">

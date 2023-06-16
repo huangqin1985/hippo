@@ -97,8 +97,6 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		if (list != null && list.size() > 0) {
     			tradeOrderService.updateHistoryOrders(acc, list);
     		}
-    		//缓存symbolMargin
-    		StringCache.put(StringCache.MARKET + name, JSON.toJSONString(connectMQL.getMarket()));
 			
     	} else if (str.startsWith("orders:")) {
     		String text = str.substring(str.indexOf(':') + 1);
@@ -131,7 +129,7 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     			return;
     		}
     		
-    		StringCache.put(StringCache.POSITION + account.getName(), text);
+    		AccountCache.setPosition(account.getName(), position);
 
     		reportService.updateReportStatus(account.getId(),
     				position.getEquity(), position.getProfit(), position.getMargin(),
@@ -140,23 +138,13 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		String json = JSON.toJSONString(new PositionDTO(position));
     		webMessageHandler.sendMessage(account.getId(), json);
     		
-    	} else if (str.startsWith("setTimeZone:")) {
-    		String text = str.substring(str.indexOf(':') + 1);
-    		ConnectMQL connectMQL = JSON.parseObject(text, ConnectMQL.class);
-    		Account account = AccountCache.getByConnectId(id);
-    		
-    		if (account != null) {
-    			accountService.setTimeZone(account, connectMQL.getTimeZone());
-    		}
-    		
     	} else if (str.startsWith("setMarket:")) {
     		String text = str.substring(str.indexOf(':') + 1);
     		List<MarketMQL> marginMQL = JSON.parseArray(text, MarketMQL.class);
     		Account account = AccountCache.getByConnectId(id);
     		
     		if (account != null) {
-    			//缓存symbolMargin
-    			StringCache.put(StringCache.MARKET + account.getName(), JSON.toJSONString(marginMQL));
+    			AccountCache.setMarket(account.getName(), marginMQL);
     		}
     	}
     }
@@ -174,8 +162,8 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     	}
     	log.info("账号" + acc.getName() + "连接已断开");
     	
-    	StringCache.remove(StringCache.POSITION + acc.getName());
-    	StringCache.remove(StringCache.MARKET + acc.getName());
+    	AccountCache.removeMarket(acc.getName());
+    	AccountCache.removePosition(acc.getName());
     	AccountCache.removeByConnectId(id);
     }
 
@@ -189,8 +177,8 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     	}
     	log.info("账号" + acc.getName() + "连接异常");
 
-    	StringCache.remove(StringCache.POSITION + acc.getName());
-    	StringCache.remove(StringCache.MARKET + acc.getName());
+    	AccountCache.removeMarket(acc.getName());
+    	AccountCache.removePosition(acc.getName());
     	AccountCache.removeByConnectId(id);
         ctx.channel().close();
     }

@@ -22,6 +22,10 @@ public class PositionMQL {
 	
 	private BigDecimal margin; // 预付款
 
+	private BigDecimal freeMargin; // 
+
+	private BigDecimal marginLevel; // 
+
 	private List<TradeOrderMQL> orders;
 
 }

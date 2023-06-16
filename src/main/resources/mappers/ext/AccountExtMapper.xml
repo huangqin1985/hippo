@@ -10,7 +10,6 @@
 	    <result column="currency" jdbcType="VARCHAR" property="currency" />
 	    <result column="leverage" jdbcType="INTEGER" property="leverage" />
 	    <result column="balance" jdbcType="DECIMAL" property="balance" />
-	    <result column="time_zone" jdbcType="INTEGER" property="timeZone" />
 	    <result column="client_name" jdbcType="VARCHAR" property="clientName" />
 	    <result column="stop_out_level" jdbcType="VARCHAR" property="stopOutLevel" />
 	    <result column="create_time" jdbcType="VARCHAR" property="createTime" />

@@ -65,10 +65,32 @@
 	    	</td>
 	    </tr>
 	    <tr th:if="${isConnect}">
-			<td colspan="4" style="text-align:left;padding: 0 10px 0 10px">
+			<td colspan="2" style="width:53%;text-align:left;">
+				<span th:text="${serverTime}">
+					
+				</span>
+			</td>
+			<td colspan="2" style="text-align:center;padding: 0 10px 0 10px">
+				<form id="form2" name="form2" action="market">
+			    	<input type="hidden" th:value="${account}" name = "account"/>
+			    	
+			    	<select id="sel2" name="path" class="last_center" onChange="form1.submit();">
+						<option th:selected="${'' == path}" value="">全部</option>
+			    		<option th:selected="${path == item}" th:each="item : ${pathList}" th:value="${item}" th:text="${item}"></option>
+				    </select>
+		    	</form>
+			</td>
+		</tr>
+		<tr th:if="${isConnect}" style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	    <tr th:if="${isConnect}">
+			<td colspan="4" style="text-align:center;padding: 0 10px 0 10px">
 				<!-- <a th:href="'market?account=' + ${account}" >全部</a>&nbsp;&nbsp; -->
 				<span th:each="item : ${subfixList}">
-					<a th:href="'market?account=' + ${account} + '&subfix=' + ${item}" th:text="${item}"></a>&nbsp;&nbsp;
+					<a th:if="${subfix != item}" th:href="'market?account=' + ${account} + '&subfix=' + ${item}" th:text="${'&nbsp;' + item + '&nbsp;'}"></a>
+					<span th:if="${subfix == item}" th:text="${'&nbsp;' + subfix + '&nbsp;' }"></a>
 				</span>
 			</td>
 			
@@ -108,18 +130,30 @@
     		<table th:each="item : ${markets}">
 	    	<tr>
 		        <td width="34%" style = "text-align:center;" >
-			        <a style="font-size: 18px;" href="javascript:;" th:text="${item.symbol}"></a>
+			        <span th:if="${item.allowTrade}" style="font-size: 19px;font-weight:bold"th:text="${item.symbol}"></span>
+			        <span th:if="${!item.allowTrade}" style="color:gray;font-size: 18px;font-weight:bold"th:text="${item.symbol}"></span>
 		        </td>
 		        <td style="width:36%;text-align:center;">
-        			<span th:text="${item.requiredMarginStr}"></span>
+        			<span style="font-size: 19px;" th:text="${item.sellPrice}"></span>
         		</td>
 		        <td style="width:30%;text-align:center;">
-		       		<span th:text="${item.pointProfitStr}"></span>
+		       		<span style="font-size: 19px;" th:text="${item.buyPrice}"></span>
 		        </td>
 		    </tr>
 		    <tr>
 		        <td width="34%" style = "text-align:center;" >
-		        	<span th:text="${item.price}"></span>
+		       		<span style="color:gray;" th:text="${item.pointProfitStr}"></span>
+		        </td>
+		        <td style="width:36%;text-align:center;">
+        			<span style="color:gray;" th:text="${item.spread}"></span>
+        		</td>
+		        <td style="width:30%;text-align:center;">
+		       		 <span style="color:gray;" th:text="${item.spreadProfitStr}"></span>
+		        </td>
+		    </tr>
+		    <tr>
+		        <td width="34%" style = "text-align:center;" >
+		        	<span style="font-style:italic" th:text="${item.requiredMarginStr}"></span>
 		        </td>
 		        <td style="width:36%;text-align:center;">
         			<span class="g" th:if="${item.sellSwapProfit>=0}" th:text="${item.sellSwapProfitStr}"></span>

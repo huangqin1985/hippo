@@ -57,6 +57,10 @@ public class ReportService {
 			BigDecimal profit, BigDecimal margin, Date serverTime) {
 		reportTask.updateReportStatus(ReportTypeEnum.WEEK.getValue(),
 				account, equity, profit, margin, serverTime);
+		reportTask.updateReportStatus(ReportTypeEnum.DAY.getValue(),
+				account, equity, profit, margin, serverTime);
+		reportTask.updateReportStatus(ReportTypeEnum.MONTH.getValue(),
+				account, equity, profit, margin, serverTime);
 	}
 	
 	/**
@@ -66,6 +70,8 @@ public class ReportService {
 	 */
 	public void updateHistoryReport(Integer account, BigDecimal balance) {
 		reportTask.setHistoryReport(ReportTypeEnum.WEEK.getValue(), account, balance);
+		reportTask.setHistoryReport(ReportTypeEnum.DAY.getValue(), account, balance);
+		reportTask.setHistoryReport(ReportTypeEnum.MONTH.getValue(), account, balance);
 	}
 	
 	public void updateCurrentHistoryReport(Integer account, BigDecimal balance) {
@@ -73,6 +79,8 @@ public class ReportService {
 		String date = DateUtil.formatDatetime(startDate);
 		
 		reportTask.setHistoryReport(ReportTypeEnum.WEEK.getValue(), account, balance, date);
+		reportTask.setHistoryReport(ReportTypeEnum.DAY.getValue(), account, balance, date);
+		reportTask.setHistoryReport(ReportTypeEnum.MONTH.getValue(), account, balance, date);
 	}
 
 	/**
@@ -142,6 +150,10 @@ public class ReportService {
 					dto.setMaxEquity(maxEquity);
 					BigDecimal minEquity = item.getMinEquity();
 					dto.setMinEquity(minEquity);
+					BigDecimal equity = item.getEquity();
+					dto.setEquity(equity);
+					BigDecimal profit = equity.subtract(item.getBalance());
+					dto.setProfit(profit);
 					
 					BigDecimal maxMargin = item.getMaxMargin();
 					dto.setMaxMargin(maxMargin);
@@ -151,32 +163,32 @@ public class ReportService {
 						dto.setMinMarginRateStr(minMarginRate + "%");
 					}
 					
-					dto.setThisWeek(DateUtil.inThisWeek(DateUtil.parseDate(item.getStartDate())));
-					
-					TradeOrderParam orderParam = new TradeOrderParam();
-					orderParam.setAccountId(item.getAccountId());
-					orderParam.setCloseStartDate(item.getStartDate());
-					orderParam.setCloseEndDate(item.getEndDate());
-					List<OrderDayResult> dayResults = tradeOrderExtMapper.selectGroupByDay(orderParam);
-					
-					BigDecimal weekBalance = item.getPreBalance();
-					List<OrderDayDTO> dayLists = Lists.newArrayList();
-					for (OrderDayResult result : dayResults) {
-						OrderDayDTO day = new OrderDayDTO();
-						
-						day.setStartDate(result.getDate());
-						day.setEndDate(result.getDate());
-						day.setLots(DecimalUtil.get(result.getLots()));
-						day.setOrderNum(result.getOrderNum());
-						day.setRealProfit(result.getRealProfit());
-						day.setDescription(DateUtil.formatForChWeek(DateUtil.parseDate(result.getDate())));
-						
-						BigDecimal dayBalance = DecimalUtil.add(weekBalance, result.getRealProfit());
-						day.setBalance(dayBalance);
-						weekBalance = dayBalance;
-						dayLists.add(day);
-					}
-					dto.setDayResults(dayLists);
+//					dto.setThisWeek(DateUtil.inThisWeek(DateUtil.parseDate(item.getStartDate())));
+//					
+//					TradeOrderParam orderParam = new TradeOrderParam();
+//					orderParam.setAccountId(item.getAccountId());
+//					orderParam.setCloseStartDate(item.getStartDate());
+//					orderParam.setCloseEndDate(item.getEndDate());
+//					List<OrderDayResult> dayResults = tradeOrderExtMapper.selectGroupByDay(orderParam);
+//					
+//					BigDecimal weekBalance = item.getPreBalance();
+//					List<OrderDayDTO> dayLists = Lists.newArrayList();
+//					for (OrderDayResult result : dayResults) {
+//						OrderDayDTO day = new OrderDayDTO();
+//						
+//						day.setStartDate(result.getDate());
+//						day.setEndDate(result.getDate());
+//						day.setLots(DecimalUtil.get(result.getLots()));
+//						day.setOrderNum(result.getOrderNum());
+//						day.setRealProfit(result.getRealProfit());
+//						day.setDescription(DateUtil.formatForChWeek(DateUtil.parseDate(result.getDate())));
+//						
+//						BigDecimal dayBalance = DecimalUtil.add(weekBalance, result.getRealProfit());
+//						day.setBalance(dayBalance);
+//						weekBalance = dayBalance;
+//						dayLists.add(day);
+//					}
+//					dto.setDayResults(dayLists);
 					
 					return dto;
 				});

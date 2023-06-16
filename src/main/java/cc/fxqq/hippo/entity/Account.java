@@ -19,8 +19,6 @@ public class Account {
 
     private BigDecimal balance;
 
-    private Integer timeZone;
-
     private String clientName;
 
     private String stopOutLevel;
@@ -95,14 +93,6 @@ public class Account {
         this.balance = balance;
     }
 
-    public Integer getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(Integer timeZone) {
-        this.timeZone = timeZone;
-    }
-
     public String getClientName() {
         return clientName;
     }
@@ -157,7 +147,6 @@ public class Account {
         sb.append(", currency=").append(currency);
         sb.append(", leverage=").append(leverage);
         sb.append(", balance=").append(balance);
-        sb.append(", timeZone=").append(timeZone);
         sb.append(", clientName=").append(clientName);
         sb.append(", stopOutLevel=").append(stopOutLevel);
         sb.append(", createTime=").append(createTime);

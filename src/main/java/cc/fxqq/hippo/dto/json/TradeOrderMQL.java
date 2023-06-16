@@ -28,6 +28,8 @@ public class TradeOrderMQL {
 
 	private BigDecimal swap;
 
+	private BigDecimal margin;
+
 	private BigDecimal profit;
 
 	private String type;
@@ -41,5 +43,9 @@ public class TradeOrderMQL {
 	private String takeProfit;
 	
 	private String comment;
+	
+	private BigDecimal maxLoss;
+	
+	private BigDecimal maxProfit;
 
 }
