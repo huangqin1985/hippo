@@ -1,5 +1,6 @@
 package cc.fxqq.hippo.socket.terminal;
 
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,18 +11,17 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 
 import cc.fxqq.hippo.cache.AccountCache;
-import cc.fxqq.hippo.cache.StringCache;
 import cc.fxqq.hippo.dto.json.ConnectMQL;
+import cc.fxqq.hippo.dto.json.MarketMQL;
+import cc.fxqq.hippo.dto.json.OrderAddMQL;
 import cc.fxqq.hippo.dto.json.OrderMQL;
 import cc.fxqq.hippo.dto.json.PositionMQL;
-import cc.fxqq.hippo.dto.json.MarketMQL;
-import cc.fxqq.hippo.dto.json.TradeOrderMQL;
-import cc.fxqq.hippo.dto.template.PositionDTO;
 import cc.fxqq.hippo.entity.Account;
 import cc.fxqq.hippo.service.AccountService;
+import cc.fxqq.hippo.service.OrderService;
 import cc.fxqq.hippo.service.ReportService;
-import cc.fxqq.hippo.service.TradeOrderService;
 import cc.fxqq.hippo.socket.web.WebMessageHandler;
+import cc.fxqq.hippo.util.DateUtil;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -43,7 +43,7 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     private ReportService reportService;
 	
 	@Autowired
-    private TradeOrderService tradeOrderService;
+    private OrderService tradeOrderService;
 	
 	@Autowired
 	private WebMessageHandler webMessageHandler;
@@ -92,16 +92,16 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
 			AccountCache.addAccount(id, acc);
 			
 			// 更新历史订单
-			List<TradeOrderMQL> list = connectMQL.getHistories();
+			List<OrderMQL> list = connectMQL.getHistories();
 			
     		if (list != null && list.size() > 0) {
-    			tradeOrderService.updateHistoryOrders(acc, list);
+    			tradeOrderService.updateHistoryOrders(acc.getId(), connectMQL.getBalance(), list);
     		}
 			
     	} else if (str.startsWith("orders:")) {
     		String text = str.substring(str.indexOf(':') + 1);
     		
-    		OrderMQL orderMQL = JSON.parseObject(text, OrderMQL.class);
+    		OrderAddMQL orderAddMQL = JSON.parseObject(text, OrderAddMQL.class);
     		
     		Account account = AccountCache.getByConnectId(id);
     		
@@ -110,13 +110,12 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     			return;
     		}
     		
-    		List<TradeOrderMQL> list = orderMQL.getTradeOrders();
+    		List<OrderMQL> list = orderAddMQL.getTradeOrders();
 			
     		if (list != null && list.size() > 0) {
-    			account.setBalance(orderMQL.getBalance());
-    			accountService.setAccountBalance(account);
+    			accountService.setBalance(account.getId(), orderAddMQL.getBalance());
         		
-    			tradeOrderService.updateOrder(account, list);
+    			tradeOrderService.addHistoryOrder(account.getId(), orderAddMQL.getBalance(), list);
     		}
     		
     	} else if (str.startsWith("position:")) {
@@ -129,14 +128,14 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     			return;
     		}
     		
-    		AccountCache.setPosition(account.getName(), position);
+    		AccountCache.setPosition(account.getId(), position);
 
     		reportService.updateReportStatus(account.getId(),
     				position.getEquity(), position.getProfit(), position.getMargin(),
-    				position.getServerTime());
+    				position.getMarginLevel(), position.getServerTime());
     		
-    		String json = JSON.toJSONString(new PositionDTO(position));
-    		webMessageHandler.sendMessage(account.getId(), json);
+//    		String json = JSON.toJSONString(new PositionDTO(position));
+//    		webMessageHandler.sendMessage(account.getId(), json);
     		
     	} else if (str.startsWith("setMarket:")) {
     		String text = str.substring(str.indexOf(':') + 1);
@@ -144,8 +143,23 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		Account account = AccountCache.getByConnectId(id);
     		
     		if (account != null) {
-    			AccountCache.setMarket(account.getName(), marginMQL);
+    			AccountCache.setMarket(account.getId(), marginMQL);
     		}
+    	} else if (str.startsWith("serverTime:")) {
+    		String text = str.substring(str.indexOf(':') + 1);
+    		
+    		Account account = AccountCache.getByConnectId(id);
+    		AccountCache.setServerTime(account.getId(), text);
+    	} else if (str.startsWith("pendingOrder:")) {
+    		String text = str.substring(str.indexOf(':') + 1);
+    		
+    		List<OrderMQL> list = JSON.parseArray(text, OrderMQL.class);
+    		
+    		Account account = AccountCache.getByConnectId(id);
+    		
+    		tradeOrderService.updatePendingOrder(account.getId(),  list);
+    		
+    		log.info("新增挂单" + text);
     	}
     }
 
@@ -162,9 +176,7 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     	}
     	log.info("账号" + acc.getName() + "连接已断开");
     	
-    	AccountCache.removeMarket(acc.getName());
-    	AccountCache.removePosition(acc.getName());
-    	AccountCache.removeByConnectId(id);
+    	AccountCache.removeAll(acc.getId(), id);
     }
 
     @Override
@@ -177,9 +189,7 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     	}
     	log.info("账号" + acc.getName() + "连接异常");
 
-    	AccountCache.removeMarket(acc.getName());
-    	AccountCache.removePosition(acc.getName());
-    	AccountCache.removeByConnectId(id);
+    	AccountCache.removeAll(acc.getId(), id);
         ctx.channel().close();
     }
 }

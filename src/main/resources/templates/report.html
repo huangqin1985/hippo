@@ -43,6 +43,11 @@
     	$("a").click(function(evt) {
     		evt.stopPropagation();
     	});
+    	$(".pageButton").click(function() {
+    		$("#pageNum").val($(this).attr("page"));
+    		
+        	$("#form2").submit();
+    	});
     	
     });
     </script>
@@ -80,14 +85,15 @@
 		    	<input type="hidden" id="col" th:value="${col}" name = "col"/>
 				<input type="hidden" th:value="${sort}" id = "sort" name="sort"/>
 				<input type="hidden" th:value="${sortType}" id = "sortType" name="sortType"/>
+			    <input type="hidden" id="pageNum" name = "pageNum"/>
 	    	</form>
     		</td>
     		<td  colspan="2" style="text-align:right;width:60%">
 	    		<span th:text="${pager.totalRecord}"></span>条&nbsp;<span th:if="${pager.pageCount gt 0}"><span th:text="${pager.pageNum}"></span>/<span th:text="${pager.pageCount}"></span></span>
-	    		<a th:if="${pager.hasPrePage}"
-	    			  th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType} + '&pageNum=' + ${pager.prePage}">上页</a>
-	    		<a th:if="${pager.hasNextPage}" 
-	    			 th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType}  + '&pageNum=' + ${pager.nextPage}">下页</a>
+	    		<a class="pageButton" th:page="${pager.prePage}" th:if="${pager.hasPrePage}"
+	    			  href="javascript:;">上页</a>
+	    		<a class="pageButton" th:page="${pager.nextPage}" th:if="${pager.hasNextPage}" 
+	    			 href="javascript:;">下页</a>
     		</td>
     	</tr>
     	<tr style="height:10px;">
@@ -97,7 +103,7 @@
 	    <tr style="height:10px;">
 	    	<td style = "width:32%;text-align:center;">
 	    		<select id="sel1" class="last_center">
-		    		<option th:selected="${type == 'day'}" value="day">&nbsp;天&nbsp;</option>
+		    		<option th:selected="${type == 'day'}" value="day">&nbsp;日&nbsp;</option>
 		    		<option th:selected="${type == 'week'}" value="week">&nbsp;周&nbsp;</option>
 		    		<option th:selected="${type == 'month'}" value="month">&nbsp;月&nbsp;</option>
 			    </select>
@@ -105,7 +111,7 @@
 			    <a href="" th:if="${sort=='startDate'&&sortType=='asc'}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=startDate' + '&sortType=desc'">&nbsp;↑&nbsp;</a>
 			    <a th:if="${sort!='startDate'}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=startDate' + '&sortType=desc'">&nbsp;○&nbsp;</a>
 		    </td>
-       		<td style="width:34%;text-align:right;">
+       		<td th:if="${type!='summary'}"  style="width:34%;text-align:right;">
 	       		<select id="sel2" class="last_center">
 		    		<option th:selected="${col == 'balance'}" value="balance">余额</option>
 		    		<option th:selected="${col == 'lots'}" value="lots">&nbsp;交易量</option>
@@ -115,7 +121,7 @@
 			    <a href="" th:if="${sort==col&&sortType=='asc'}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=' + ${col} + '&sortType=desc'">&nbsp;↑&nbsp;</a>
 			    <a th:if="${sort!=col}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=' + ${col} + '&sortType=desc'">&nbsp;○&nbsp;</a>
        		</td>
-       		<td style="width:34%;text-align:right;padding:0 5px 0 0;">
+       		<td style="text-align:right;padding:0 5px 0 0;">
        			<span>利润</span>
        			<a th:if="${sort=='realProfit'&&sortType=='desc'}" th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=realProfit' + '&sortType=asc'">&nbsp;↓&nbsp;</a>
 			    <a href="" th:if="${sort=='realProfit'&&sortType=='asc'}"  th:href="'report?account=' + ${account} + '&type=' + ${type} + '&col=' + ${col} + '&sort=realProfit' + '&sortType=desc'">&nbsp;↑&nbsp;</a>
@@ -131,16 +137,16 @@
 		    		<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 		    		</td>
 			    </tr>
-			    <tr style="height:31px;" class="orderDetail">
+			    <tr style="height:31px;" th:class="${type!='summary'?'orderDetail':''}">
 			        <td style = "width:32%;text-align:left;padding: 0 10px 0 10px" >
 			        	<a target="_blank" th:href="'order?account=' + ${account} + '&startDate=' + ${item.startDate} + '&endDate=' + ${item.endDate}" th:text="${item.description}"></a>
 			        </td>
-		       		<td style="width:34%;text-align:right;">
+		       		<td style="width:34%;text-align:center">
 	    				<span th:if="${col=='balance'}" th:text="${item.balance}"></span>
 	    				<span th:if="${col=='lots'}" th:text="${item.lots}"></span>
 	    				<span th:if="${col=='orderNum'}" th:text="${item.orderNum}"></span>
 		       		</td>
-		       		<td style = "width:34%;text-align:right;padding:0 5px 0 0;" >
+		       		<td style = "text-align:right;padding:0 5px 0 0;" >
 	    				<span th:class="${item.realProfit>=0?'g':'r'}" th:text="${item.realProfit}"></span>
 			        </td>
 			    </tr>
@@ -261,10 +267,10 @@
     		</td>
     		<td  colspan="2" style="text-align:right;width:60%">
     		<span th:text="${pager.totalRecord}"></span>条&nbsp;<span th:if="${pager.pageCount gt 0}"><span th:text="${pager.pageNum}"></span>/<span th:text="${pager.pageCount}"></span></span>
-    		<a th:if="${pager.hasPrePage}"
-    			  th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType} + '&pageNum=' + ${pager.prePage}">上页</a>
-    		<a th:if="${pager.hasNextPage}" 
-    			 th:href="'report?account=' + ${account} + '&col=' + ${col} + '&sort=' + ${sort} + '&sortType=' + ${sortType}  + '&pageNum=' + ${pager.nextPage}">下页</a>
+    			<a class="pageButton" th:page="${pager.prePage}" th:if="${pager.hasPrePage}"
+	    			  href="javascript:;">上页</a>
+	    		<a class="pageButton" th:page="${pager.nextPage}" th:if="${pager.hasNextPage}" 
+	    			 href="javascript:;">下页</a>
     		</td>
     	</tr>
     	<tr th:if="${pager.totalRecord > 0}" style="height:10px;">

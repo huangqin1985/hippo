@@ -26,7 +26,11 @@ public class OrderSumDTO {
 	private Integer slCount;
 	
 	private Integer tpCount;
+
+	private Integer soCount;
 	
-	private Integer noSlCount;
+	private Integer complexCount;
+
+	private Integer pendingCount;
 
 }

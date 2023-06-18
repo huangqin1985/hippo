@@ -116,19 +116,29 @@
 	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 	    	</td>
 	    </tr>
-	    <!-- 
 	    <tr>
     		<td style="text-align:left;padding:0 10px 0 10px">
-	    			<a th:href="'orderList?tp=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'止盈(' + totalSum.tpCount + ')'}"></a>
-	        		&nbsp;<a th:href="'orderList?sl=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'止损(' + totalSum.slCount + ')'}"></a>
-    				&nbsp;<a th:href="'orderList?noSl=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&type=' + ${type}" th:text="${'未设止损(' + totalSum.noSlCount + ')'}"></a>
+	    			<a th:href="'orderList?sl=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'止损(' + totalSum.slCount + ')'}"></a>
+	    			&nbsp;<a th:href="'orderList?tp=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'获利(' + totalSum.tpCount + ')'}"></a>
+    				&nbsp;<a th:href="'orderList?so=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'爆仓(' + totalSum.soCount + ')'}"></a>
+    		
     		</td>
     	</tr>
     	<tr style="height:10px;">
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 			</td>
 		</tr>
-		 -->
+		<tr>
+    		<td style="text-align:left;padding:0 10px 0 10px">
+	    			<a th:href="'complexOrder?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'减仓(' + totalSum.complexCount + ')'}"></a>
+	    			&nbsp;
+	    			<a th:href="'pendingOrder?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'挂单(' + totalSum.pendingCount + ')'}"></a>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
 	</table>
 </body>
 </html>

@@ -92,7 +92,7 @@
                
                <columnOverride column="balance" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
         </table>
-        <table tableName="trade_fund" domainObjectName="TradeFund"
+        <table tableName="fund" domainObjectName="Fund"
         		enableCountByExample="false"
         	   enableSelectByExample="false"
                enableDeleteByExample="false"
@@ -100,7 +100,25 @@
                
                <columnOverride column="profit" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
         </table>
-        <table tableName="trade_order" domainObjectName="TradeOrder"
+        <table tableName="history_order" domainObjectName="HistoryOrder"
+              enableCountByExample="false"
+        	   enableSelectByExample="false"
+               enableDeleteByExample="false"
+               enableUpdateByExample="false">
+               <columnOverride column="lots" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
+               <columnOverride column="commission" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
+               <columnOverride column="swap" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
+               <columnOverride column="profit" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
+               <columnOverride column="real_profit" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
+        </table>
+        <table tableName="pending_order" domainObjectName="PendingOrder"
+              enableCountByExample="false"
+        	   enableSelectByExample="false"
+               enableDeleteByExample="false"
+               enableUpdateByExample="false">
+               <columnOverride column="lots" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
+        </table>
+        <table tableName="complex_order" domainObjectName="ComplexOrder"
               enableCountByExample="false"
         	   enableSelectByExample="false"
                enableDeleteByExample="false"

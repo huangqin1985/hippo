@@ -28,6 +28,10 @@ public class MarketDTO {
 	private BigDecimal sellPrice;
 
 	private BigDecimal buyPrice;
+
+	private BigDecimal lowPrice;
+
+	private BigDecimal highPrice;
 	
 	private String spreadProfitStr;
 

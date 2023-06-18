@@ -7,22 +7,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
+import cc.fxqq.hippo.cache.AccountCache;
 import cc.fxqq.hippo.consts.FundType;
 import cc.fxqq.hippo.consts.ReportTypeEnum;
-import cc.fxqq.hippo.dao.AccountMapper;
 import cc.fxqq.hippo.dao.ReportMapper;
+import cc.fxqq.hippo.dao.ext.FundExtMapper;
+import cc.fxqq.hippo.dao.ext.HistoryOrderExtMapper;
 import cc.fxqq.hippo.dao.ext.ReportExtMapper;
-import cc.fxqq.hippo.dao.ext.TradeFundExtMapper;
-import cc.fxqq.hippo.dao.ext.TradeOrderExtMapper;
-import cc.fxqq.hippo.entity.Account;
 import cc.fxqq.hippo.entity.Report;
-import cc.fxqq.hippo.entity.param.TradeOrderParam;
+import cc.fxqq.hippo.entity.param.OrderParam;
 import cc.fxqq.hippo.entity.result.FundSumResult;
 import cc.fxqq.hippo.entity.result.OrderSumResult;
+import cc.fxqq.hippo.service.AccountService;
 import cc.fxqq.hippo.util.DateUtil;
 import cc.fxqq.hippo.util.DecimalUtil;
 import cc.fxqq.hippo.util.ReportUtils;
@@ -33,10 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 public class ReportTask {
 
 	@Autowired
-	private TradeOrderExtMapper tradeOrderExtMapper;
+	private HistoryOrderExtMapper tradeOrderExtMapper;
 	
 	@Autowired
-	private TradeFundExtMapper tradeFundExtMapper;
+	private FundExtMapper tradeFundExtMapper;
 	
 	@Autowired
 	private ReportExtMapper reportExtMapper;
@@ -45,7 +43,7 @@ public class ReportTask {
 	private ReportMapper reportMapper;
 
 	@Autowired
-	private AccountMapper accountMapper;
+	private AccountService accountService;
 	
 	/**
 	 * 
@@ -55,7 +53,7 @@ public class ReportTask {
 	 */
 	public void updateReportStatus(String reportType, Integer account, 
 			BigDecimal equity, BigDecimal currentProfit, BigDecimal margin,
-			Date serverTime) {
+			BigDecimal marginLevel, Date serverTime) {
 		String startDate = null;
 		String endDate = null;
 		if (ReportTypeEnum.WEEK.getValue().equals(reportType)) {
@@ -80,11 +78,9 @@ public class ReportTask {
 			rpt.setStartDate(startDate);
 			rpt.setEndDate(endDate);
 			
-			Account acc = accountMapper.selectByPrimaryKey(account);
-			if (acc != null) {
-				rpt.setPreBalance(acc.getBalance());
-				rpt.setBalance(acc.getBalance());
-			}
+			BigDecimal balance = accountService.getBalance(account);
+			rpt.setPreBalance(balance);
+			rpt.setBalance(balance);
 			rpt.setPreEquity(equity);
 			rpt.setUpdateTime(DateUtil.formatDatetime(serverTime));
 			rpt.setCreateTime(DateUtil.formatDatetime(serverTime));
@@ -107,7 +103,7 @@ public class ReportTask {
 				report.setMinEquity(DecimalUtil.min(minEquity, equity));
 			}
 			
-			TradeOrderParam  param = new TradeOrderParam();
+			OrderParam  param = new OrderParam();
 			param.setAccountId(account);
 			param.setCloseStartDate(startDate);
 			param.setCloseEndDate(endDate);
@@ -151,9 +147,9 @@ public class ReportTask {
 			
 			BigDecimal minMarginRate = report.getMinMarginRate();
 			if (minMarginRate == null) {
-				report.setMinMarginRate(DecimalUtil.getPercent2(equity, margin));
+				report.setMinMarginRate(marginLevel);
 			} else {
-				report.setMinMarginRate(DecimalUtil.min(minMarginRate, DecimalUtil.getPercent2(equity, margin)));
+				report.setMinMarginRate(DecimalUtil.min(minMarginRate, marginLevel));
 			}
 			report.setUpdateTime(DateUtil.formatDatetime(serverTime));
 			
@@ -203,7 +199,9 @@ public class ReportTask {
 	private void replaceAll(List<Report> reports) {
 		int updateCount = 0;
 		int insertCount = 0;
+		String type = "";
 		for(Report report : reports) {
+			type = report.getType();
 			Report rpt =
 					reportExtMapper.selectUnique(
 							report.getAccountId(), report.getType(), report.getStartDate());
@@ -217,7 +215,8 @@ public class ReportTask {
 				updateCount++;
 			}
 		}
-		log.info("更新报表" + updateCount + "条, 新增" + insertCount + "条");
+
+		log.info("更新" + type + "报表" + updateCount + "条, 新增" + insertCount + "条");
 	}
 	
 	/*
@@ -233,8 +232,6 @@ public class ReportTask {
 			
 			report.setPreBalance(preBalance);
 			report.setBalance(balance);
-			report.setPreEquity(preBalance);
-			report.setEquity(balance);
 			balance = report.getPreBalance();
 		}
 	}
@@ -243,7 +240,7 @@ public class ReportTask {
 	 * 
 	 */
 	private void setOrderSum(Integer accountId, Report report) {
-		TradeOrderParam orderParam = new TradeOrderParam();
+		OrderParam orderParam = new OrderParam();
 		orderParam.setAccountId(accountId);
 		orderParam.setCloseStartDate(report.getStartDate());
 		orderParam.setCloseEndDate(report.getEndDate());

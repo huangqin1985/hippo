@@ -1,8 +1,7 @@
 package cc.fxqq.hippo.controller;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,29 +16,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 
 import cc.fxqq.hippo.cache.AccountCache;
-import cc.fxqq.hippo.cache.StringCache;
-import cc.fxqq.hippo.dto.json.PositionMQL;
 import cc.fxqq.hippo.dto.json.MarketMQL;
+import cc.fxqq.hippo.dto.json.PositionMQL;
 import cc.fxqq.hippo.dto.template.AccountDTO;
+import cc.fxqq.hippo.dto.template.ComplexOrderDTO;
+import cc.fxqq.hippo.dto.template.FundDTO;
+import cc.fxqq.hippo.dto.template.HistoryOrderDTO;
 import cc.fxqq.hippo.dto.template.MarketDTO;
 import cc.fxqq.hippo.dto.template.OrderSumDTO;
 import cc.fxqq.hippo.dto.template.Pager;
+import cc.fxqq.hippo.dto.template.PendingOrderDTO;
 import cc.fxqq.hippo.dto.template.PositionDTO;
 import cc.fxqq.hippo.dto.template.ReportDTO;
-import cc.fxqq.hippo.dto.template.TradeFundDTO;
-import cc.fxqq.hippo.dto.template.TradeOrderDTO;
 import cc.fxqq.hippo.entity.Account;
+import cc.fxqq.hippo.entity.param.FundParam;
+import cc.fxqq.hippo.entity.param.OrderParam;
 import cc.fxqq.hippo.entity.param.ReportParam;
-import cc.fxqq.hippo.entity.param.TradeFundParam;
-import cc.fxqq.hippo.entity.param.TradeOrderParam;
 import cc.fxqq.hippo.service.AccountService;
+import cc.fxqq.hippo.service.FundService;
+import cc.fxqq.hippo.service.OrderService;
 import cc.fxqq.hippo.service.ReportService;
-import cc.fxqq.hippo.service.TradeFundService;
-import cc.fxqq.hippo.service.TradeOrderService;
 import cc.fxqq.hippo.util.DateUtil;
 import cc.fxqq.hippo.util.DecimalUtil;
 
@@ -50,7 +49,7 @@ public class TradeOrderController extends BaseController {
 	private final static Logger logger = LoggerFactory.getLogger(TradeOrderController.class);
 
 	@Autowired
-	private TradeOrderService tradeOrderService;
+	private OrderService tradeOrderService;
 
 	@Autowired
 	private AccountService accountService;
@@ -59,7 +58,7 @@ public class TradeOrderController extends BaseController {
 	private ReportService reportService;
 
 	@Autowired
-	private TradeFundService tradeFundService;
+	private FundService tradeFundService;
 	
 	@GetMapping("/order")
 	public String order(Model model,
@@ -83,7 +82,7 @@ public class TradeOrderController extends BaseController {
 		String startDateStr = null;
 		String endDateStr = null;
 		if (StringUtils.isNotEmpty(type)) {
-			Date serverTime = AccountCache.getServerTime(acc.getName());
+			Date serverTime = AccountCache.getServerTime(acc.getId());
 			if (serverTime == null) {
 				serverTime = new Date();
 			}
@@ -159,7 +158,7 @@ public class TradeOrderController extends BaseController {
 		
 		ReportDTO item = reportService.querySummary(accountId);
 		
-		TradeFundParam param = new TradeFundParam();
+		FundParam param = new FundParam();
 		param.setAccountId(accountId);
 		if ("all".equals(type)) {
 			param.setType(null);
@@ -184,7 +183,7 @@ public class TradeOrderController extends BaseController {
 			param.setPage(pageNum);
 		}
 		
-		Pager<TradeFundDTO> pager = tradeFundService.getFundList(param);
+		Pager<FundDTO> pager = tradeFundService.getFundList(param);
 		model.addAttribute("pager", pager);
 		model.addAttribute("report", item);
 		model.addAttribute("account", accountId);
@@ -274,7 +273,7 @@ public class TradeOrderController extends BaseController {
 			@RequestParam(name="endDate", required = false) Date endDate,
 			@RequestParam(name="sl", required = false, defaultValue="false") boolean sl,
 			@RequestParam(name="tp", required = false, defaultValue="false") boolean tp,
-			@RequestParam(name="noSl", required = false, defaultValue="false") boolean noSl,
+			@RequestParam(name="so", required = false, defaultValue="false") boolean so,
 			@RequestParam(name="pageNum", required = false) Integer pageNum) {
 		
 		// 账户列表
@@ -299,7 +298,7 @@ public class TradeOrderController extends BaseController {
 		
 		model.addAttribute("accounts", accounts);
 		
-		TradeOrderParam param = new TradeOrderParam();
+		OrderParam param = new OrderParam();
 		param.setAccountId(accountId);
 		if (StringUtils.isNotEmpty(symbol)) {
 			param.setSymbol(symbol);
@@ -340,9 +339,9 @@ public class TradeOrderController extends BaseController {
 		}
 		param.setTp(tp);
 		param.setSl(sl);
-		param.setNoSl(noSl);
+		param.setSo(so);
 		
-		Pager<TradeOrderDTO> orderList = tradeOrderService.getTradeOrderList(param);
+		Pager<HistoryOrderDTO> orderList = tradeOrderService.getHistoryOrderList(param);
 		model.addAttribute("pager", orderList);
 		
 		model.addAttribute("account", accountId);
@@ -350,11 +349,12 @@ public class TradeOrderController extends BaseController {
 		model.addAttribute("endDate", DateUtil.formatDate(endDate));
 		model.addAttribute("symbol", symbol);
 		model.addAttribute("sort", sort);
-		model.addAttribute("sortType", sortOrder);
+		model.addAttribute("sortOrder", sortOrder);
 		model.addAttribute("startDateStr", DateUtil.formatDate(startDate));
 		model.addAttribute("endDateStr", DateUtil.formatDate(endDate));
 		model.addAttribute("tp", tp);
 		model.addAttribute("sl", sl);
+		model.addAttribute("so", so);
 		
 		return "orderList";
 	}
@@ -374,16 +374,22 @@ public class TradeOrderController extends BaseController {
 			}
 		}
 		Account acc = accountService.getAccountById(accountId);
-		Account accCache = AccountCache.getByAccountName(acc.getName());
-		if (accCache == null) {
-			model.addAttribute("isConnect", false);
-		} else {
-			model.addAttribute("isConnect", true);
-		}
 		
 		if (acc != null) {
-			PositionMQL position = AccountCache.getPosition(acc.getName());
-			PositionDTO dto = new PositionDTO(position);
+			PositionMQL position = AccountCache.getPosition(acc.getId());
+			PositionDTO dto = null;
+			if (position == null && AccountCache.isConnected(acc.getId())) {
+				dto = new PositionDTO();
+				String balStr = DecimalUtil.format(acc.getBalance());
+				dto.setEquity(balStr);
+				dto.setMargin("0");
+				dto.setFreeMargin(balStr);
+				dto.setProfit("0");
+				dto.setProfitColor("g");
+				dto.setMarginLevel("-");
+			} else {
+				dto = new PositionDTO(position);
+			}
 			model.addAttribute("position", dto);
 		}
 		
@@ -420,7 +426,7 @@ public class TradeOrderController extends BaseController {
 	@GetMapping("/market")
 	public String market(Model model,
 			@RequestParam(name="account", required = false) Integer accountId,
-			@RequestParam(name="path", required = false) String path,
+			@RequestParam(name="path", required = false, defaultValue="hot") String path,
 			@RequestParam(name="subfix", required = false, defaultValue="") String subfix) {
 		
 		// 账户列表
@@ -438,35 +444,28 @@ public class TradeOrderController extends BaseController {
 		
 		Account acc = accountService.getAccountById(accountId);
 
-		Account accCache = AccountCache.getByAccountName(acc.getName());
-		if (accCache == null) {
-			model.addAttribute("isConnect", false);
-		} else {
-			model.addAttribute("isConnect", true);
-		}
-		
 		if (acc != null) {
-			List<MarketMQL> markets = AccountCache.getMarket(acc.getName());
+			List<MarketMQL> markets = AccountCache.getMarket(acc.getId());
 			
+			List<String> subfixList = Lists.newArrayList();
 			if (markets != null) {
-				List<String> subfixList = markets.stream().map(
-						t -> t.getSymbol().substring(0, 1)).distinct().sorted().collect(Collectors.toList());
-				
+
 				List<String> pathList = markets.stream().map(
 						t -> t.getPath()).distinct().sorted().collect(Collectors.toList());
-
-				model.addAttribute("subfixList", subfixList);
 				model.addAttribute("pathList", pathList);
-				
-				if (markets.size() > 0) {
-					if (StringUtils.isNotEmpty(subfix)) {
-						markets = markets.stream().filter(t -> t.getSymbol().startsWith(subfix)).collect(Collectors.toList());
-					} 
-					else if (StringUtils.isNotEmpty(path)) {
-						markets = markets.stream().filter(t -> StringUtils.equals(path, t.getPath())).collect(Collectors.toList());
-					} else {
-						markets = markets.subList(0, Math.min(markets.size(), 20));
-					}
+				// 全部
+				if ("all".equals(path)) {
+					subfixList = markets.stream().map(
+							t -> t.getSymbol().substring(0, 1)).distinct().sorted().collect(Collectors.toList());
+					markets = markets.stream().sorted(Comparator.comparing(MarketMQL::getSymbol)).filter(t -> t.getSymbol().startsWith(subfix)).collect(Collectors.toList());
+					
+					model.addAttribute("subfixList", subfixList);
+				} 
+				// 常用
+				else if ("hot".equals(path)) {
+					markets = markets.subList(0, Math.min(markets.size(), 20));
+				} else {
+					markets = markets.stream().filter(t -> StringUtils.equals(path, t.getPath())).collect(Collectors.toList());
 				}
 				
 				List<MarketDTO> dtos = Lists.newArrayList();
@@ -491,6 +490,8 @@ public class TradeOrderController extends BaseController {
 					
 					dto.setBuyPrice(DecimalUtil.get(t.getBuyPrice(), t.getDigits()));
 					dto.setSellPrice(DecimalUtil.get(t.getSellPrice(), t.getDigits()));
+					dto.setLowPrice(DecimalUtil.get(t.getLowPrice(), t.getDigits()));
+					dto.setHighPrice(DecimalUtil.get(t.getHighPrice(), t.getDigits()));
 					
 					BigDecimal spreadProfit = DecimalUtil.get(
 							t.getPointProfit().multiply(new BigDecimal(t.getSpread())), 3);
@@ -499,9 +500,10 @@ public class TradeOrderController extends BaseController {
 					
 					dtos.add(dto);
 				}
-				Date serverTime = AccountCache.getServerTime(acc.getName());
-				
-				model.addAttribute("serverTime", DateUtil.formatDatetime(serverTime));
+				Date serverTime = AccountCache.getServerTime(acc.getId());
+				if (serverTime != null) {
+					model.addAttribute("serverTime", DateUtil.formatDatetime(serverTime));
+				}
 				model.addAttribute("markets", dtos);
 				model.addAttribute("path", path);
 				model.addAttribute("subfix", subfix);
@@ -512,5 +514,155 @@ public class TradeOrderController extends BaseController {
 		model.addAttribute("subfix", subfix);
 		
 		return "market";
+	}
+	
+	@GetMapping("/pendingOrder")
+	public String pendingOrder(Model model,
+			@RequestParam(name="account", required = false) Integer accountId,
+			@RequestParam(name="startDate", required = false) Date startDate,
+			@RequestParam(name="endDate", required = false) Date endDate,
+			@RequestParam(name="status", required = false) String status,
+			@RequestParam(name="sort", required = false, defaultValue="openTime") String sort,
+			@RequestParam(name="sortOrder", required = false, defaultValue="desc") String sortOrder,
+			@RequestParam(name="pageNum", required = false) Integer pageNum) {
+		
+		// 账户列表
+		List<AccountDTO> accounts = accountService.getAccounts();
+		
+		if (accountId == null) {
+			if (accounts.size() > 0) {
+				accountId = accounts.get(0).getId();
+			} else {
+				return "error";
+			}
+		}
+		
+		model.addAttribute("accounts", accounts);
+		
+		OrderParam param = new OrderParam();
+		param.setAccountId(accountId);
+		param.setStatus(status);
+		
+		if (startDate != null) {
+			param.setCloseStartDate(DateUtil.formatDate(startDate));
+			model.addAttribute("startDate", DateUtil.formatDate(startDate));
+			model.addAttribute("startDateStr", DateUtil.formatDate(startDate));
+		}
+		if (endDate != null) {
+			param.setCloseEndDate(DateUtil.formatDate(endDate));
+			model.addAttribute("endDate", DateUtil.formatDate(endDate));
+			model.addAttribute("endDateStr", DateUtil.formatDate(endDate));
+		}
+		
+		String sortName = "";
+		if ("openTime".equals(sort) ||
+				"lots".equals(sort) ||
+				"closeTime".equals(sort)) {
+			if ("openTime".equals(sort)) {
+				sortName = "open_time";
+			} else if ("closeTime".equals(sort)) {
+				sortName = "close_time";
+			}  else {
+				sortName = sort;
+			}
+			if ("asc".equals(sortOrder) || "desc".equals(sortOrder)) {
+				param.setOrderBy(sortName + " " + sortOrder);
+			}
+		}
+		
+		if (pageNum == null) {
+			pageNum = 1;
+		}
+		if (pageNum <= 0) {
+			param.setPage(1);
+		} else {
+			param.setPage(pageNum);
+		}
+		
+		Pager<PendingOrderDTO> orderList = tradeOrderService.getPendingOrderList(param);
+		model.addAttribute("pager", orderList);
+		model.addAttribute("account", accountId);
+		model.addAttribute("status", status);
+		model.addAttribute("sort", sort);
+		model.addAttribute("sortType", sortOrder);
+		
+		return "pendingOrder";
+	}
+	
+	@GetMapping("/complexOrder")
+	public String complexOrder(Model model,
+			@RequestParam(name="account", required = false) Integer accountId,
+			@RequestParam(name="startDate", required = false) Date startDate,
+			@RequestParam(name="endDate", required = false) Date endDate,
+			@RequestParam(name="status", required = false) String status,
+			@RequestParam(name="sort", required = false, defaultValue="openTime") String sort,
+			@RequestParam(name="sortOrder", required = false, defaultValue="desc") String sortOrder,
+			@RequestParam(name="pageNum", required = false) Integer pageNum) {
+		
+		// 账户列表
+		List<AccountDTO> accounts = accountService.getAccounts();
+		
+		if (accountId == null) {
+			if (accounts.size() > 0) {
+				accountId = accounts.get(0).getId();
+			} else {
+				return "error";
+			}
+		}
+		
+		model.addAttribute("accounts", accounts);
+		
+		OrderParam param = new OrderParam();
+		param.setAccountId(accountId);
+		param.setStatus(status);
+		
+		if (startDate != null) {
+			param.setCloseStartDate(DateUtil.formatDate(startDate));
+			model.addAttribute("startDate", DateUtil.formatDate(startDate));
+			model.addAttribute("startDateStr", DateUtil.formatDate(startDate));
+		}
+		if (endDate != null) {
+			param.setCloseEndDate(DateUtil.formatDate(endDate));
+			model.addAttribute("endDate", DateUtil.formatDate(endDate));
+			model.addAttribute("endDateStr", DateUtil.formatDate(endDate));
+		}
+		
+		String sortName = "";
+		if ("openTime".equals(sort) ||
+				"closeTime".equals(sort) ||
+				"lots".equals(sort) ||
+				"realProfit".equals(sort)) {
+			if ("openTime".equals(sort)) {
+				sortName = "open_time";
+			} else if ("closeTime".equals(sort)) {
+				sortName = "close_time";
+			}  else if ("realProfit".equals(sort)) {
+				sortName = "real_profit";
+			}   else {
+				sortName = sort;
+			}
+			if ("asc".equals(sortOrder) || "desc".equals(sortOrder)) {
+				param.setOrderBy(sortName + " " + sortOrder);
+			}
+		}
+		
+		if (pageNum == null) {
+			pageNum = 1;
+		}
+		if (pageNum <= 0) {
+			param.setPage(1);
+		} else {
+			param.setPage(pageNum);
+		}
+		param.setParentTicket("0");
+		Pager<ComplexOrderDTO> orderList = tradeOrderService.getComplexOrderList(param);
+		model.addAttribute("pager", orderList);
+		
+		model.addAttribute("account", accountId);
+		model.addAttribute("status", status);
+		model.addAttribute("sort", sort);
+		model.addAttribute("sortType", sortOrder);
+		
+		return "complexOrder";
 	}
 }

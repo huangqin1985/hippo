@@ -10,6 +10,7 @@ public class FundType {
 	public final static String DEPOSIT = "deposit";
 	public final static String WITHDRAW = "withdraw";
 	public final static String OTHER = "other";
+	public final static String SUMMARY = "summary";
 	
 	public static String parse(String str) {
 		if (StringUtils.isEmpty(str)) {
@@ -22,7 +23,7 @@ public class FundType {
 			return WITHDRAW;
 		}
 		if (StringUtils.toRootLowerCase(str).contains("summary")) {
-			return null;
+			return SUMMARY;
 		}
 		return OTHER;
 	}

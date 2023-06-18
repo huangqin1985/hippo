@@ -5,20 +5,19 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="balance" jdbcType="DECIMAL" property="balance" />
     <result column="company" jdbcType="VARCHAR" property="company" />
     <result column="server" jdbcType="VARCHAR" property="server" />
     <result column="currency" jdbcType="VARCHAR" property="currency" />
     <result column="leverage" jdbcType="INTEGER" property="leverage" />
-    <result column="balance" jdbcType="DECIMAL" property="balance" />
     <result column="client_name" jdbcType="VARCHAR" property="clientName" />
     <result column="stop_out_level" jdbcType="VARCHAR" property="stopOutLevel" />
     <result column="create_time" jdbcType="VARCHAR" property="createTime" />
     <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
-    <result column="connect_time" jdbcType="VARCHAR" property="connectTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, number, company, server, currency, leverage, balance, client_name, stop_out_level, 
-    create_time, update_time, connect_time
+    id, name, number, balance, company, server, currency, leverage, client_name, stop_out_level, 
+    create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -34,16 +33,14 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       select last_insert_rowid()
     </selectKey>
-    insert into account (name, number, company, 
-      server, currency, leverage, 
-      balance, client_name, stop_out_level, 
-      create_time, update_time, connect_time
-      )
-    values (#{name,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER}, #{company,jdbcType=VARCHAR}, 
-      #{server,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR}, #{leverage,jdbcType=INTEGER}, 
-      #{balance,jdbcType=DECIMAL}, #{clientName,jdbcType=VARCHAR}, #{stopOutLevel,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, #{connectTime,jdbcType=VARCHAR}
-      )
+    insert into account (name, number, balance, 
+      company, server, currency, 
+      leverage, client_name, stop_out_level, 
+      create_time, update_time)
+    values (#{name,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER}, #{balance,jdbcType=DECIMAL}, 
+      #{company,jdbcType=VARCHAR}, #{server,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR}, 
+      #{leverage,jdbcType=INTEGER}, #{clientName,jdbcType=VARCHAR}, #{stopOutLevel,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cc.fxqq.hippo.entity.Account">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -57,6 +54,9 @@
       <if test="number != null">
         number,
       </if>
+      <if test="balance != null">
+        balance,
+      </if>
       <if test="company != null">
         company,
       </if>
@@ -68,9 +68,6 @@
       </if>
       <if test="leverage != null">
         leverage,
-      </if>
-      <if test="balance != null">
-        balance,
       </if>
       <if test="clientName != null">
         client_name,
@@ -84,9 +81,6 @@
       <if test="updateTime != null">
         update_time,
       </if>
-      <if test="connectTime != null">
-        connect_time,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -94,6 +88,9 @@
       </if>
       <if test="number != null">
         #{number,jdbcType=INTEGER},
+      </if>
+      <if test="balance != null">
+        #{balance,jdbcType=DECIMAL},
       </if>
       <if test="company != null">
         #{company,jdbcType=VARCHAR},
@@ -107,9 +104,6 @@
       <if test="leverage != null">
         #{leverage,jdbcType=INTEGER},
       </if>
-      <if test="balance != null">
-        #{balance,jdbcType=DECIMAL},
-      </if>
       <if test="clientName != null">
         #{clientName,jdbcType=VARCHAR},
       </if>
@@ -122,9 +116,6 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=VARCHAR},
       </if>
-      <if test="connectTime != null">
-        #{connectTime,jdbcType=VARCHAR},
-      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cc.fxqq.hippo.entity.Account">
@@ -135,6 +126,9 @@
       </if>
       <if test="number != null">
         number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="balance != null">
+        balance = #{balance,jdbcType=DECIMAL},
       </if>
       <if test="company != null">
         company = #{company,jdbcType=VARCHAR},
@@ -148,9 +142,6 @@
       <if test="leverage != null">
         leverage = #{leverage,jdbcType=INTEGER},
       </if>
-      <if test="balance != null">
-        balance = #{balance,jdbcType=DECIMAL},
-      </if>
       <if test="clientName != null">
         client_name = #{clientName,jdbcType=VARCHAR},
       </if>
@@ -163,9 +154,6 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=VARCHAR},
       </if>
-      <if test="connectTime != null">
-        connect_time = #{connectTime,jdbcType=VARCHAR},
-      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -173,16 +161,15 @@
     update account
     set name = #{name,jdbcType=VARCHAR},
       number = #{number,jdbcType=INTEGER},
+      balance = #{balance,jdbcType=DECIMAL},
       company = #{company,jdbcType=VARCHAR},
       server = #{server,jdbcType=VARCHAR},
       currency = #{currency,jdbcType=VARCHAR},
       leverage = #{leverage,jdbcType=INTEGER},
-      balance = #{balance,jdbcType=DECIMAL},
       client_name = #{clientName,jdbcType=VARCHAR},
       stop_out_level = #{stopOutLevel,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=VARCHAR},
-      connect_time = #{connectTime,jdbcType=VARCHAR}
+      update_time = #{updateTime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

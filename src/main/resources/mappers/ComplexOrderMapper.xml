@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.fxqq.hippo.dao.ComplexOrderMapper">
+  <resultMap id="BaseResultMap" type="cc.fxqq.hippo.entity.ComplexOrder">
+    <result column="account_id" jdbcType="INTEGER" property="accountId" />
+    <result column="ticket" jdbcType="VARCHAR" property="ticket" />
+    <result column="open_time" jdbcType="VARCHAR" property="openTime" />
+    <result column="close_time" jdbcType="VARCHAR" property="closeTime" />
+    <result column="symbol" jdbcType="VARCHAR" property="symbol" />
+    <result column="lots" jdbcType="DECIMAL" property="lots" />
+    <result column="commission" jdbcType="DECIMAL" property="commission" />
+    <result column="swap" jdbcType="DECIMAL" property="swap" />
+    <result column="profit" jdbcType="DECIMAL" property="profit" />
+    <result column="real_profit" jdbcType="DECIMAL" property="realProfit" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="open_price" jdbcType="VARCHAR" property="openPrice" />
+    <result column="close_price" jdbcType="VARCHAR" property="closePrice" />
+    <result column="stop_loss" jdbcType="VARCHAR" property="stopLoss" />
+    <result column="take_profit" jdbcType="VARCHAR" property="takeProfit" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="parent_ticket" jdbcType="VARCHAR" property="parentTicket" />
+  </resultMap>
+  <insert id="insert" parameterType="cc.fxqq.hippo.entity.ComplexOrder">
+    insert into complex_order (account_id, ticket, open_time, 
+      close_time, symbol, lots, 
+      commission, swap, profit, 
+      real_profit, type, open_price, 
+      close_price, stop_loss, take_profit, 
+      comment, status, parent_ticket
+      )
+    values (#{accountId,jdbcType=INTEGER}, #{ticket,jdbcType=VARCHAR}, #{openTime,jdbcType=VARCHAR}, 
+      #{closeTime,jdbcType=VARCHAR}, #{symbol,jdbcType=VARCHAR}, #{lots,jdbcType=DECIMAL}, 
+      #{commission,jdbcType=DECIMAL}, #{swap,jdbcType=DECIMAL}, #{profit,jdbcType=DECIMAL}, 
+      #{realProfit,jdbcType=DECIMAL}, #{type,jdbcType=VARCHAR}, #{openPrice,jdbcType=VARCHAR}, 
+      #{closePrice,jdbcType=VARCHAR}, #{stopLoss,jdbcType=VARCHAR}, #{takeProfit,jdbcType=VARCHAR}, 
+      #{comment,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{parentTicket,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cc.fxqq.hippo.entity.ComplexOrder">
+    insert into complex_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="accountId != null">
+        account_id,
+      </if>
+      <if test="ticket != null">
+        ticket,
+      </if>
+      <if test="openTime != null">
+        open_time,
+      </if>
+      <if test="closeTime != null">
+        close_time,
+      </if>
+      <if test="symbol != null">
+        symbol,
+      </if>
+      <if test="lots != null">
+        lots,
+      </if>
+      <if test="commission != null">
+        commission,
+      </if>
+      <if test="swap != null">
+        swap,
+      </if>
+      <if test="profit != null">
+        profit,
+      </if>
+      <if test="realProfit != null">
+        real_profit,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="openPrice != null">
+        open_price,
+      </if>
+      <if test="closePrice != null">
+        close_price,
+      </if>
+      <if test="stopLoss != null">
+        stop_loss,
+      </if>
+      <if test="takeProfit != null">
+        take_profit,
+      </if>
+      <if test="comment != null">
+        comment,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="parentTicket != null">
+        parent_ticket,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="accountId != null">
+        #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="ticket != null">
+        #{ticket,jdbcType=VARCHAR},
+      </if>
+      <if test="openTime != null">
+        #{openTime,jdbcType=VARCHAR},
+      </if>
+      <if test="closeTime != null">
+        #{closeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="symbol != null">
+        #{symbol,jdbcType=VARCHAR},
+      </if>
+      <if test="lots != null">
+        #{lots,jdbcType=DECIMAL},
+      </if>
+      <if test="commission != null">
+        #{commission,jdbcType=DECIMAL},
+      </if>
+      <if test="swap != null">
+        #{swap,jdbcType=DECIMAL},
+      </if>
+      <if test="profit != null">
+        #{profit,jdbcType=DECIMAL},
+      </if>
+      <if test="realProfit != null">
+        #{realProfit,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="openPrice != null">
+        #{openPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="closePrice != null">
+        #{closePrice,jdbcType=VARCHAR},
+      </if>
+      <if test="stopLoss != null">
+        #{stopLoss,jdbcType=VARCHAR},
+      </if>
+      <if test="takeProfit != null">
+        #{takeProfit,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="parentTicket != null">
+        #{parentTicket,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

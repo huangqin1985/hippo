@@ -69,11 +69,9 @@ a:hover {
 	border-left:3px solid #0078FF;
 }
 .sltp {
-	border-left:3px solid green;
+	border-left:3px solid gray;
 }
-.nosltp {
-	border-left:3px solid red;
-}
+
 .so {
 	border-left:3px solid #AB3439;
 }

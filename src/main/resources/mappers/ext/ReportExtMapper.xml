@@ -63,7 +63,7 @@
             <if test="orderBy != null">
 				order by ${orderBy}
 			</if>
-            <if test="page != null">
+            <if test="page > 0">
             	 limit #{startRecord} , #{rows}
             </if>
 	</select>
@@ -78,5 +78,12 @@
 			and type = #{type}
 			and date(start_date) = #{startDate}
 	</select>
-
+	
+	<select id="selectIncome" resultType="java.math.BigDecimal">
+		select sum(real_profit) 
+			from report
+			 where account_id = #{accountId}
+			 and type = 'month'
+	</select>
+	
 </mapper>

@@ -1,9 +1,9 @@
 package cc.fxqq.hippo.dto.json;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.annotation.JSONType;
 
 import lombok.Data;
@@ -12,8 +12,49 @@ import lombok.Data;
 @JSONType
 public class OrderMQL {
 
-	private BigDecimal balance; // 余额
+	private String ticket;
 
-	private List<TradeOrderMQL> tradeOrders;
+	@JSONField (format="yyyy.MM.dd HH:mm:ss")
+	private Date openTime;
+
+	@JSONField (format="yyyy.MM.dd HH:mm:ss")
+	private Date closeTime;
+	
+	private String symbol;
+	
+	private BigDecimal lots;
+
+	private BigDecimal commission;
+
+	private BigDecimal swap;
+
+	private BigDecimal margin;
+
+	private BigDecimal profit;
+
+	private String type;
+	
+	private String openPrice;
+
+	private String closePrice;
+
+	private String stopLoss;
+
+	private String takeProfit;
+	
+	private String comment;
+
+	@JSONField (format="yyyy.MM.dd HH:mm:ss")
+	private Date expiration;
+	
+	private BigDecimal maxLoss;
+	
+	private BigDecimal maxProfit;
+
+	private Integer maxLossPoint;
+	
+	private Integer maxProfitPoint;
+	
+	private BigDecimal todaySwap;
 
 }

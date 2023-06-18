@@ -15,8 +15,8 @@ import com.google.common.collect.Lists;
 
 import cc.fxqq.hippo.consts.OrderTypeEnum;
 import cc.fxqq.hippo.dto.json.OrderMQL;
-import cc.fxqq.hippo.dto.json.TradeOrderMQL;
-import cc.fxqq.hippo.service.TradeOrderService;
+import cc.fxqq.hippo.dto.json.OrderMQL;
+import cc.fxqq.hippo.service.OrderService;
 import cc.fxqq.hippo.util.DateUtil;
 
 @SpringBootTest
@@ -25,10 +25,10 @@ public class TradeOrderServiceTest {
 	protected final static Logger logger = LoggerFactory.getLogger(TradeOrderServiceTest.class);
 
 	@Autowired
-	protected TradeOrderService tradeOrderService;
+	protected OrderService tradeOrderService;
 	
-	private TradeOrderMQL create(String ticket, String type, String comment) {
-		TradeOrderMQL order = new TradeOrderMQL();
+	private OrderMQL create(String ticket, String type, String comment) {
+		OrderMQL order = new OrderMQL();
 		
 		order.setTicket(ticket);
 		order.setOpenTime(DateUtil.parseDate("2022-09-22 13:34:08"));

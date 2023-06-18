@@ -23,6 +23,10 @@ public class MarketMQL {
 	private BigDecimal buyPrice;
 
 	private BigDecimal sellPrice;
+
+	private BigDecimal lowPrice;
+
+	private BigDecimal highPrice;
 	
 	private Integer spread;
 	

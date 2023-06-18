@@ -1,0 +1,325 @@
+<!doctype html>
+
+<!--注意：引入thymeleaf的名称空间-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>订单</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/my.css} "/>
+
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script>
+    $(function() {
+    	$("#sa").click(function() {
+    		var sortOrder = $("#sortOrder").val();
+    		if("desc" == sortOrder) {
+    			$("#sortOrder").val("asc");
+    		} else {
+    			$("#sortOrder").val("desc");
+    		}
+        	$("#form2").submit();
+    	});
+    	
+    	$("#sel2").change(function() {
+    		var sort = $("#sel2").val();
+    		
+    		$("#sort").val(sort);
+        	$("#form2").submit();
+    	});
+    	$("#sel3").change(function() {
+    		var status = $("#sel3").val();
+    		
+    		$("#status").val(status);
+        	$("#form2").submit();
+    	});
+
+    	$(".orderDetail").click(function() {
+    		$(this).parent().children(".moreInfo").toggle();
+    	});
+    	
+    	$(".pageButton").click(function() {
+    		$("#pageNum").val($(this).attr("page"));
+    		
+        	$("#form2").submit();
+    	});
+    });
+    </script>
+</head>
+<body>
+   	<form id="form2" name="form2" action="pendingOrder">
+    	<input type="hidden" th:value="${account}" name = "account"/>
+    	<input type="hidden" id="startDate" th:value="${startDate}" name = "startDate"/>
+    	<input type="hidden" id="endDate" th:value="${endDate}" name = "endDate"/>
+    	<input type="hidden" id="status" th:value="${status}" name = "status"/>
+    	<input type="hidden" id="sort" th:value="${sort}" name = "sort"/>
+    	<input type="hidden" id="sortOrder" th:value="${sortType}" name = "sortOrder"/>
+    	<input type="hidden" id="pageNum" name = "pageNum"/>
+   	</form>
+	<table style="margin: 0 8px 0 8px;">
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:25px;">
+			<td colspan="3" style="text-align:center;width:100%;padding:0 10px 0 10px;">
+				<div th:insert="common::account"></div>
+			</td> 	
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;text-align:left;padding:0 0 0 10px;">
+				<div th:insert="common::nav"></div>
+			</td>
+		</tr>
+		<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+    	<tr style="height: 25px;padding:0 10px 0 10px">
+    		<td style="text-align:right;">
+	    		<div th:insert="common::orderNav"></div>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr style="height: 25px;padding:0 10px 0 10px">
+    		<td style="text-align:center;">
+	    		<a th:href="'order?account=' + ${account}  + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}">
+		    		<span  th:text="${startDateStr + ' - ' + endDateStr}"></span>
+	    		</a>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr>
+    		<td style="text-align:left;width:50%">
+    			&nbsp;挂单
+		    	<select id="sel3" class="last_center">
+		    		<option value="">全部</option>
+		    		<option th:selected="${status == 'trade'}" value="trade">交易</option>
+		    		<option th:selected="${status == 'cancelled'}" value="cancelled">取消</option>
+		    	</select>
+		    	&nbsp;
+		   		
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+	    <tr>
+    		<td style="text-align:left;width:40%">
+		    	<select id="sel2" class="last_center">
+			    		<option th:selected="${sort == 'openTime'}" value="openTime">创建时间</option>
+			    		<option th:selected="${sort == 'closeTime'}" value="closeTime">关闭时间</option>
+			    		<option th:selected="${sort == 'lots'}" value="lots">交易量</option>
+		    	</select>&nbsp;&nbsp;<a id="sa" th:if="${sortType == 'desc'}" href="javascript:;">↓</a><a id="sa" th:if="${sortType == 'asc'}" href="javascript:;">↑</a>
+    		</td>
+    		<td  colspan="2" style="text-align:right;width:60%">
+	    		<span th:text="${pager.totalRecord}"></span>条&nbsp;<span th:if="${pager.pageCount gt 0}"><span th:text="${pager.pageNum}"></span>/<span th:text="${pager.pageCount}"></span></span>
+	    		<a class="pageButton" th:page="${pager.prePage}" th:if="${pager.hasPrePage}"
+	    			  href="javascript:;">上页</a>
+	    		<a class="pageButton" th:page="${pager.nextPage}" th:if="${pager.hasNextPage}" 
+	    			 href="javascript:;">下页</a>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+		<tr>
+			<td>
+				<table th:each="item : ${pager.data}" >
+					<tr class="orderDetail">
+						<td style="text-align: left;padding: 0 5px 0 5px;width:82%;">
+							<span style="font-weight: bold" th:text="${item.symbol}"></span>, 
+							<span th:if="${item.type == 'buy limit' || item.type == 'buy stop'}" class="g" style="font-weight: bold"
+								th:text="${item.type} + ' ' + ${item.lots}"></span> 
+							<span th:if="${item.type == 'sell limit' || item.type == 'sell stop'}" class="r" style="font-weight: bold"
+								th:text="${item.type} + ' ' + ${item.lots}"></span>
+						<td style="text-align:right;width:18%;padding: 0 5px 0 5px" >
+							<span class="r" th:if="${item.status == 'cancelled'}">取消</span> 
+							<span class="g" th:if="${item.status == 'trade'}">交易</span> 
+						</td>
+					</tr>
+					<tr class="orderDetail" >
+						<td style="text-align: left;width:75%;padding: 0 5px 0 5px">
+							<span  th:text="${item.openPrice}"></span> → <span
+							 th:text="${item.closePrice}"></span> 
+						</td>
+						<td style="padding: 0 5px 0 5px; text-align: right;width:25%;">
+							<!-- <span style="font-size: 15px" th:text="${item.points}"></span> -->
+						</td>
+					</tr>
+					<tr style="display:none" class="moreInfo">
+						<td style="text-align: left;width:50%;padding: 0 5px 0 5px">
+							<span style="font-size: 14px;font-style:italic" th:text="${item.openTime}"></span>
+						<td style="width: 120px; text-align: right;width:50%;padding: 0 5px 0 5px">
+							<span style="font-size: 14px;font-style:italic" th:text="${item.closeTime}"></span>
+						</td>
+					</tr>
+					<tr style="display:none" class="moreInfo">
+						<td style="text-align: right;padding: 0 5px 0 5px"><span
+							style="font-size: 15px">止损价：</span></td>
+						<td style="text-align: right;"><span
+							style="font-size: 15px" th:text="${item.stopLoss}"></span></td>
+						<td style="text-align: right;"><span
+							style="font-size: 15px">获利价：</span></td>
+						<td style="text-align: right;padding: 0 5px 0 5px"><span
+							style="font-size: 15px" th:text="${item.takeProfit}"></span></td>
+					</tr>
+					<tr th:if="${item.expiration != null && item.expiration != ''}" style="display:none" class="moreInfo">
+						<td style="text-align: right;padding: 0 5px 0 5px"><span
+							style="font-size: 15px">有效期：</span></td>
+						<td colspan="3" style="text-align: right;padding: 0 5px 0 5px">
+						<span th:text="${item.expiration}" style="font-size: 15px"></span></td>
+					</tr>
+					<!-- <tr style="display:none" class="moreInfo">
+						<td style="text-align: right;padding: 0 5px 0 5px">
+							<span style="font-size: 15px">单号：</span>
+						</td>
+						<td style="text-align: right;">
+							<span th:if="${item.status!='closed'}" style="font-size: 15px" th:text="${item.ticket}"></span>
+							<a th:if="${item.status=='closed'}" href="javascript:;" id="pendingTicket" style="font-size: 15px" th:text="${item.ticket}"></a>
+						</td>
+						<td style="text-align: right;">
+						</td>
+						<td style="text-align: right;padding: 0 5px 0 5px">
+						</td>
+					</tr> -->
+					<tr style="height:10px;">
+				    	<td colspan="3" style="width:100%;">
+				    	</td>
+				    </tr>
+					<tr class="moreInfo" th:if="${item.order != null}" style="display:none">
+						<td>
+							<table >
+								<tr style="font-size:15px;margin: 0 5px 0 5px;">
+									<td class="sltp" style="text-align: left;padding: 0 5px 0 5px;">
+										<span th:text="${item.order.symbol}"></span>
+										<span th:if="${item.order.type == 'buy'}" class="g" 
+											th:text="${item.order.type} + ' ' + ${item.order.lots}"></span> 
+										<span th:if="${item.order.type == 'sell'}" class="r" 
+											th:text="${item.order.type} + ' ' + ${item.order.lots}"></span>
+									</td>
+									<td style="text-align:right;padding: 0 15px 0 15px" >
+										<span
+											th:if="${item.order.realProfit >= 0}" class="g"
+											 th:text="${item.order.realProfit}"></span> <span
+											th:if="${item.order.realProfit < 0}" class="r"
+											 th:text="${item.order.realProfit}"></span>
+									</td>
+								</tr>
+								<tr style="font-size:15px;margin: 0 5px 0 5px;">
+									<td class="sltp" style="text-align: left;width:70%;padding: 0 5px 0 5px">
+										<span  th:text="${item.order.openPrice}"></span>&nbsp;&nbsp; → <span
+										 th:text="${item.order.closePrice}"></span> 
+									</td>
+									<td style="padding: 0 15px 0 0; text-align: right;width:30%;">
+										<!-- <span style="font-size:15px;" th:text="${item.order.closeTime}"></span> -->
+									</td>
+								</tr>
+								<tr class="sltp"  style="font-size:15px;margin: 0 5px 0 5px">
+									<td style="text-align: left;width:50%;padding: 0 5px 0 5px">
+										<span style="font-size: 14px;font-style:italic" th:text="${item.order.openTime}"></span>
+									<td style="width: 120px; text-align: right;width:50%;padding: 0 15px 0 0">
+										<span style="font-size: 14px;font-style:italic" th:text="${item.order.closeTime}"></span>
+									</td>
+								</tr>
+								<tr style="font-size:15px;margin: 0 5px 0 5px">
+									<td  class="sltp" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
+										style="font-size: 15px">止损价：</span>
+									</td>
+									<td style="text-align: right;"><span
+										style="font-size: 15px" th:text="${item.order.stopLoss}"></span>
+									</td>
+									<td style="text-align: right;width:65px;"><span
+										style="font-size: 15px">获利价：</span>
+									</td>
+									<td style="text-align: right;padding: 0 15px 0 0"><span
+										style="font-size: 15px" th:text="${item.order.takeProfit}"></span></td>
+								</tr>
+								<tr style="font-size:15px;margin: 0 5px 0 5px">
+									<td  class="sltp" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
+										style="font-size: 15px">手续费：</span>
+									</td>
+									<td style="text-align: right;"><span
+										style="font-size: 15px" th:text="${item.order.commission}">
+									</span></td>
+									<td style="text-align: right;width:65px;"><span
+										style="font-size: 15px">过夜费：</span></td>
+									<td style="text-align: right;padding: 0 15px 0 0"><span
+										style="font-size: 15px" th:text="${item.order.swap}"></span>
+									</td>
+								</tr>
+								<tr style="font-size:15px;margin: 0 5px 0 5px">
+									<td  class="sltp" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
+										style="font-size: 15px">点数：</span></td>
+									<td style="text-align: right;">
+									<span
+										style="font-size: 15px" th:text="${item.order.points}"></span>
+									</td>
+									<td style="text-align: right;width:65px;"><span
+										style="font-size: 15px">盈亏：</span>
+									</td>
+									<td style="text-align: right;padding: 0 15px 0 0"><span
+										style="font-size: 15px" th:text="${item.order.profit}"></span></td>
+								</tr>
+								<tr style="font-size:15px;margin: 0 5px 0 5px">
+									
+									<td class="sltp" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
+										style="font-size: 15px">单号</span></td>
+									<td style="text-align: right;">
+										<span
+										style="font-size: 15px" th:text="${item.order.ticket}"></span>
+									</td>
+									<td   style="text-align: right;width:65px;"><span
+										style="font-size: 15px">时长：</span></td>
+									<td style="text-align: right;padding: 0 15px 0 0">
+									<span
+										style="font-size: 15px" th:text="${item.order.duration}"></span>
+									</td>
+								</tr>
+								<tr style="height:10px;">
+							    	<td colspan="3" style="width:100%;">
+							    	</td>
+							    </tr>
+							</table>
+						</td>
+					</tr>
+					<tr style="height:6px;">
+				    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+				    	</td>
+				    </tr>
+				</table>
+			</td>
+		</tr>
+		<tr th:if="${pager.totalRecord > 0}">
+    		<td style="text-align:left;width:40%">
+		    	
+    		</td>
+    		<td  colspan="2" style="text-align:right;width:60%">
+	    		<span th:text="${pager.totalRecord}"></span>条&nbsp;<span th:if="${pager.pageCount gt 0}"><span th:text="${pager.pageNum}"></span>/<span th:text="${pager.pageCount}"></span></span>
+	    		<a class="pageButton" th:page="${pager.prePage}" th:if="${pager.hasPrePage}"
+	    			  href="javascript:;">上页</a>
+	    		<a class="pageButton" th:page="${pager.nextPage}" th:if="${pager.hasNextPage}" 
+	    			 href="javascript:;">下页</a>
+    		</td>
+    	</tr>
+    	<tr style="height:10px;">
+	    	<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+	    	</td>
+	    </tr>
+	</table>
+</body>
+</html>

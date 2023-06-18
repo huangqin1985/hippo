@@ -26,6 +26,6 @@ public class PositionMQL {
 
 	private BigDecimal marginLevel; // 
 
-	private List<TradeOrderMQL> orders;
+	private List<OrderMQL> orders;
 
 }

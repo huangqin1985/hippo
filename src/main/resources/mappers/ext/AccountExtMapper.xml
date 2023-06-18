@@ -9,12 +9,10 @@
 	    <result column="server" jdbcType="VARCHAR" property="server" />
 	    <result column="currency" jdbcType="VARCHAR" property="currency" />
 	    <result column="leverage" jdbcType="INTEGER" property="leverage" />
-	    <result column="balance" jdbcType="DECIMAL" property="balance" />
 	    <result column="client_name" jdbcType="VARCHAR" property="clientName" />
 	    <result column="stop_out_level" jdbcType="VARCHAR" property="stopOutLevel" />
 	    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
 	    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
-	    <result column="connect_time" jdbcType="VARCHAR" property="connectTime" />
 	  </resultMap>
 	
 	<select id="selectAccounts" resultMap="BaseResultMap">

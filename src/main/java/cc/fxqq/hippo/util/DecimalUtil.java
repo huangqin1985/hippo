@@ -18,7 +18,7 @@ public class DecimalUtil {
 		return pattern.format(b);
 	}
 	
-	public static String format2(BigDecimal b) {
+	public static String formatFull(BigDecimal b) {
 		return pattern2.format(b);
 	}
 	

@@ -27,5 +27,5 @@ public class ConnectMQL {
 	
 	private String clientName;
 	
-	private List<TradeOrderMQL> histories; //  历史订单
+	private List<OrderMQL> histories; //  历史订单
 }

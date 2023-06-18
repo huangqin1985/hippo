@@ -9,6 +9,8 @@ public class Account {
 
     private Integer number;
 
+    private BigDecimal balance;
+
     private String company;
 
     private String server;
@@ -17,8 +19,6 @@ public class Account {
 
     private Integer leverage;
 
-    private BigDecimal balance;
-
     private String clientName;
 
     private String stopOutLevel;
@@ -26,8 +26,6 @@ public class Account {
     private String createTime;
 
     private String updateTime;
-
-    private String connectTime;
 
     public Integer getId() {
         return id;
@@ -51,6 +49,14 @@ public class Account {
 
     public void setNumber(Integer number) {
         this.number = number;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public String getCompany() {
@@ -85,14 +91,6 @@ public class Account {
         this.leverage = leverage;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
-
     public String getClientName() {
         return clientName;
     }
@@ -125,14 +123,6 @@ public class Account {
         this.updateTime = updateTime == null ? null : updateTime.trim();
     }
 
-    public String getConnectTime() {
-        return connectTime;
-    }
-
-    public void setConnectTime(String connectTime) {
-        this.connectTime = connectTime == null ? null : connectTime.trim();
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -142,16 +132,15 @@ public class Account {
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", number=").append(number);
+        sb.append(", balance=").append(balance);
         sb.append(", company=").append(company);
         sb.append(", server=").append(server);
         sb.append(", currency=").append(currency);
         sb.append(", leverage=").append(leverage);
-        sb.append(", balance=").append(balance);
         sb.append(", clientName=").append(clientName);
         sb.append(", stopOutLevel=").append(stopOutLevel);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
-        sb.append(", connectTime=").append(connectTime);
         sb.append("]");
         return sb.toString();
     }

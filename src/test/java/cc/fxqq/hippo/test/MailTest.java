@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-import cc.fxqq.hippo.dto.json.TradeOrderMQL;
+import cc.fxqq.hippo.dto.json.OrderMQL;
 import cc.fxqq.hippo.notify.MailService;
 import cc.fxqq.hippo.util.DateUtil;
 import cc.fxqq.hippo.util.DecimalUtil;
@@ -24,7 +24,7 @@ public class MailTest {
     
     @Test
     public void test() throws Exception {
-    	TradeOrderMQL order = new TradeOrderMQL();
+    	OrderMQL order = new OrderMQL();
     	order.setSymbol("USDJPY.p");
     	order.setType("sell");
     	order.setLots(DecimalUtil.get(1.0));
@@ -34,6 +34,6 @@ public class MailTest {
     	order.setProfit(DecimalUtil.get(2.0));
     	order.setProfit(DecimalUtil.get(123.0));
     	order.setTicket("83672074");
-    	mailService.send("tp", 232111, order);
+    	mailService.sendPendingOrder(232111, order);
     }
 }

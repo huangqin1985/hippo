@@ -10,43 +10,53 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.common.collect.Lists;
-
 import cc.fxqq.hippo.consts.FundType;
 import cc.fxqq.hippo.consts.ReportTypeEnum;
-import cc.fxqq.hippo.dao.AccountMapper;
+import cc.fxqq.hippo.dao.ReportMapper;
+import cc.fxqq.hippo.dao.ext.FundExtMapper;
 import cc.fxqq.hippo.dao.ext.ReportExtMapper;
-import cc.fxqq.hippo.dao.ext.TradeFundExtMapper;
-import cc.fxqq.hippo.dao.ext.TradeOrderExtMapper;
-import cc.fxqq.hippo.dto.template.OrderDayDTO;
 import cc.fxqq.hippo.dto.template.Pager;
 import cc.fxqq.hippo.dto.template.ReportDTO;
+import cc.fxqq.hippo.entity.Report;
 import cc.fxqq.hippo.entity.param.ReportParam;
-import cc.fxqq.hippo.entity.param.TradeOrderParam;
 import cc.fxqq.hippo.entity.result.FundSumResult;
-import cc.fxqq.hippo.entity.result.OrderDayResult;
 import cc.fxqq.hippo.task.ReportTask;
 import cc.fxqq.hippo.util.DateUtil;
 import cc.fxqq.hippo.util.DecimalUtil;
 import cc.fxqq.hippo.util.PageUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ReportService {
 
 	@Autowired
 	private ReportExtMapper reportExtMapper;
 	
 	@Autowired
-	private TradeFundExtMapper tradeFundExtMapper;
+	private FundExtMapper tradeFundExtMapper;
 	
 	@Autowired
-	private TradeOrderExtMapper tradeOrderExtMapper;
-
-	@Autowired
-	private AccountMapper accountMapper;
+	private ReportMapper reportMapper;
 
 	@Autowired
 	private ReportTask reportTask;
+	
+	public void insertSummary(List<Report> list) {
+		int count = 0;
+		for (Report report : list) {
+			// 查询是否存在month记录
+			Report rpt = reportExtMapper.selectUnique(report.getAccountId(),
+					report.getType(), report.getStartDate());
+			
+			if (rpt == null) {
+				reportMapper.insertSelective(report);
+				count++;
+			}
+		}
+
+		log.info("新增summary报表" + count + "条");
+	}
 	
 	/**
 	 * 
@@ -54,13 +64,13 @@ public class ReportService {
 	 * @param equity
 	 */
 	public void updateReportStatus(Integer account, BigDecimal equity,
-			BigDecimal profit, BigDecimal margin, Date serverTime) {
+			BigDecimal profit, BigDecimal margin, BigDecimal marginLevel, Date serverTime) {
 		reportTask.updateReportStatus(ReportTypeEnum.WEEK.getValue(),
-				account, equity, profit, margin, serverTime);
+				account, equity, profit, margin, marginLevel, serverTime);
 		reportTask.updateReportStatus(ReportTypeEnum.DAY.getValue(),
-				account, equity, profit, margin, serverTime);
+				account, equity, profit, margin, marginLevel, serverTime);
 		reportTask.updateReportStatus(ReportTypeEnum.MONTH.getValue(),
-				account, equity, profit, margin, serverTime);
+				account, equity, profit, margin, marginLevel, serverTime);
 	}
 	
 	/**
@@ -152,8 +162,10 @@ public class ReportService {
 					dto.setMinEquity(minEquity);
 					BigDecimal equity = item.getEquity();
 					dto.setEquity(equity);
-					BigDecimal profit = equity.subtract(item.getBalance());
-					dto.setProfit(profit);
+					if (equity != null) {
+						BigDecimal profit = equity.subtract(item.getBalance());
+						dto.setProfit(profit);
+					}
 					
 					BigDecimal maxMargin = item.getMaxMargin();
 					dto.setMaxMargin(maxMargin);

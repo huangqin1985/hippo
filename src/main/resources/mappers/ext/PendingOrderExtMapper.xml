@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.fxqq.hippo.dao.ext.PendingOrderExtMapper">
+
+	<resultMap id="BaseResultMap" type="cc.fxqq.hippo.entity.PendingOrder">
+	    <result column="account_id" jdbcType="INTEGER" property="accountId" />
+	    <result column="ticket" jdbcType="VARCHAR" property="ticket" />
+	    <result column="open_time" jdbcType="VARCHAR" property="openTime" />
+	    <result column="close_time" jdbcType="VARCHAR" property="closeTime" />
+	    <result column="symbol" jdbcType="VARCHAR" property="symbol" />
+	    <result column="lots" jdbcType="DECIMAL" property="lots" />
+	    <result column="type" jdbcType="VARCHAR" property="type" />
+	    <result column="open_price" jdbcType="VARCHAR" property="openPrice" />
+	    <result column="close_price" jdbcType="VARCHAR" property="closePrice" />
+	    <result column="stop_loss" jdbcType="VARCHAR" property="stopLoss" />
+	    <result column="take_profit" jdbcType="VARCHAR" property="takeProfit" />
+	    <result column="expiration" jdbcType="VARCHAR" property="expiration" />
+	    <result column="status" jdbcType="VARCHAR" property="status" />
+	  </resultMap>
+
+	<sql id="Base_Column_List">
+		*
+	</sql>
+
+	<select id="selectPage" parameterType="cc.fxqq.hippo.entity.param.OrderParam" 
+			resultMap="BaseResultMap">
+	    select 
+	    <include refid="Base_Column_List" />
+	    from pending_order
+	    <include refid="cond" />
+	    <if test="orderBy != null">
+			order by ${orderBy}
+		</if>
+	    <if test="page > 0">
+        	 limit #{startRecord} , #{rows}
+        </if>
+	  </select>
+
+	<select id="selectTotal" resultType="int">
+		select count(*) from pending_order
+		<include refid="cond" />
+	</select>
+
+	<sql id="cond">
+		where account_id = #{accountId}
+		<if test="status != null and status != ''">
+			and status = #{status}
+		</if>
+		<if test="openStartDate != null and openEndDate != null">
+			and date(close_time) BETWEEN #{openStartDate} and #{openEndDate}
+		</if>
+		<if test="closeStartDate != null and closeEndDate != null">
+			and date(close_time) BETWEEN #{closeStartDate} and #{closeEndDate}
+		</if>
+	</sql>
+
+	<insert id="replaceBatch">
+		replace into pending_order (
+		`account_id`,
+		`ticket`,
+		`open_time`,
+		`close_time`,
+		`symbol`,
+		`lots`,
+		`type`,
+		`open_price`,
+		`close_price`,
+		`stop_loss`,
+		`take_profit`,
+		`expiration`,
+		`status`
+		)
+		VALUES
+		<foreach collection="list" close="" index="index" item="item"
+			open="" separator=",">
+			(
+			#{item.accountId},
+			#{item.ticket},
+			#{item.openTime},
+			#{item.closeTime},
+			#{item.symbol},
+			#{item.lots},
+			#{item.type},
+			#{item.openPrice},
+			#{item.closePrice},
+			#{item.stopLoss},
+			#{item.takeProfit},
+			#{item.expiration},
+			#{item.status}
+			)
+		</foreach>
+	</insert>
+
+	<update id="updateUnique">
+		update
+			pending_order
+		set
+			pending_type = #{status}
+		where
+			account_id = #{accountId}
+			and ticket = #{ticket}
+	</update>
+</mapper>

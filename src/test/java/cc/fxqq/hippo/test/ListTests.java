@@ -17,7 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 
-import cc.fxqq.hippo.dto.json.TradeOrderMQL;
+import cc.fxqq.hippo.dto.json.OrderMQL;
 
 class ListTests {
 	
@@ -54,31 +54,31 @@ class ListTests {
 	
 	@Test
 	void test7() {
-		List<TradeOrderMQL> trades = Lists.newArrayList();
-		TradeOrderMQL trade = new TradeOrderMQL();
+		List<OrderMQL> trades = Lists.newArrayList();
+		OrderMQL trade = new OrderMQL();
 		trade.setSymbol("XAUUSD.p");
 		trade.setType("sell");
 		trade.setLots(new BigDecimal(1.0));
 		trade.setProfit(new BigDecimal(50));
 		trades.add(trade);
 		
-		trade = new TradeOrderMQL();
+		trade = new OrderMQL();
 		trade.setSymbol("XAUUSD.p");
 		trade.setType("buy");
 		trade.setLots(new BigDecimal(0.5));
 		trade.setProfit(new BigDecimal(-21));
 		trades.add(trade);
 		
-		Map<String, List<TradeOrderMQL>> map = 
+		Map<String, List<OrderMQL>> map = 
 				trades.stream().filter(t -> {
 					return "buy".equals(t.getType());
-				}).collect(Collectors.groupingBy(TradeOrderMQL::getSymbol));
+				}).collect(Collectors.groupingBy(OrderMQL::getSymbol));
 		
-		List<TradeOrderMQL> result = Lists.newArrayList();
+		List<OrderMQL> result = Lists.newArrayList();
 		for (String key : map.keySet()) {
-			TradeOrderMQL mql = new TradeOrderMQL();
+			OrderMQL mql = new OrderMQL();
 			mql.setSymbol(key);
-			List<TradeOrderMQL> ll = map.get(key);
+			List<OrderMQL> ll = map.get(key);
 			
 			Double lots = ll.stream().collect(Collectors.summingDouble(t -> {
 				if (t.getType().equals("buy")) {

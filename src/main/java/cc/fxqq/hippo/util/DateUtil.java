@@ -24,6 +24,8 @@ public class DateUtil {
 	public static final String MONTH_1 = "yyyy-MM";
 	public static final String DAY_1 = "yyyy-MM-dd";
 	
+	public static final String SERVER_PATTER = "yyyy.MM.dd HH:mm:ss";
+	
 	private static String[] WEEK_LABELS = { "日", "一", "二", "三", "四", "五", "六" };
 	
 	public static String getUTC8Time(Date time, Integer timeZone) {
@@ -135,7 +137,7 @@ public class DateUtil {
 	public static String getStartDateStrOfWeek(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setFirstDayOfWeek(Calendar.MONDAY);
-        cal.setTime(new Date());
+        cal.setTime(date);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		return formatDate(cal.getTime());
 	}

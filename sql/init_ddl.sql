@@ -1,33 +1,32 @@
 -- report definition
 
-
+-- 账户
 CREATE TABLE account (
 	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	name VARCHAR(100) NOT NULL,  --账号名称
 	number INTEGER NOT NULL,	--号码
+	balance DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 余额
 	company VARCHAR(100) NOT NULL,	--经纪商
 	server VARCHAR(100) NOT NULL,	--服务器
 	currency VARCHAR(10) NOT NULL,	--货币
 	leverage INTEGER NOT NULL,	--杠杆
-	balance DECIMAL(10,2) NOT NULL,	--余额
 	client_name VARCHAR(100) NOT NULL, -- 客户名称
 	stop_out_level VARCHAR(50) NOT NULL, -- 爆仓条件
 	create_time VARCHAR(50) NOT NULL,	--创建时间
 	update_time VARCHAR(50) NOT NULL,	--更新时间
-	connect_time VARCHAR(50) NOT NULL,	--连接时间
 	CONSTRAINT account_PK UNIQUE (`name`)
 );
 
 CREATE TABLE report (
 	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	account_id INTEGER NOT NULL,	--账号id
-	"type" VARCHAR(50) NOT NULL,	--类型 week-按周 month-按月 
+	"type" VARCHAR(50) NOT NULL,	--类型 week-按周 month-按月 day-按天 summary-历史概要
 	start_date VARCHAR(50) NOT NULL,	--开始日期
 	end_date VARCHAR(50) NOT NULL,	--结束日期
 	pre_balance DECIMAL(10,2) NOT NULL DEFAULT 0,	--上期余额
-	pre_equity DECIMAL(10,2) NOT NULL DEFAULT 0,	--上期净值
+	pre_equity DECIMAL(10,2),	--上期净值
 	balance DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 余额
-	equity DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 净值
+	equity DECIMAL(10,2),	-- 净值
 	real_profit DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 真实利润
 	commission DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 手续费
 	swap DECIMAL(10,2) NOT NULL DEFAULT 0,	-- 过夜费
@@ -53,21 +52,21 @@ CREATE TABLE report (
 
 -- trade_fund definition
 
-CREATE TABLE trade_fund (
+CREATE TABLE fund (
 	account_id INTEGER NOT NULL,	--账号id
 	ticket VARCHAR(50) NOT NULL,	--订单号
 	open_time VARCHAR(50) NOT NULL,	--开盘时间
 	profit DECIMAL(10,2) NOT NULL,	--利润
 	type VARCHAR(50) NOT NULL,	--类型
 	comment VARCHAR(50),	--注释
-	CONSTRAINT trade_fund_PK UNIQUE (`account_id`, `ticket`)
+	CONSTRAINT fund_PK UNIQUE (`account_id`, `ticket`)
 );
-CREATE INDEX trade_fund_IDX ON trade_fund (`account_id`, `open_time`);
+CREATE INDEX fund_IDX ON fund (`account_id`, `open_time`);
 
 
 -- trade_order definition
 
-CREATE TABLE trade_order (
+CREATE TABLE history_order (
 	account_id INTEGER NOT NULL,	--账号id
 	ticket VARCHAR(50) NOT NULL,	--订单号
 	open_time VARCHAR(50) NOT NULL,	--开盘时间
@@ -84,10 +83,51 @@ CREATE TABLE trade_order (
 	stop_loss VARCHAR(50),	--止损价格
 	take_profit VARCHAR(50),	--获利价格
 	comment VARCHAR(50),	--注释
-	CONSTRAINT trade_order_PK UNIQUE (`account_id`, `ticket`)
+	CONSTRAINT history_order_PK UNIQUE (`account_id`, `ticket`)
 );
-CREATE INDEX trade_order_IDX ON trade_order (`account_id`, `close_time`);
+CREATE INDEX history_order_IDX ON history_order (`account_id`, `close_time`);
 
+CREATE TABLE pending_order (
+	account_id INTEGER NOT NULL,	--账号id
+	ticket VARCHAR(50) NOT NULL,	--订单号
+	open_time VARCHAR(50) NOT NULL,	--开盘时间
+	close_time VARCHAR(50) NOT NULL,	--收盘时间
+	symbol VARCHAR(50) NOT NULL,	--交易品种
+	lots DECIMAL(10,2) NOT NULL,		--交易量
+	"type" VARCHAR(50) NOT NULL,	--类型 buy-买入 sell-卖出
+	open_price VARCHAR(50) NOT NULL,	--开始价格
+	close_price VARCHAR(50) NOT NULL,	--结束价格
+	stop_loss VARCHAR(50),	--止损价格
+	take_profit VARCHAR(50),	--获利价格
+	expiration VARCHAR(50),  --有效期
+	status VARCHAR(50) NOT NULL,	--状态
+	CONSTRAINT pending_order_PK UNIQUE (`account_id`, `ticket`)
+);
+CREATE INDEX pending_order_IDX ON pending_order (`account_id`, `close_time`);
+
+CREATE TABLE complex_order (
+	account_id INTEGER NOT NULL,	--账号id
+	ticket VARCHAR(50) NOT NULL,	--订单号
+	open_time VARCHAR(50) NOT NULL,	--开盘时间
+	close_time VARCHAR(50) NOT NULL,	--收盘时间
+	symbol VARCHAR(50) NOT NULL,	--交易品种
+	lots DECIMAL(10,2) NOT NULL,		--交易量
+	commission DECIMAL(10,2) NOT NULL,	--手续费
+	swap DECIMAL(10,2) NOT NULL,		--过夜费
+	profit DECIMAL(10,2) NOT NULL,	--利润
+	real_profit DECIMAL(10,2) NOT NULL,	--真实利润
+	"type" VARCHAR(50) NOT NULL,	--类型 buy-买入 sell-卖出
+	open_price VARCHAR(50) NOT NULL,	--开始价格
+	close_price VARCHAR(50) NOT NULL,	--结束价格
+	stop_loss VARCHAR(50) NOT NULL,	--止损价格
+	take_profit VARCHAR(50) NOT NULL,	--获利价格
+	comment VARCHAR(50) NOT NULL,	--注释
+	status VARCHAR(50) NOT NULL,	--状态
+	parent_ticket VARCHAR(50) NOT NULL,
+	CONSTRAINT complex_order_PK UNIQUE (`account_id`, `ticket`)
+);
+CREATE INDEX complex_order_IDX ON complex_order (`account_id`, `close_time`);
+CREATE INDEX complex_order_ticket ON complex_order (`account_id`, `parent_ticket`);
 
 update trade_fund set open_time = DATETIME(open_time, '-5 hours') where account_id > 0; 
 update trade_order  set open_time = DATETIME(open_time, '-5 hours'), close_time  = DATETIME(close_time, '-5 hours') where account_id > 0;
