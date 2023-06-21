@@ -1,6 +1,6 @@
 package cc.fxqq.hippo.notify;
 
-import java.util.Date;
+import java.math.BigDecimal;
 
 import javax.mail.internet.MimeMessage;
 
@@ -11,7 +11,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import cc.fxqq.hippo.dto.json.OrderMQL;
-import cc.fxqq.hippo.util.DateUtil;
 import cc.fxqq.hippo.util.DecimalUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,12 +30,12 @@ public class MailService {
     @Autowired
     private JavaMailSender mailSender;
     
-    private void sedMsg(Integer account, String subject, String text) {
+    private void sedMsg(String subject, String text) {
     	MimeMessage mimeMessage = mailSender.createMimeMessage();
         
     	try {
     		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false);
-            helper.setFrom(address, String.valueOf(account));
+            helper.setFrom(address);
             helper.setTo(mailTo);
             helper.setPriority(1);
             helper.setSubject(subject);
@@ -50,23 +49,31 @@ public class MailService {
     	}
     }
  
-    public void sendPendingOrder(Integer account, OrderMQL order) {
+    public void sendTradeInfo(String mailType, OrderMQL order) {
         
         StringBuilder subject = new StringBuilder();
-        subject.append("挂单成交 ").append(order.getSymbol()).append(" ");
-        subject.append(order.getClosePrice()).append(" ");
-        
-        Date closeTime = order.getCloseTime();
-        Date startDate = DateUtil.getStartDateOfWeek(closeTime);
-        Date endDate = DateUtil.getEndDateOfWeek(closeTime);
+        subject.append("【").append(mailType).append("】").append(order.getSymbol()).append(" ");
+        subject.append(order.getClosePrice());
         
         StringBuilder text = new StringBuilder();
-        text.append("<p>").append(account).append("</p>");
-        text.append("<p>").append(order.getSymbol()).append(" ").append(order.getType());
-        text.append(" ").append(DecimalUtil.get(order.getLots())).append("</p>");
-        text.append("<p>").append(order.getOpenPrice());
-        text.append("</p>");
+        text.append("<div>").append(order.getSymbol()).append(" ").append(order.getType());
+        text.append(" ").append(DecimalUtil.get(order.getLots())).append("</div>");
+        text.append("<div>");
+        if (MailTypeEnum.SL.getValue().equals(mailType) ||
+        		MailTypeEnum.TP.getValue().equals(mailType)) {
+        	text.append(order.getOpenPrice() + " → " + order.getClosePrice());
+        } else {
+        	text.append(order.getClosePrice());
+        }
+        text.append("</div>");
+        if (MailTypeEnum.SL.getValue().equals(mailType) ||
+        		MailTypeEnum.TP.getValue().equals(mailType)) {
+        	
+        	BigDecimal realProfit = DecimalUtil.add(order.getSwap(), order.getCommission(), order.getProfit());
+        	text.append("<div>利润：").append(realProfit);
+            text.append("</div>");
+        }
         
-        sedMsg(account, subject.toString(), text.toString());
+        sedMsg(subject.toString(), text.toString());
     }
 }

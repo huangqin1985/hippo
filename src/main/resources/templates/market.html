@@ -95,39 +95,50 @@
     		<table th:each="item : ${markets}">
 	    	<tr>
 		        <td width="34%" style = "text-align:center;" >
-			        <span th:if="${item.allowTrade}" style="font-size: 20px;font-weight:bold"th:text="${item.symbol}"></span>
+			        <span th:if="${item.allowTrade}" style="font-size: 18px;font-weight:bold"th:text="${item.symbol}"></span>
 			        <span th:if="${!item.allowTrade}" style="color:gray;font-size: 20px;font-weight:bold"th:text="${item.symbol}"></span>
 		        </td>
-		        <td style="width:36%;text-align:center;">
-        			<span style="font-size: 20px;" th:text="${item.sellPrice}"></span>
+		        <td style="width:33%;text-align:center;">
+        			<span th:if="${!item.allowTrade}">
+        				<span style="color:gray;font-size: 18px;" th:text="${item.sellPrice}"></span>
+        			</span>
+		        	<span th:if="${item.allowTrade}">
+		        		<span th:if="${item.openD1Diff > 0}" class="g" style="font-weight:bold;font-size: 18px;" th:text="${item.sellPrice}"></span>
+		        		<span th:if="${item.openD1Diff < 0}" class="r" style="font-weight:bold;font-size: 18px;" th:text="${item.sellPrice}"></span>
+		        		<span th:if="${item.openD1Diff == 0}" th:text="${item.sellPrice}" style="font-weight:bold;font-size: 18px;"></span>
+		        	</span>
         		</td>
-		        <td style="width:30%;text-align:center;">
-		       		<span style="font-size: 20px;" th:text="${item.buyPrice}"></span>
+		        <td style="width:33%;text-align:center;">
+		        	<span th:if="${!item.allowTrade}"><span style="color:gray" th:text="${item.sellPrice}"></span></span>
+		        	<span th:if="${item.allowTrade}">
+		        		<span th:if="${item.openD1Diff > 0}" class="g"  style="font-weight:bold;font-size: 18px;"  th:text="${item.openD1Diff}"></span>
+		        		<span th:if="${item.openD1Diff < 0}" class="r"  style="font-weight:bold;font-size: 18px;" th:text="${item.openD1Diff}"></span>
+		        		<span th:if="${item.openD1Diff == 0}" th:text="${item.openD1Diff}"></span>
+		        	</span>
 		        </td>
 		    </tr>
 		    <tr>
 		        <td width="34%" style = "text-align:center;" >
-		       		<span style="font-style:italic" th:text="${item.pointProfitStr}"></span>
+		        	<span th:text="${item.pointProfitStr}"></span>
 		        </td>
-		        <td style="width:36%;text-align:center;">
-        			<span style="color:gray;" th:text="${item.lowPrice}"></span>
-        		</td>
-		        <td style="width:30%;text-align:center;">
-		       		 <span style="color:gray;" th:text="${item.highPrice}"></span>
-		        </td>
-		    </tr>
-		    <tr>
-		        <td width="34%" style = "text-align:center;" >
-		        	<span style="font-style:italic" th:text="${item.requiredMarginStr}"></span>
-		        </td>
-		        <td style="width:36%;text-align:center;">
-        			<span class="g" th:if="${item.sellSwapProfit>=0}" th:text="${item.sellSwapProfitStr}"></span>
-        			<span class="r" th:if="${item.sellSwapProfit<0}" th:text="${item.sellSwapProfitStr}"></span>
+		        <td style="width:33%;text-align:center;">
+        			<span th:text="${item.lowPrice}"></span>
         		
         		</td>
-		        <td style="width:30%;text-align:center;">
-		       		<span class="g" th:if="${item.buySwapProfit>=0}"  th:text="${item.buySwapProfitStr}"></span>
-		       		<span class="r" th:if="${item.buySwapProfit<0}"  th:text="${item.buySwapProfitStr}"></span>
+		        <td style="width:33%;text-align:center;">
+		       		<span th:text="${item.highPrice}"></span>
+		        </td>
+		    </tr>
+		    <tr>
+		        <td width="34%" style = "text-align:center;" >
+		        	<span th:text="${item.requiredMarginStr}"></span>
+		        </td>
+		        <td style="width:33%;text-align:center;">
+        			<span th:text="${item.sellSwapProfitStr}"></span>
+        		
+        		</td>
+		        <td style="width:33%;text-align:center;">
+		       		<span th:text="${item.buySwapProfitStr}"></span>
 		        </td>
 		    </tr>
        		<tr style="height:10px;">

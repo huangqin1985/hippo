@@ -1,6 +1,5 @@
 package cc.fxqq.hippo.socket.terminal;
 
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +20,6 @@ import cc.fxqq.hippo.service.AccountService;
 import cc.fxqq.hippo.service.OrderService;
 import cc.fxqq.hippo.service.ReportService;
 import cc.fxqq.hippo.socket.web.WebMessageHandler;
-import cc.fxqq.hippo.util.DateUtil;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -87,9 +85,18 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
 			} else {
 				accountService.updateAccount(acc, connectMQL);
 			}
+			Account account = AccountCache.getByAccountId(acc.getId());
+    		
+    		if (account != null) {
+    			log.info("账号" + acc.getName() + "已连接");
+    			ctx.disconnect();
+    			return;
+    		}
+
 			log.info("账号" + name + "连接成功 connectId=" + id);
 
-			AccountCache.addAccount(id, acc);
+
+    		AccountCache.addAccount(id, acc);
 			
 			// 更新历史订单
 			List<OrderMQL> list = connectMQL.getHistories();
@@ -106,7 +113,7 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		Account account = AccountCache.getByConnectId(id);
     		
     		if (account == null) {
-    			log.info("连接账号不存在");
+    			ctx.disconnect();
     			return;
     		}
     		
@@ -125,6 +132,7 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		Account account = AccountCache.getByConnectId(id);
     		
     		if (account == null) {
+    			ctx.disconnect();
     			return;
     		}
     		
@@ -142,13 +150,22 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		List<MarketMQL> marginMQL = JSON.parseArray(text, MarketMQL.class);
     		Account account = AccountCache.getByConnectId(id);
     		
-    		if (account != null) {
-    			AccountCache.setMarket(account.getId(), marginMQL);
+    		if (account == null) {
+    			ctx.disconnect();
+    			return;
     		}
+    		
+    		AccountCache.setMarket(account.getId(), marginMQL);
     	} else if (str.startsWith("serverTime:")) {
     		String text = str.substring(str.indexOf(':') + 1);
     		
     		Account account = AccountCache.getByConnectId(id);
+    		
+    		if (account == null) {
+    			ctx.disconnect();
+    			return;
+    		}
+    		
     		AccountCache.setServerTime(account.getId(), text);
     	} else if (str.startsWith("pendingOrder:")) {
     		String text = str.substring(str.indexOf(':') + 1);
@@ -156,6 +173,11 @@ public class SocketHandler extends ChannelInboundHandlerAdapter {
     		List<OrderMQL> list = JSON.parseArray(text, OrderMQL.class);
     		
     		Account account = AccountCache.getByConnectId(id);
+    		
+    		if (account == null) {
+    			ctx.disconnect();
+    			return;
+    		}
     		
     		tradeOrderService.updatePendingOrder(account.getId(),  list);
     		

@@ -29,16 +29,20 @@ public class PositionDTO {
 		
 		//serverTime = arg.getServerTime();
 		profitColor = getColor(arg.getProfit());
-		profit = DecimalUtil.format(arg.getProfit());
-		equity = DecimalUtil.format(arg.getEquity());
-		freeMargin = DecimalUtil.format(arg.getFreeMargin());
-		marginLevel = DecimalUtil.format(arg.getMarginLevel()) + "%";
-		margin = DecimalUtil.format(arg.getMargin());
+		profit = DecimalUtil.formatFull(arg.getProfit());
+		equity = DecimalUtil.formatFull(arg.getEquity());
+		freeMargin = DecimalUtil.formatFull(arg.getFreeMargin());
+		marginLevel = DecimalUtil.formatFull(arg.getMarginLevel()) + "%";
+		margin = DecimalUtil.formatFull(arg.getMargin());
 		
-		BigDecimal sw = new BigDecimal(
+		BigDecimal tw = new BigDecimal(
 				arg.getOrders().stream().mapToDouble(t -> t.getTodaySwap().doubleValue()).sum());
-		swap =  DecimalUtil.format(sw);
-		
+		todaySwap =  DecimalUtil.formatFull(tw);
+		if (tw.compareTo(BigDecimal.ZERO) >= 0) {
+			todaySwapColor = "g";
+		} else {
+			todaySwapColor = "r";
+		}
 		
 		Map<String, List<OrderMQL>> map = 
 				arg.getOrders().stream().filter(order -> {
@@ -55,6 +59,16 @@ public class PositionDTO {
 				return true;
 			}
 		}).collect(Collectors.toList());
+		
+		BigDecimal pw = new BigDecimal(
+				pendingList.stream().mapToDouble(t -> t.getMargin().doubleValue()).sum());
+		pendingMargin = DecimalUtil.formatFull(pw);
+		if (pw.compareTo(arg.getFreeMargin()) < 0) {
+			pendingMarginColor = "g";
+		} else {
+			pendingMarginColor = "r";
+		}
+		
 		pending = pendingList.stream().map(t -> {
 			POrder pd = new POrder();
 			pd.setSymbol(t.getSymbol());
@@ -75,8 +89,13 @@ public class PositionDTO {
 			pd.setTakeProfit(t.getTakeProfit());
 			pd.setStopLoss(t.getStopLoss());
 			
-			pd.setMaxLoss(DecimalUtil.formatFull(t.getMaxLoss()));
-			pd.setMaxProfit(DecimalUtil.formatFull(t.getMaxProfit()));
+			if (t.getMaxLoss().compareTo(BigDecimal.ZERO) != 0) {
+				pd.setMaxLoss(DecimalUtil.formatFull(t.getMaxLoss()));
+			}
+			if (t.getMaxProfit().compareTo(BigDecimal.ZERO) != 0) {
+				pd.setMaxProfit(DecimalUtil.formatFull(t.getMaxProfit()));
+			}
+			
 			pd.setMaxLossPoint(t.getMaxLossPoint());
 			pd.setMaxProfitPoint(t.getMaxProfitPoint());
 			
@@ -90,9 +109,6 @@ public class PositionDTO {
 			
 			return pd;
 		}).collect(Collectors.toList());
-		
-		BigDecimal maxLoss = BigDecimal.ZERO;
-		BigDecimal maxProfit = BigDecimal.ZERO;
 		
 		for (String key : map.keySet()) {
 			POrder po = new POrder();
@@ -137,20 +153,15 @@ public class PositionDTO {
 			po.setProfit(DecimalUtil.formatFull(new BigDecimal(profit)));
 			po.setProfitColor(getColor(new BigDecimal(profit)));
 			
+			BigDecimal maxLoss = BigDecimal.ZERO;
+			BigDecimal maxProfit = BigDecimal.ZERO;
 			for(OrderMQL tom : ll) {
-				if (maxLoss != null) {
-					maxLoss = DecimalUtil.add(tom.getMaxLoss(), maxLoss);
-				}
-				if (maxProfit != null) {
-					maxProfit = DecimalUtil.add(tom.getMaxProfit(), maxProfit);
-				}
-				if (new BigDecimal(tom.getStopLoss()).compareTo(BigDecimal.ZERO) == 0) {
-					maxLoss = null;
-				}
-				if (new BigDecimal(tom.getTakeProfit()).compareTo(BigDecimal.ZERO) == 0) {
-					maxProfit = null;
-				}
+				maxLoss = DecimalUtil.add(tom.getMaxLoss(), maxLoss);
+				maxProfit = DecimalUtil.add(tom.getMaxProfit(), maxProfit);
 			}
+			
+			po.setMaxLoss(DecimalUtil.formatFull(maxLoss));
+			po.setMaxProfit(DecimalUtil.formatFull(maxProfit));
 			
 			po.setOrderNum(ll.size());
 			
@@ -172,7 +183,7 @@ public class PositionDTO {
 				pp.setOpenPrice(t.getOpenPrice());
 				pp.setClosePrice(t.getClosePrice());
 				
-				pp.setProfit(DecimalUtil.format(t.getProfit()));
+				pp.setProfit(DecimalUtil.formatFull(t.getProfit()));
 				pp.setProfitColor(getColor(t.getProfit()));
 				pp.setTakeProfit(t.getTakeProfit());
 				pp.setStopLoss(t.getStopLoss());
@@ -192,15 +203,19 @@ public class PositionDTO {
 					pp.setPoints(DecimalUtil.removePecimalPoint(
 							new BigDecimal(t.getClosePrice()).subtract(new BigDecimal(t.getOpenPrice()))));
 				}
-				pp.setMaxLoss(DecimalUtil.formatFull(t.getMaxLoss()));
-				pp.setMaxProfit(DecimalUtil.formatFull(t.getMaxProfit()));
+				if (t.getMaxLoss().compareTo(BigDecimal.ZERO)  != 0) {
+					pp.setMaxLoss(DecimalUtil.formatFull(t.getMaxLoss()));
+				}
+				if (t.getMaxProfit().compareTo(BigDecimal.ZERO)  != 0) {
+					pp.setMaxProfit(DecimalUtil.formatFull(t.getMaxProfit()));
+				}
 				pp.setMaxLossPoint(t.getMaxLossPoint());
 				pp.setMaxProfitPoint(t.getMaxProfitPoint());
 
-				pp.setSwap(DecimalUtil.format(t.getSwap()));
-				pp.setCommission(DecimalUtil.format(t.getCommission()));
-				pp.setTodaySwap(DecimalUtil.format(t.getTodaySwap()));
-				pp.setMargin(DecimalUtil.format(t.getMargin()));
+				pp.setSwap(DecimalUtil.formatFull(t.getSwap()));
+				pp.setCommission(DecimalUtil.formatFull(t.getCommission()));
+				pp.setTodaySwap(DecimalUtil.formatFull(t.getTodaySwap()));
+				pp.setMargin(DecimalUtil.formatFull(t.getMargin()));
 				
 				return pp;
 			}).collect(Collectors.toList());
@@ -209,16 +224,16 @@ public class PositionDTO {
 			trading.add(po);
 		}
 		
-		if (maxLoss == null) {
-			this.maxLoss = "∞" ;
-		} else {
-			this.maxLoss = DecimalUtil.formatFull(maxLoss);
-		}
-		if (maxProfit == null) {
-			this.maxProfit = "∞";
-		} else {
-			this.maxProfit = DecimalUtil.formatFull(maxProfit);
-		}
+//		if (maxLoss == null) {
+//			this.maxLoss = "∞" ;
+//		} else {
+//			this.maxLoss = DecimalUtil.formatFull(maxLoss);
+//		}
+//		if (maxProfit == null) {
+//			this.maxProfit = "∞";
+//		} else {
+//			this.maxProfit = DecimalUtil.formatFull(maxProfit);
+//		}
 		
 	}
 	private String getColor(BigDecimal bd) {
@@ -233,13 +248,19 @@ public class PositionDTO {
 	
 	private String equity; // 净值
 
-	private String margin; // 净值
+	private String margin;
+	
+	private String pendingMargin;
+	
+	private String pendingMarginColor;
 	
 	private String freeMargin;
 
 	private String marginLevel;
 	
-	private String swap;
+	private String todaySwap;
+	
+	private String todaySwapColor;
 
 	private String serverTime;
 	

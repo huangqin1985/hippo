@@ -98,6 +98,15 @@
 		<if test="so">
 			and comment like '%so%'
 		</if>
+		<if test="close">
+			and (comment not like 'from%' and comment not like 'to%')
+		</if>
+		<if test="passDay">
+			and date(open_time) != DATE(close_time)
+		</if>
+		<if test="passWeekend">
+			and STRFTIME('%Y%W',open_time) != STRFTIME('%Y%W',close_time)
+		</if>
 		<if test="commentText">
 			and comment like '%' || #{commentText} || '%'
 		</if>

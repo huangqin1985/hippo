@@ -118,17 +118,6 @@
                enableUpdateByExample="false">
                <columnOverride column="lots" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
         </table>
-        <table tableName="complex_order" domainObjectName="ComplexOrder"
-              enableCountByExample="false"
-        	   enableSelectByExample="false"
-               enableDeleteByExample="false"
-               enableUpdateByExample="false">
-               <columnOverride column="lots" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
-               <columnOverride column="commission" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
-               <columnOverride column="swap" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
-               <columnOverride column="profit" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
-               <columnOverride column="real_profit" jdbcType="DECIMAL" javaType="java.math.BigDecimal"></columnOverride>
-        </table>
         
         <table tableName="report" domainObjectName="Report"
                enableCountByExample="false"

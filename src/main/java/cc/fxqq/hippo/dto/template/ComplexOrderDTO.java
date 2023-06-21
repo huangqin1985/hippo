@@ -44,6 +44,8 @@ public class ComplexOrderDTO {
 	
 	private String points;
 	
+	private String closeType;
+	
 	private String duration;
 	
 	private List<ComplexOrderDTO> children;

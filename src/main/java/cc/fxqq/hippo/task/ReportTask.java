@@ -81,7 +81,6 @@ public class ReportTask {
 			BigDecimal balance = accountService.getBalance(account);
 			rpt.setPreBalance(balance);
 			rpt.setBalance(balance);
-			rpt.setPreEquity(equity);
 			rpt.setUpdateTime(DateUtil.formatDatetime(serverTime));
 			rpt.setCreateTime(DateUtil.formatDatetime(serverTime));
 			
@@ -145,12 +144,15 @@ public class ReportTask {
 				report.setMaxMargin(DecimalUtil.max(maxMargin, margin));
 			}
 			
-			BigDecimal minMarginRate = report.getMinMarginRate();
-			if (minMarginRate == null) {
-				report.setMinMarginRate(marginLevel);
-			} else {
-				report.setMinMarginRate(DecimalUtil.min(minMarginRate, marginLevel));
+			if (BigDecimal.ZERO.compareTo(marginLevel) != 0) {
+				BigDecimal minMarginRate = report.getMinMarginRate();
+				if (minMarginRate == null) {
+					report.setMinMarginRate(marginLevel);
+				} else {
+					report.setMinMarginRate(DecimalUtil.min(minMarginRate, marginLevel));
+				}
 			}
+			
 			report.setUpdateTime(DateUtil.formatDatetime(serverTime));
 			
 			reportMapper.updateByPrimaryKeySelective(report);
@@ -179,7 +181,7 @@ public class ReportTask {
 		
 		List<Report> reports  = ReportUtils.getHistoryReport(reportType, firstDate);
 		
-		reports.stream().parallel().forEach(t -> {
+		reports.stream().forEach(t -> {
 			t.setAccountId(accountId);
 			String date = DateUtil.formatDatetime(new Date());
 			t.setUpdateTime(date);
@@ -188,7 +190,7 @@ public class ReportTask {
 			setFund(accountId, t);
 		});
 		// 过滤掉定订单数为0的记录
-		reports = reports.stream().parallel().filter(t -> t.getOrderNum() > 0)
+		reports = reports.stream().filter(t -> t.getOrderNum() > 0)
 				.collect(Collectors.toList());
 		//计算结余
 		setBalance(balance, reports);

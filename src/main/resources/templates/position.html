@@ -132,22 +132,14 @@
 				</span>净值：<span id="equity" th:text="${position.equity}"></span>
 			</td>
 		</tr>
-		<tr th:if="${position.trading != null && position.trading.size > 0}">
+		<!-- <tr th:if="${position.trading != null && position.trading.size > 0}">
 			<td th:class="${statusColor}" style="width:45%;text-align:left;padding: 0 10px 0 10px;">
 				预付款:
 			</td>
 			<td style="width:55%;text-align:right;padding: 0 10px 0 10px;">
 				<span id="equity" th:text="${position.margin}"></span>&nbsp;/&nbsp;<span th:text="${position.marginLevel}"></span>
 			</td>
-		</tr>
-	    <tr th:if="${position.trading != null && position.trading.size > 0}">
-			<td th:class="${statusColor}" style="width:50%;text-align:left;padding: 0 10px 0 10px;">
-				今日过夜费：
-			</td>
-			<td style="text-align:right;width:50%;padding: 0 10px 0 10px;">
-				<span th:text="${position.swap}"></span>
-			</td>
-		</tr>
+		</tr> -->
 		<tr style="height:10px;">
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 			</td>
@@ -160,8 +152,16 @@
 	    		
 	    	</td>
 	    </tr>
-	    <tr th:if="${position.trading == null || position.trading.size == 0}" style="height:10px;">
-			<td colspan="3" style="width:100%;">
+		<tr th:if="${position.trading != null && position.trading.size >= 0}" style="height:10px;">
+			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr th:if="${position.trading != null && position.trading.size > 0}">
+			<td th:class="${statusColor}" style="width:50%;text-align:left;padding: 0 10px 0 10px;">
+				今日过夜费：
+			</td>
+			<td style="text-align:right;width:50%;padding: 0 10px 0 10px;">
+				<span th:text="${position.todaySwap}"></span>
 			</td>
 		</tr>
 		<tr th:if="${position.trading != null && position.trading.size > 0}">
@@ -185,7 +185,7 @@
 					</tr>
 					 <tr class="orderDetail" >
 						<td style="text-align: left;width:75%;padding: 0 10px 0 10px">
-							<span  style="font-size:17px;color:gray;font-weight:bold;" th:text="${item.closePrice}"></span>
+							<span  style="font-size:17px;" th:text="${item.closePrice}"></span>
 						</td>
 						<td style="padding: 0 10px 0 10px; text-align: right;width:25%;">
 							<span class="orderNum"><span th:text="${item.orderNum}"></span>个订单</span>
@@ -229,11 +229,11 @@
 								</tr>
 								<tr style="margin: 0 5px 0 5px;">
 									<td class="sltp" style="text-align: left;width:75%;padding: 0 5px 0 5px">
-										<span  th:text="${order.openPrice}"></span> → <span
+										<span  th:text="${order.openPrice}"></span>→<span
 										 th:text="${order.closePrice}"></span> 
 									</td>
 									<td style="padding: 0 15px 0 0; text-align: right;width:25%;">
-										<span style="font-size: 15px;color:gray;" th:text="${order.points}"></span>
+										<span style="font-size: 15px;" th:text="${order.points}"></span>
 									</td>
 								</tr>
 								<!-- <tr style="margin: 0 5px 0 5px">
@@ -252,21 +252,23 @@
 									</td>
 									<td  colspan="3"  style="padding: 0 15px 0 0; text-align: right;">
 										<span th:text="${order.stopLoss}"></span>
+										<span th:if="${order.maxLoss != null}">
 										&nbsp;/&nbsp;
-										<span class="r" th:text="${order.maxLoss}"></span>
+										<span th:text="${order.maxLoss}"></span></span>
 									</td>
 								</tr>
 								<tr style="margin: 0 5px 0 5px">
 									<td class="sltp" style="width:20%;text-align: left;padding: 0 5px 0 5px">
-										<span >获利:</span>
+										<span >止盈:</span>
 									</td>
 									<td colspan="3" style="padding: 0 15px 0 0; text-align: right;">
 										<span th:text="${order.takeProfit}"></span>
+										<span th:if="${order.maxProfit != null}">
 										&nbsp;/&nbsp;
-										<span class="g" th:text="${order.maxProfit}"></span>
+										<span th:text="${order.maxProfit}"></span></span>
 									</td>
 								</tr> 
-								<tr style="margin: 0 5px 0 5px">
+								<!-- <tr style="margin: 0 5px 0 5px">
 									<td class="sltp" colspan="2" style="width:40%;text-align: left;padding: 0 5px 0 5px">
 										<span >今日过夜费:</span>
 									</td>
@@ -281,8 +283,8 @@
 									<td colspan="2" style="padding: 0 15px 0 0; text-align: right;">
 										≈ <span th:text="${order.margin}"></span>
 									</td>
-								</tr> 
-								<tr style="height:10px;">
+								</tr>  -->
+								<tr style="height:5px;">
 							    	<td colspan="3" style="width:100%;">
 							    	</td>
 							    </tr>
@@ -304,13 +306,25 @@
 	    		<!-- <a target="_blank" th:href="'pendingOrder?account=' + ${account}" >历史</a> -->
 	    	</td>
 	    </tr>
-	    <tr style="height:10px;">
+	    <tr th:if="${position.pending != null && position.pending.size >= 0}" style="height:10px;">
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+			</td>
+		</tr>
+		<tr th:if="${position.pending != null && position.pending.size > 0}">
+			<td style="width:50%;text-align:left;padding: 0 10px 0 10px;">
+				占用预付款：
+			</td>
+			<td style="text-align:right;width:50%;padding: 0 10px 0 10px;">
+				≈  <span th:text="${position.pendingMargin}"></span>
 			</td>
 		</tr>
 	    <tr>
 			<td th:if="${position.pending != null && position.pending.size > 0}" >
 				<table th:each="item : ${position.pending}">
+					<tr style="height:10px;">
+						<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+						</td>
+					</tr>
 					<tr class="orderDetail">
 						<td colspan="3" style="text-align: left;padding: 0 10px 0 10px;width:75%">
 							<span style="font-weight:bold;" th:text="${item.symbol}"></span>
@@ -320,12 +334,12 @@
 								th:text="${item.lots}"></span>
 						</td>
 						<td  style="padding: 0 10px 0 10px; text-align: right;width:25%;">
-							<span  style="font-weight:bold;color:gray" th:text="${item.openPrice}"></span>
+							<span  th:text="${item.openPrice}"></span>
 						</td>
 					</tr>
 					 <tr >
 						<td style="text-align: left;width:75%;padding: 0 10px 0 10px">
-							<span  style="font-size:17px;color:gray;font-weight:bold;" th:text="${item.closePrice}"></span>
+							<span  style="font-size:17px;" th:text="${item.closePrice}"></span>
 						</td>
 						<td style="padding: 0 10px 0 10px; text-align: right;width:25%;">
 						</td>
@@ -336,36 +350,39 @@
 						</td>
 						<td colspan="3" style="padding: 0 10px 0 10px; text-align: right;">
 							<span th:text="${item.stopLoss}"></span>
+							<span th:if="${item.maxLoss != null}">
 							&nbsp;/&nbsp;
-							<span class="r" th:text="${item.maxLoss}"></span>
+							<span th:text="${item.maxLoss}"></span></span>
 						</td>
 						
 					</tr> 
 					<tr class="moreInfo" style="display:none">
 						<td style="text-align: left;padding: 0 10px 0 10px">
-							<span >获利:</span>
+							<span >止盈:</span>
 						</td>
 						<td colspan="3" style="padding: 0 10px 0 10px; text-align: right;">
 							<span th:text="${item.takeProfit}"></span>
-							&nbsp;/&nbsp;
-							<span class="r" th:text="${item.maxProfit}"></span>
+							<span th:if="${item.maxProfit != null}">&nbsp;/&nbsp;
+							<span th:text="${item.maxProfit}"></span></span>
+							
 						</td>
 					</tr> 
-					<tr class="moreInfo" style="display:none">
+					<!-- <tr class="moreInfo" style="display:none">
 						<td colspan="2" style="text-align: left;padding: 0 10px 0 10px">
 							<span >预付款:</span>
 						</td>
 						<td colspan="2" style="padding: 0 10px 0 10px; text-align: right;">
 							≈  <span th:class="${item.marginColor}"  th:text="${item.margin}"></span>
 						</td>
-					</tr> 
-				    <tr style="height:10px;">
-						<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
-						</td>
-					</tr>
+					</tr>  -->
 				</table>
 			</td>
 		</tr>
+		
+		    <tr style="height:10px;">
+				<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
+				</td>
+			</tr>
 	</table>
 </body>
 </html>

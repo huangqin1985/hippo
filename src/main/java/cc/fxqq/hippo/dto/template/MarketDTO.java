@@ -39,5 +39,9 @@ public class MarketDTO {
 
 	private Integer spread;
 	
+	private BigDecimal openD1;
+
+	private BigDecimal openD1Diff;
+	
 	private Boolean allowTrade;
 }

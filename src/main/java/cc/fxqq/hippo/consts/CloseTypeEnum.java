@@ -30,6 +30,6 @@ public enum CloseTypeEnum {
 		if(comment != null && comment.contains("so:")) {
 			return SO.value;
 		}
-		return null;
+		return "";
 	}
 }

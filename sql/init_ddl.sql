@@ -105,30 +105,6 @@ CREATE TABLE pending_order (
 );
 CREATE INDEX pending_order_IDX ON pending_order (`account_id`, `close_time`);
 
-CREATE TABLE complex_order (
-	account_id INTEGER NOT NULL,	--账号id
-	ticket VARCHAR(50) NOT NULL,	--订单号
-	open_time VARCHAR(50) NOT NULL,	--开盘时间
-	close_time VARCHAR(50) NOT NULL,	--收盘时间
-	symbol VARCHAR(50) NOT NULL,	--交易品种
-	lots DECIMAL(10,2) NOT NULL,		--交易量
-	commission DECIMAL(10,2) NOT NULL,	--手续费
-	swap DECIMAL(10,2) NOT NULL,		--过夜费
-	profit DECIMAL(10,2) NOT NULL,	--利润
-	real_profit DECIMAL(10,2) NOT NULL,	--真实利润
-	"type" VARCHAR(50) NOT NULL,	--类型 buy-买入 sell-卖出
-	open_price VARCHAR(50) NOT NULL,	--开始价格
-	close_price VARCHAR(50) NOT NULL,	--结束价格
-	stop_loss VARCHAR(50) NOT NULL,	--止损价格
-	take_profit VARCHAR(50) NOT NULL,	--获利价格
-	comment VARCHAR(50) NOT NULL,	--注释
-	status VARCHAR(50) NOT NULL,	--状态
-	parent_ticket VARCHAR(50) NOT NULL,
-	CONSTRAINT complex_order_PK UNIQUE (`account_id`, `ticket`)
-);
-CREATE INDEX complex_order_IDX ON complex_order (`account_id`, `close_time`);
-CREATE INDEX complex_order_ticket ON complex_order (`account_id`, `parent_ticket`);
-
 update trade_fund set open_time = DATETIME(open_time, '-5 hours') where account_id > 0; 
 update trade_order  set open_time = DATETIME(open_time, '-5 hours'), close_time  = DATETIME(close_time, '-5 hours') where account_id > 0;
 

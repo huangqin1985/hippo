@@ -29,11 +29,16 @@ public class OrderParam extends PageParam {
 	
 	private boolean so;
 	
+	private boolean close;
+
+	private boolean passDay;
+
+	private boolean passWeekend;
+	
 	private String status;
 	
 	private String commentText;
 	
-	private String parentTicket;
 	
 	private String orderBy;
 	

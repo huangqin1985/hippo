@@ -28,6 +28,8 @@ public class MarketMQL {
 
 	private BigDecimal highPrice;
 	
+	private BigDecimal openD1;
+	
 	private Integer spread;
 	
 	private String path;

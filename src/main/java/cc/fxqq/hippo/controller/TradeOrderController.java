@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.google.common.collect.Lists;
 
 import cc.fxqq.hippo.cache.AccountCache;
+import cc.fxqq.hippo.consts.PendingOrderStatusEnum;
 import cc.fxqq.hippo.dto.json.MarketMQL;
 import cc.fxqq.hippo.dto.json.PositionMQL;
 import cc.fxqq.hippo.dto.template.AccountDTO;
@@ -274,6 +275,9 @@ public class TradeOrderController extends BaseController {
 			@RequestParam(name="sl", required = false, defaultValue="false") boolean sl,
 			@RequestParam(name="tp", required = false, defaultValue="false") boolean tp,
 			@RequestParam(name="so", required = false, defaultValue="false") boolean so,
+			@RequestParam(name="close", required = false, defaultValue="false") boolean close,
+			@RequestParam(name="passDay", required = false, defaultValue="false") boolean passDay,
+			@RequestParam(name="passWeekend", required = false, defaultValue="false") boolean passWeekend,
 			@RequestParam(name="pageNum", required = false) Integer pageNum) {
 		
 		// 账户列表
@@ -340,6 +344,9 @@ public class TradeOrderController extends BaseController {
 		param.setTp(tp);
 		param.setSl(sl);
 		param.setSo(so);
+		param.setClose(close);
+		param.setPassDay(passDay);
+		param.setPassWeekend(passWeekend);
 		
 		Pager<HistoryOrderDTO> orderList = tradeOrderService.getHistoryOrderList(param);
 		model.addAttribute("pager", orderList);
@@ -492,6 +499,12 @@ public class TradeOrderController extends BaseController {
 					dto.setSellPrice(DecimalUtil.get(t.getSellPrice(), t.getDigits()));
 					dto.setLowPrice(DecimalUtil.get(t.getLowPrice(), t.getDigits()));
 					dto.setHighPrice(DecimalUtil.get(t.getHighPrice(), t.getDigits()));
+					dto.setHighPrice(DecimalUtil.get(t.getHighPrice(), t.getDigits()));
+					
+					dto.setOpenD1(t.getOpenD1());
+					
+					BigDecimal openD1Diff = DecimalUtil.get(t.getSellPrice().subtract(t.getOpenD1()), t.getDigits());
+					dto.setOpenD1Diff(openD1Diff);
 					
 					BigDecimal spreadProfit = DecimalUtil.get(
 							t.getPointProfit().multiply(new BigDecimal(t.getSpread())), 3);
@@ -654,7 +667,7 @@ public class TradeOrderController extends BaseController {
 		} else {
 			param.setPage(pageNum);
 		}
-		param.setParentTicket("0");
+		param.setCommentText("from");
 		Pager<ComplexOrderDTO> orderList = tradeOrderService.getComplexOrderList(param);
 		model.addAttribute("pager", orderList);
 		

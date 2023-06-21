@@ -29,8 +29,14 @@ public class OrderSumDTO {
 
 	private Integer soCount;
 	
+	private Integer closeCount;
+	
 	private Integer complexCount;
 
 	private Integer pendingCount;
+
+	private Integer passDayCount;
+
+	private Integer passWeekendCount;
 
 }

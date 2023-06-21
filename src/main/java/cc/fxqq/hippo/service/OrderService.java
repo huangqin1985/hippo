@@ -1,7 +1,6 @@
 package cc.fxqq.hippo.service;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 
@@ -24,7 +21,6 @@ import cc.fxqq.hippo.consts.FundType;
 import cc.fxqq.hippo.consts.OrderTypeEnum;
 import cc.fxqq.hippo.consts.PendingOrderStatusEnum;
 import cc.fxqq.hippo.consts.ReportTypeEnum;
-import cc.fxqq.hippo.dao.ext.ComplexOrderExtMapper;
 import cc.fxqq.hippo.dao.ext.FundExtMapper;
 import cc.fxqq.hippo.dao.ext.HistoryOrderExtMapper;
 import cc.fxqq.hippo.dao.ext.PendingOrderExtMapper;
@@ -43,6 +39,7 @@ import cc.fxqq.hippo.entity.Report;
 import cc.fxqq.hippo.entity.param.OrderParam;
 import cc.fxqq.hippo.entity.result.OrderSumResult;
 import cc.fxqq.hippo.notify.MailService;
+import cc.fxqq.hippo.notify.MailTypeEnum;
 import cc.fxqq.hippo.util.BatchUtil;
 import cc.fxqq.hippo.util.DateUtil;
 import cc.fxqq.hippo.util.DecimalUtil;
@@ -64,9 +61,6 @@ public class OrderService {
 	
 	@Autowired
 	private FundExtMapper fundExtMapper;
-	
-	@Autowired
-	private ComplexOrderExtMapper complexOrderExtMapper;
 	
 	@Autowired
 	private MailService mailService;
@@ -99,8 +93,8 @@ public class OrderService {
 				
 				dto.setStatus(t.getStatus());
 				
-				dto.setOpenTime(t.getOpenTime());
-				dto.setCloseTime(t.getCloseTime());
+				dto.setOpenTime(DateUtil.format(DateUtil.parseDatetime(t.getOpenTime()), DateUtil.FORMAT1));
+				dto.setCloseTime(DateUtil.format(DateUtil.parseDatetime(t.getCloseTime()), DateUtil.FORMAT1));
 				
 				String ticket = t.getTicket();
 				HistoryOrder order = historyOrderExtMapper.selectUnique(t.getAccountId(), ticket);
@@ -115,18 +109,36 @@ public class OrderService {
 	}
 	
 	public Pager<ComplexOrderDTO> getComplexOrderList(OrderParam query) {
-		Pager<ComplexOrderDTO> pager = PageUtil.selectPage(complexOrderExtMapper, query,
+		Pager<ComplexOrderDTO> pager = PageUtil.selectPage(historyOrderExtMapper, query,
 			t -> {
 				ComplexOrderDTO dto = new ComplexOrderDTO();
-				BeanUtils.copyProperties(t, dto);
+				//BeanUtils.copyProperties(t, dto);
 				
-				OrderParam op = new OrderParam();
-				op.setParentTicket(t.getTicket());
-				op.setAccountId(query.getAccountId());
-				op.setOrderBy("close_time");
-				List<ComplexOrder> children = complexOrderExtMapper.selectPage(op);
-				dto.setChildrenCount(children.size());
-				List<ComplexOrderDTO> list = children.stream().map(order -> {
+				dto.setOpenTime(DateUtil.format(DateUtil.parseDatetime(t.getOpenTime()), DateUtil.FORMAT1));
+				dto.setCloseTime(DateUtil.format(DateUtil.parseDatetime(t.getCloseTime()), DateUtil.FORMAT1));
+				dto.setDuration(DateUtil.getSecondDuration(t.getOpenTime(), t.getCloseTime()));
+
+				
+				OrderParam param = new OrderParam();
+				param.setAccountId(t.getAccountId());
+				param.setSymbol(t.getSymbol());
+				param.setOpenPrice(t.getOpenPrice());
+				param.setOpenTime(t.getOpenTime());
+				List<HistoryOrder> hlList = historyOrderExtMapper.selectPage(param);
+				
+				dto.setChildrenCount(hlList.size());
+				dto.setOpenPrice(t.getOpenPrice());
+				dto.setType(t.getType());
+				dto.setSymbol(t.getSymbol());
+				
+				BigDecimal lots = BigDecimal.ZERO;
+				BigDecimal realProfit = BigDecimal.ZERO;
+				
+				List<ComplexOrderDTO> list = Lists.newArrayList();
+				for (HistoryOrder order : hlList) {
+					lots = DecimalUtil.add(lots, order.getLots());
+					realProfit = DecimalUtil.add(realProfit, order.getRealProfit());
+					
 					ComplexOrderDTO cd = new ComplexOrderDTO();
 					BeanUtils.copyProperties(order, cd);
 					
@@ -141,10 +153,17 @@ public class OrderService {
 						cd.setPoints(DecimalUtil.removePecimalPoint(
 								new BigDecimal(closePrice).subtract(new BigDecimal(openPrice))));
 					}
-					cd.setDuration(DateUtil.getSecondDuration(order.getOpenTime(), order.getCloseTime()));
+					cd.setOpenTime(
+							DateUtil.format(DateUtil.parseDatetime(order.getOpenTime()), DateUtil.FORMAT1));
+					cd.setCloseTime(
+							DateUtil.format(DateUtil.parseDatetime(order.getCloseTime()), DateUtil.FORMAT1));
 					
-					return cd;
-				}).collect(Collectors.toList());
+					cd.setCloseType("sltp");
+					
+					list.add(cd);
+				}
+				dto.setLots(lots);
+				dto.setRealProfit(realProfit);
 				dto.setChildren(list);
 				
 				return dto;
@@ -180,8 +199,8 @@ public class OrderService {
 			dto.setPoints(DecimalUtil.removePecimalPoint(
 					new BigDecimal(closePrice).subtract(new BigDecimal(openPrice))));
 		}
-		dto.setOpenTime(t.getOpenTime());
-		dto.setCloseTime(t.getCloseTime());
+		dto.setOpenTime(DateUtil.format(DateUtil.parseDatetime(t.getOpenTime()), DateUtil.FORMAT1));
+		dto.setCloseTime(DateUtil.format(DateUtil.parseDatetime(t.getCloseTime()), DateUtil.FORMAT1));
 		dto.setCloseType(CloseTypeEnum.parse(t.getComment()));
 		dto.setDuration(DateUtil.getSecondDuration(t.getOpenTime(), t.getCloseTime()));
 		
@@ -234,10 +253,10 @@ public class OrderService {
 	 * 
 	 * @param order
 	 */
-	@Transactional
 	public void addHistoryOrder(Integer accountId, BigDecimal balance, List<OrderMQL> orders) {
 		int orderCount = 0;
 		int fundCount = 0;
+		List<OrderMQL> notifyList = Lists.newArrayList();
 		for (OrderMQL order : orders) {
 			
 			String type = order.getType();
@@ -285,23 +304,10 @@ public class OrderService {
 			    to.setTakeProfit(order.getTakeProfit());
 			    to.setComment(order.getComment());
 			    
-			    // 通知
-//			    String comment = order.getComment();
-//			    String prefix = null;
-//			    if (comment.contains("tp")) {
-//			    	prefix = "tp";
-//			    } else if (comment.contains("sl")) {
-//			    	prefix = "sl";
-//			    } else if (comment.contains("so")) {
-//			    	prefix = "so";
-//			    }
-//			    if (prefix != null) {
-//			    	mailService.send(prefix, acc.getAccount(), order);
-//			    }
+			    notifyList.add(order);
 				
 				historyOrderExtMapper.replaceBatch(Lists.newArrayList(to));
 				
-				updateCompexOrders(accountId, Lists.newArrayList(to));
 				orderCount++;
 			} else if (OrderTypeEnum.SELL_LIMIT.getValue().equals(type) ||
 					OrderTypeEnum.SELL_STOP.getValue().equals(type) ||
@@ -330,7 +336,25 @@ public class OrderService {
 		if (fundCount + orderCount > 0) {
 			log.info("新增订单" + orderCount + "条,资金" + fundCount + "条");
 		}
-
+		
+		if (notifyList.size() > 0) {
+			OrderMQL order = notifyList.get(0);
+			
+			// 通知
+		    String comment = order.getComment();
+		    String mailType = null;
+		    if (comment.contains("tp")) {
+		    	mailType = MailTypeEnum.TP.getValue();
+		    } else if (comment.contains("sl")) {
+		    	mailType = MailTypeEnum.SL.getValue();
+		    } else if (comment.contains("so")) {
+		    	mailType = MailTypeEnum.SO.getValue();
+		    }
+		    if (mailType != null) {
+		    	mailService.sendTradeInfo(mailType, order);
+		    }
+		}
+		
 		reportService.updateCurrentHistoryReport(accountId, balance);
 	}
 	
@@ -362,9 +386,12 @@ public class OrderService {
 		    to.setTakeProfit(order.getTakeProfit());
 			to.setExpiration(DateUtil.formatDatetime(order.getExpiration()));
 		    to.setStatus(PendingOrderStatusEnum.TRADE.getValue());
-			 
+		    
 		    pendingOrderExtMapper.replaceBatch(Lists.newArrayList(to));
 		    
+		}
+		if (orders.size() > 0) {
+			mailService.sendTradeInfo(MailTypeEnum.PENDING.getValue(), orders.get(0));
 		}
 	}
 	
@@ -476,10 +503,9 @@ public class OrderService {
 		// 需要在更新历史报表之后操作
 		reportService.insertSummary(summarys);
 		
-		updateCompexOrders(accountId, historyOrders);
 	}
 	
-	public void updateCompexOrders(Integer accountId, List<HistoryOrder> historyOrders) {
+	private void updateCompexOrders(Integer accountId, List<HistoryOrder> historyOrders) {
 
 		List<HistoryOrder> list = historyOrders.stream().filter(t -> {
 			return t.getComment().contains("from #");
@@ -550,7 +576,7 @@ public class OrderService {
 			parent.setTakeProfit("0");
 			result.add(parent);
 		}
-		BatchUtil.replaceBatch(complexOrderExtMapper, result);
+		//BatchUtil.replaceBatch(complexOrderExtMapper, result);
 
 		log.info("更新组合订单" + result.size() + "条");
 	}
@@ -631,44 +657,75 @@ public class OrderService {
 		param.setAccountId(account);
 		param.setCloseStartDate(startDate);
 		param.setCloseEndDate(endDate);
-		param.setOrderBy("real_profit desc");
 		
 		OrderSumResult result = historyOrderExtMapper.selectSum(param);
 		OrderSumDTO dto = new OrderSumDTO();
 		BeanUtils.copyProperties(result, dto);
 
+		param = new OrderParam();
+		param.setAccountId(account);
+		param.setCloseStartDate(startDate);
+		param.setCloseEndDate(endDate);
 		param.setSl(true);
-		param.setSo(false);
-		param.setTp(false);
 		int slCount = historyOrderExtMapper.selectTotal(param);
 		dto.setSlCount(slCount);
 		
-		param.setSl(false);
-		param.setSo(false);
+		param = new OrderParam();
+		param.setAccountId(account);
+		param.setCloseStartDate(startDate);
+		param.setCloseEndDate(endDate);
 		param.setTp(true);
 		int tpCount = historyOrderExtMapper.selectTotal(param);
 		dto.setTpCount(tpCount);
 
-		param.setSl(false);
+		param = new OrderParam();
+		param.setAccountId(account);
+		param.setCloseStartDate(startDate);
+		param.setCloseEndDate(endDate);
 		param.setSo(true);
-		param.setTp(false);
 		int soCount = historyOrderExtMapper.selectTotal(param);
 		dto.setSoCount(soCount);
 		
-		OrderParam op = new OrderParam();
-		op.setAccountId(account);
-		op.setCloseStartDate(startDate);
-		op.setCloseEndDate(endDate);
-		op.setParentTicket("0");
-		int complexCount = complexOrderExtMapper.selectTotal(op);
+		param = new OrderParam();
+		param.setAccountId(account);
+		param.setCloseStartDate(startDate);
+		param.setCloseEndDate(endDate);
+		param.setClose(true);
+		int closeCount = historyOrderExtMapper.selectTotal(param);
+		dto.setCloseCount(closeCount);
+		
+		param = new OrderParam();
+		param.setAccountId(account);
+		param.setCloseStartDate(startDate);
+		param.setCloseEndDate(endDate);
+		param.setCommentText("from");
+		int complexCount = historyOrderExtMapper.selectTotal(param);
 		dto.setComplexCount(complexCount);
 		
-		OrderParam pp = new OrderParam();
-		pp.setAccountId(account);
-		pp.setCloseStartDate(startDate);
-		pp.setCloseEndDate(endDate);
-		int pendingCount = pendingOrderExtMapper.selectTotal(pp);
+		param = new OrderParam();
+		param.setAccountId(account);
+		param.setCloseStartDate(startDate);
+		param.setCloseEndDate(endDate);
+		param.setStatus(PendingOrderStatusEnum.TRADE.getValue());
+		int pendingCount = pendingOrderExtMapper.selectTotal(param);
 		dto.setPendingCount(pendingCount);
+		
+		param = new OrderParam();
+		param.setAccountId(account);
+		param.setCloseStartDate(startDate);
+		param.setCloseEndDate(endDate);
+		param.setPassDay(true);
+		int passDayCount = historyOrderExtMapper.selectTotal(param);
+		dto.setPassDayCount(passDayCount);
+		
+		param = new OrderParam();
+		param.setAccountId(account);
+		param.setCloseStartDate(startDate);
+		param.setCloseEndDate(endDate);
+		param.setPassWeekend(true);
+		int passWeekendCount = historyOrderExtMapper.selectTotal(param);
+		dto.setPassWeekendCount(passWeekendCount);
+		
 		return dto;
 	}
 }

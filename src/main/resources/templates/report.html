@@ -175,7 +175,7 @@
 						<span th:if="${item.maxEquity == null}">-</span>
 					</td>
 				</tr>
-				<tr style="display:none"  class="moreInfo">
+				<!-- <tr style="display:none"  class="moreInfo">
 					<td style="font-size: 15px;text-align:right;width:85px">最小盈亏：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.minProfit != null}" th:text="${item.minProfit}"></span>
@@ -193,7 +193,7 @@
 						<span th:if="${item.maxMargin != null}" th:text="${item.maxMargin}"></span>
 						<span th:if="${item.maxMargin == null}">-</span>
 					</td>
-				</tr>
+				</tr> -->
 				<tr style="display:none"  class="moreInfo">
 					<td style="font-size: 15px;text-align:left;width:125px;">最小预付款比率：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
@@ -201,7 +201,7 @@
 						<span th:if="${item.minMarginRateStr == null}">-</span>
 					</td>
 				</tr>
-				<tr style="display:none"  class="moreInfo">
+				<!-- <tr style="display:none"  class="moreInfo">
 					<td style="font-size: 15px;text-align:right;width:85px">净值：</td>
 					<td style="font-size: 15px;text-align:right;padding:0 5px 0 0;">
 						<span th:if="${item.equity != null}" th:text="${item.equity}"></span>
@@ -212,7 +212,7 @@
 						<span th:if="${item.profit != null}" th:text="${item.profit}"></span>
 						<span th:if="${item.profit == null}">-</span>
 					</td>
-				</tr>
+				</tr> -->
 				<tr style="display:none" th:if="${item.all != null}" class="moreInfo">
 					<td style="text-align:right;width:85px">
 						<a style="font-size:15px;" target="_blank"  th:href="'fund?account=' + ${account}  + '&startDate=' + ${item.startDate} + '&endDate=' + ${item.endDate} + '&type=all'">资金：</a>

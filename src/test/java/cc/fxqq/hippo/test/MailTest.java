@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 import cc.fxqq.hippo.dto.json.OrderMQL;
 import cc.fxqq.hippo.notify.MailService;
+import cc.fxqq.hippo.notify.MailTypeEnum;
 import cc.fxqq.hippo.util.DateUtil;
 import cc.fxqq.hippo.util.DecimalUtil;
 
@@ -34,6 +35,6 @@ public class MailTest {
     	order.setProfit(DecimalUtil.get(2.0));
     	order.setProfit(DecimalUtil.get(123.0));
     	order.setTicket("83672074");
-    	mailService.sendPendingOrder(232111, order);
+    	mailService.sendTradeInfo(MailTypeEnum.SL.getValue(), order);
     }
 }

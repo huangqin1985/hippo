@@ -101,7 +101,7 @@
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 			</td>
 		</tr>
-		<tr>
+		<!-- <tr>
     		<td style="text-align:left;width:50%">
     			&nbsp;减仓订单
 		   		
@@ -110,7 +110,7 @@
     	<tr style="height:10px;">
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 			</td>
-		</tr>
+		</tr> -->
 	    <tr>
     		<td style="text-align:left;width:40%">
 		    	<select id="sel2" class="last_center">
@@ -136,32 +136,31 @@
 			<td>
 				<table th:each="item : ${pager.data}" >
 					<tr class="orderDetail">
-						<td style="text-align: left;padding: 0 5px 0 5px;width:210px;">
+						<td style="text-align: left;padding: 0 5px 0 5px;width:185px;">
 							<span style="font-weight: bold" th:text="${item.symbol}"></span>
-							<span th:if="${item.type == 'buy'}" class="g" style="font-weight: bold"
-								th:text="${item.type} + ' ' + ${item.lots}"></span> 
-							<span th:if="${item.type == 'sell'}" class="r" style="font-weight: bold"
-								th:text="${item.type} + ' ' + ${item.lots}"></span>
+							<span th:if="${item.type == 'buy'}" class="g" style="font-weight: bold" th:text="${item.type} + ' ' + ${item.lots}"></span> 
+							<span th:if="${item.type == 'sell'}" class="r" style="font-weight: bold" th:text="${item.type} + ' ' + ${item.lots}"></span>
 						<td style="text-align:right;padding: 0 5px 0 5px" >
-							<span
-							th:if="${item.realProfit >= 0}" class="g"
-							style="font-weight: bold" th:text="${item.realProfit}"></span> <span
-							th:if="${item.realProfit < 0}" class="r"
-							style="font-weight: bold" th:text="${item.realProfit}"></span>
+							<span style="font-size:15px;" th:text="${item.closeTime}"></span>
 						</td>
 					</tr>
 					<tr class="orderDetail" >
-						<td style="text-align: left;width:40%;padding: 0 5px 0 5px">
-							<span  th:text="${item.openPrice}"></span>
-						</td>
-						<td style="padding: 0 5px 0 5px; text-align: right;width:60%;">
+						<td style="text-align: left;width:185px;padding: 0 5px 0 5px">
+							<span  th:text="${item.openPrice}"></span>&nbsp;&nbsp;
 							<span style="font-size: 15px" th:text="${item.childrenCount + '次减仓'}"></span>
-							<!-- <span style="font-size:15px;" th:text="${item.openTime}"></span> -->
+						</td>
+						<td style="padding: 0 5px 0 5px; text-align: right;">
+							<span th:if="${item.realProfit >= 0}" class="g" style="font-weight: bold" th:text="${item.realProfit}"></span> 
+							<span th:if="${item.realProfit < 0}" class="r" style="font-weight: bold" th:text="${item.realProfit}"></span>
+						
 						</td>
 					</tr>
 					<tr style="display:none" class="moreInfo">
-						<td colspan="4" style="color:gray;text-align:left;padding: 0 5px 0 5px">
+						<td style="text-align:left;padding: 0 5px 0 5px;width:185px;">
 							<span style="font-size:15px;" th:text="${item.openTime}"></span>
+						</td>
+						<td style="padding: 0 5px 0 5px; text-align: right;">
+							<span style="font-size:15px;" th:text="${item.duration}"></span>
 						</td>
 					</tr>
 					<tr style="height:6px;">
@@ -172,37 +171,26 @@
 						<td>
 							<table >
 								<tr style="font-size:15px;margin: 0 5px 0 5px;">
-									<td class="sltp" style="text-align: left;padding: 0 5px 0 5px;width:210px;">
+									<td th:class="${order.closeType}" style="text-align: left;padding: 0 5px 0 5px;width:185px;">
 										<span th:text="${order.symbol}"></span>
-										<span th:if="${order.type == 'buy'}" class="g" 
-											th:text="${order.type} + ' ' + ${order.lots}"></span> 
-										<span th:if="${order.type == 'sell'}" class="r" 
-											th:text="${order.type} + ' ' + ${order.lots}"></span>
+										<span th:if="${order.type == 'buy'}" class="g"  th:text="${order.type} + ' ' + ${order.lots}"></span> 
+										<span th:if="${order.type == 'sell'}" class="r" th:text="${order.type} + ' ' + ${order.lots}"></span>
 									</td>
 									<td style="text-align:right;padding: 0 15px 0 15px" >
-										<span
-											th:if="${order.realProfit >= 0}" class="g"
-											 th:text="${order.realProfit}"></span> <span
-											th:if="${order.realProfit < 0}" class="r"
-											 th:text="${order.realProfit}"></span>
-									</td>
-								</tr>
-								<tr style="font-size:15px;margin: 0 5px 0 5px;">
-									<td class="sltp" style="text-align: left;width:40%;padding: 0 5px 0 5px">
-										<!-- <span  th:text="${order.openPrice}"></span> -->&nbsp;&nbsp; → <span
-										 th:text="${order.closePrice}"></span> 
-									</td>
-									<td style="padding: 0 15px 0 0; text-align: right;width:60%;">
-										<!-- <span style="font-size:15px;" th:text="${order.closeTime}"></span> -->
-									</td>
-								</tr>
-								<tr style="font-size:15px;margin: 0 5px 0 5px">
-									<td class="sltp" colspan="4" style="color:gray;text-align: right;padding: 0 15px 0 0">
 										<span style="font-size:15px;" th:text="${order.closeTime}"></span>
 									</td>
 								</tr>
 								<tr style="font-size:15px;margin: 0 5px 0 5px">
-									<td  class="sltp" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
+									<td th:class="${order.closeType}" style="text-align: left;padding: 0 5px 0 5px;width:185px;">
+										<span  th:text="${order.openPrice}"></span>→<span  th:text="${order.closePrice}"></span> 
+									</td>
+									<td style="text-align: right;padding: 0 15px 0 0">
+										<span th:if="${order.profit >= 0}" class="g" th:text="${order.profit}"></span> 
+										<span th:if="${order.profit < 0}" class="r" th:text="${order.profit}"></span>
+									</td>
+								</tr>
+								<!-- <tr style="font-size:15px;margin: 0 5px 0 5px">
+									<td th:class="${order.closeType}" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
 										style="font-size: 15px">止损价：</span>
 									</td>
 									<td style="text-align: right;"><span
@@ -215,7 +203,7 @@
 										style="font-size: 15px" th:text="${order.takeProfit}"></span></td>
 								</tr>
 								<tr style="font-size:15px;margin: 0 5px 0 5px">
-									<td  class="sltp" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
+									<td th:class="${order.closeType}" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
 										style="font-size: 15px">手续费：</span>
 									</td>
 									<td style="text-align: right;"><span
@@ -228,7 +216,7 @@
 									</td>
 								</tr>
 								<tr style="font-size:15px;margin: 0 5px 0 5px">
-									<td  class="sltp" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
+									<td th:class="${order.closeType}" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
 										style="font-size: 15px">点数：</span></td>
 									<td style="text-align: right;">
 									<span
@@ -241,7 +229,7 @@
 										style="font-size: 15px" th:text="${order.profit}"></span></td>
 								</tr>
 								<tr style="font-size:15px;margin: 0 5px 0 5px">
-									<td  class="sltp" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
+									<td th:class="${order.closeType}" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
 										style="font-size: 15px">单号：</span></td>
 									<td style="text-align: right;"><span
 										style="font-size: 15px" th:text="${order.ticket}"></span></td>
@@ -251,7 +239,7 @@
 									<span
 										style="font-size: 15px" th:text="${order.duration}"></span>
 									</td>
-								</tr>
+								</tr> -->
 								<tr style="height:10px;">
 							    	<td colspan="3" style="width:100%;">
 							    	</td>
