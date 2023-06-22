@@ -1,6 +1,7 @@
 package cc.fxqq.hippo.notify;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.mail.internet.MimeMessage;
 
@@ -10,7 +11,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import cc.fxqq.hippo.cache.AccountCache;
 import cc.fxqq.hippo.dto.json.OrderMQL;
+import cc.fxqq.hippo.entity.Account;
 import cc.fxqq.hippo.util.DecimalUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,30 +52,41 @@ public class MailService {
     	}
     }
  
-    public void sendTradeInfo(String mailType, OrderMQL order) {
+    public void sendTradeInfo(Integer accountId, String mailType, List<OrderMQL> orders) {
+    	
+    	if (orders.size() < 1) {
+    		return;
+    	}
         
         StringBuilder subject = new StringBuilder();
-        subject.append("【").append(mailType).append("】").append(order.getSymbol()).append(" ");
-        subject.append(order.getClosePrice());
+        subject.append("【").append(mailType).append("】").append(orders.get(0).getSymbol()).append(" ");
+        subject.append(orders.get(0).getClosePrice());
         
-        StringBuilder text = new StringBuilder();
-        text.append("<div>").append(order.getSymbol()).append(" ").append(order.getType());
-        text.append(" ").append(DecimalUtil.get(order.getLots())).append("</div>");
-        text.append("<div>");
-        if (MailTypeEnum.SL.getValue().equals(mailType) ||
-        		MailTypeEnum.TP.getValue().equals(mailType)) {
-        	text.append(order.getOpenPrice() + " → " + order.getClosePrice());
-        } else {
-        	text.append(order.getClosePrice());
-        }
-        text.append("</div>");
-        if (MailTypeEnum.SL.getValue().equals(mailType) ||
-        		MailTypeEnum.TP.getValue().equals(mailType)) {
-        	
-        	BigDecimal realProfit = DecimalUtil.add(order.getSwap(), order.getCommission(), order.getProfit());
-        	text.append("<div>利润：").append(realProfit);
+        Account acc = AccountCache.getByAccountId(accountId);
+
+    	StringBuilder text = new StringBuilder();
+        for (OrderMQL order : orders) {
+            text.append("<div>").append(order.getSymbol()).append(" ").append(order.getType());
+            text.append(" ").append(DecimalUtil.get(order.getLots())).append("</div>");
+            text.append("<div>");
+            if (MailTypeEnum.SL.getValue().equals(mailType) ||
+            		MailTypeEnum.TP.getValue().equals(mailType)) {
+            	text.append(order.getOpenPrice() + " → " + order.getClosePrice());
+            } else {
+            	text.append(order.getClosePrice());
+            }
             text.append("</div>");
+            if (MailTypeEnum.SL.getValue().equals(mailType) ||
+            		MailTypeEnum.TP.getValue().equals(mailType)) {
+            	
+            	BigDecimal realProfit = DecimalUtil.add(order.getSwap(), order.getCommission(), order.getProfit());
+            	text.append("<div>利润：").append(realProfit);
+                text.append("</div>");
+            }
+            text.append("<div>&nbsp;</div>");
         }
+        text.append("<div>").append(acc.getNumber()).append("</div>");
+        text.append("<div>").append(acc.getServer()).append("</div>");
         
         sedMsg(subject.toString(), text.toString());
     }

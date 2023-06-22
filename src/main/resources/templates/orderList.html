@@ -103,6 +103,10 @@
 			    	<input type="hidden" id="sortOrder" th:value="${sortOrder}" name = "sortOrder"/>
 			    	<input type="hidden" id="tp" th:value="${tp}" name = "tp"/>
 			    	<input type="hidden" id="sl" th:value="${sl}" name = "sl"/>
+			    	<input type="hidden" id="so" th:value="${so}" name = "so"/>
+			    	<input type="hidden" id="close" th:value="${close}" name = "close"/>
+			    	<input type="hidden" id="passDay" th:value="${passDay}" name = "passDay"/>
+			    	<input type="hidden" id="passWeekend" th:value="${passWeekend}" name = "passWeekend"/>
 			    	<input type="hidden" id="pageNum" name = "pageNum"/>
 		    	</form>
     		</td>
@@ -123,34 +127,39 @@
 				<table th:each="item : ${pager.data}" >
 					<tr class="orderDetail">
 						<td th:class="${item.closeType}" style="text-align: left;padding: 0 5px 0 5px;width:185px;">
-							<span style="font-weight: bold" th:text="${item.symbol}"></span>&nbsp;
-							<span th:if="${item.type == 'buy'}" class="g" style="font-weight: bold"
-								th:text="${item.type} + ' ' + ${item.lots}"></span> 
-							<span th:if="${item.type == 'sell'}" class="r" style="font-weight: bold"
-								th:text="${item.type} + ' ' + ${item.lots}"></span>
+							<table>
+								<tr>
+									<td style="text-align:left">
+										<span style="font-weight: bold" th:text="${item.symbol}"></span>&nbsp;
+										<span th:if="${item.type == 'buy'}" class="g" style="font-weight: bold"
+											th:text="${item.type} + ' ' + ${item.lots}"></span> 
+										<span th:if="${item.type == 'sell'}" class="r" style="font-weight: bold"
+											th:text="${item.type} + ' ' + ${item.lots}"></span>
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align:left">
+										<span  th:text="${item.openPrice}"></span>→<span
+											 th:text="${item.closePrice}"></span> 
+									</td>
+								</tr>
+							</table>
 						</td>
 						<td style="text-align:right;padding: 0 5px 0 5px" >
-							<span th:text="${item.closeTime}" style="font-size: 15px;"></span> 
-						</td>
-					</tr>
-					<tr class="orderDetail" >
-						<td th:class="${item.closeType}" style="text-align: left;width:185px;padding: 0 5px 0 5px">
-							<span  th:text="${item.openPrice}"></span>→<span
-							 th:text="${item.closePrice}"></span> 
-						</td>
-						<td style="padding: 0 5px 0 5px; text-align: right;">
-							<!-- <span style="font-size: 15px" th:text="${item.points}"></span> -->
 							<span th:if="${item.realProfit >= 0}" class="g" style="font-weight: bold" th:text="${item.realProfit}"></span>
 							<span th:if="${item.realProfit < 0}" class="r" style="font-weight: bold" th:text="${item.realProfit}"></span>
 						</td>
 					</tr>
-					<tr style="display:none" class="moreInfo">
-						<td th:class="${item.closeType}" style="text-align: left;width:50%;padding: 0 5px 0 5px;width:185px;">
-							<span style="font-size: 15px;" th:text="${item.openTime}"></span>
-						<td style="padding: 0 5px 0 5px; text-align: right;">
-							<span style="font-size: 15px" th:text="${item.duration}"></span>
+					<!-- <tr class="orderDetail" >
+						<td th:class="${item.closeType}" style="text-align: left;width:185px;padding: 0 5px 0 5px">
+							
 						</td>
-					</tr>
+						<td style="padding: 0 5px 0 5px; text-align: right;">
+							<span style="font-size: 15px" th:text="${item.points}"></span>
+							<span th:if="${item.realProfit >= 0}" class="g" style="font-weight: bold" th:text="${item.realProfit}"></span>
+							<span th:if="${item.realProfit < 0}" class="r" style="font-weight: bold" th:text="${item.realProfit}"></span>
+						</td>
+					</tr> -->
 					<tr style="display:none" class="moreInfo">
 						<td th:class="${item.closeType}" style="text-align: right;padding: 0 5px 0 5px">
 							<span style="font-size: 15px">止损价：</span>
@@ -181,10 +190,10 @@
 					</tr>
 					<tr style="display:none" class="moreInfo">
 						<td th:class="${item.closeType}" style="text-align: right;padding: 0 5px 0 5px">
-							<span style="font-size: 15px">点数：</span>
+							<span style="font-size: 15px">单号：</span>
 						</td>
 						<td style="text-align: right;">
-							<span style="font-size: 15px" th:text="${item.points}"></span>
+							<span style="font-size: 15px" th:text="${item.ticket}"></span>
 						</td>
 						<td style="text-align: right;">
 							<span style="font-size: 15px">获利：</span>
@@ -195,16 +204,23 @@
 					</tr>
 					<tr style="display:none" class="moreInfo">
 						<td th:class="${item.closeType}" style="text-align: right;padding: 0 5px 0 5px">
-							<span style="font-size: 15px">单号：</span>
+							<span style="font-size: 15px">时长：</span>
 						</td>
 						<td style="text-align: right;">
-							<span style="font-size: 15px" th:text="${item.ticket}"></span>
+							<span style="font-size: 15px" th:text="${item.duration}"></span>
 						</td>
 						<td style="text-align: right;">
-							
+							<span style="font-size: 15px">点数：</span>
 						</td>
 						<td style="text-align: right;padding: 0 5px 0 5px">
-							
+							<span style="font-size: 15px" th:text="${item.points}"></span>
+						</td>
+					</tr>
+					<tr style="display:none" class="moreInfo">
+						<td th:class="${item.closeType}" style="text-align: left;width:50%;padding: 0 5px 0 5px;width:185px;">
+							<span style="font-size: 15px;" th:text="${item.openTime}"></span>
+						<td style="padding: 0 5px 0 5px; text-align: right;">
+							<span th:text="${item.closeTime}" style="font-size: 15px;"></span> 
 						</td>
 					</tr>
 					<tr th:if="${item.comment != null && item.comment != ''}" style="display:none" class="moreInfo">

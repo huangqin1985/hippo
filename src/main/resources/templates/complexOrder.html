@@ -137,32 +137,45 @@
 				<table th:each="item : ${pager.data}" >
 					<tr class="orderDetail">
 						<td style="text-align: left;padding: 0 5px 0 5px;width:185px;">
-							<span style="font-weight: bold" th:text="${item.symbol}"></span>
-							<span th:if="${item.type == 'buy'}" class="g" style="font-weight: bold" th:text="${item.type} + ' ' + ${item.lots}"></span> 
-							<span th:if="${item.type == 'sell'}" class="r" style="font-weight: bold" th:text="${item.type} + ' ' + ${item.lots}"></span>
+							<table>
+								<tr>
+									<td style="text-align:left">
+										<span style="font-weight: bold" th:text="${item.symbol}"></span>&nbsp;
+										<span th:if="${item.type == 'buy'}" class="g" style="font-weight: bold"
+											th:text="${item.type} + ' ' + ${item.lots}"></span> 
+										<span th:if="${item.type == 'sell'}" class="r" style="font-weight: bold"
+											th:text="${item.type} + ' ' + ${item.lots}"></span>
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align:left">
+										<span  th:text="${item.openPrice}"></span>&nbsp;&nbsp;
+										<span style="font-size: 15px" th:text="${item.childrenCount + '次减仓'}"></span>
+									</td>
+								</tr>
+							</table>
 						<td style="text-align:right;padding: 0 5px 0 5px" >
-							<span style="font-size:15px;" th:text="${item.closeTime}"></span>
+							<span th:if="${item.realProfit >= 0}" class="g" style="font-weight: bold" th:text="${item.realProfit}"></span> 
+							<span th:if="${item.realProfit < 0}" class="r" style="font-weight: bold" th:text="${item.realProfit}"></span>
 						</td>
 					</tr>
-					<tr class="orderDetail" >
+					<!-- <tr class="orderDetail" >
 						<td style="text-align: left;width:185px;padding: 0 5px 0 5px">
 							<span  th:text="${item.openPrice}"></span>&nbsp;&nbsp;
 							<span style="font-size: 15px" th:text="${item.childrenCount + '次减仓'}"></span>
 						</td>
 						<td style="padding: 0 5px 0 5px; text-align: right;">
-							<span th:if="${item.realProfit >= 0}" class="g" style="font-weight: bold" th:text="${item.realProfit}"></span> 
-							<span th:if="${item.realProfit < 0}" class="r" style="font-weight: bold" th:text="${item.realProfit}"></span>
-						
+							
 						</td>
-					</tr>
-					<tr style="display:none" class="moreInfo">
+					</tr> -->
+					<!-- <tr style="display:none" class="moreInfo">
 						<td style="text-align:left;padding: 0 5px 0 5px;width:185px;">
 							<span style="font-size:15px;" th:text="${item.openTime}"></span>
 						</td>
 						<td style="padding: 0 5px 0 5px; text-align: right;">
 							<span style="font-size:15px;" th:text="${item.duration}"></span>
 						</td>
-					</tr>
+					</tr> -->
 					<tr style="height:6px;">
 				    	<td colspan="3" style="width:100%;">
 				    	</td>
@@ -171,16 +184,28 @@
 						<td>
 							<table >
 								<tr style="font-size:15px;margin: 0 5px 0 5px;">
-									<td th:class="${order.closeType}" style="text-align: left;padding: 0 5px 0 5px;width:185px;">
-										<span th:text="${order.symbol}"></span>
-										<span th:if="${order.type == 'buy'}" class="g"  th:text="${order.type} + ' ' + ${order.lots}"></span> 
-										<span th:if="${order.type == 'sell'}" class="r" th:text="${order.type} + ' ' + ${order.lots}"></span>
+									<td th:class="${order.closeType}" style="text-align: left;padding: 0 0 0 5px;width:185px;">
+										<table>
+											<tr>
+												<td style="text-align:left">
+													<span th:text="${order.symbol}"></span>&nbsp;
+													<span th:if="${order.type == 'buy'}" class="g"  th:text="${order.type} + ' ' + ${order.lots}"></span> 
+													<span th:if="${order.type == 'sell'}" class="r" th:text="${order.type} + ' ' + ${order.lots}"></span>
+												</td>
+											</tr>
+											<tr>
+												<td style="text-align:left">
+													<span th:text="${order.openPrice}"></span>→<span th:text="${order.closePrice}"></span> 
+												</td>
+											</tr>
+										</table>
 									</td>
-									<td style="text-align:right;padding: 0 15px 0 15px" >
-										<span style="font-size:15px;" th:text="${order.closeTime}"></span>
+									<td style="text-align:right;padding: 0 10px 0 0" >
+										<span th:if="${order.realProfit >= 0}" class="g" th:text="${order.realProfit}"></span> 
+										<span th:if="${order.realProfit < 0}" class="r" th:text="${order.realProfit}"></span>
 									</td>
 								</tr>
-								<tr style="font-size:15px;margin: 0 5px 0 5px">
+								<!-- <tr style="font-size:15px;margin: 0 5px 0 5px">
 									<td th:class="${order.closeType}" style="text-align: left;padding: 0 5px 0 5px;width:185px;">
 										<span  th:text="${order.openPrice}"></span>→<span  th:text="${order.closePrice}"></span> 
 									</td>
@@ -188,7 +213,7 @@
 										<span th:if="${order.profit >= 0}" class="g" th:text="${order.profit}"></span> 
 										<span th:if="${order.profit < 0}" class="r" th:text="${order.profit}"></span>
 									</td>
-								</tr>
+								</tr> -->
 								<!-- <tr style="font-size:15px;margin: 0 5px 0 5px">
 									<td th:class="${order.closeType}" style="width:65px;text-align: right;padding: 0 5px 0 5px"><span
 										style="font-size: 15px">止损价：</span>
@@ -245,6 +270,13 @@
 							    	</td>
 							    </tr>
 							</table>
+						</td>
+					</tr>
+					<tr class="moreInfo" style="display:none">
+						<td style="text-align: left;padding: 0 5px 0 5px;">
+							<span th:text="${item.openTime}"></span>
+						<td style="text-align:right;padding: 0 5px 0 5px" >
+							<span th:text="${item.closeTime}"></span>
 						</td>
 					</tr>
 					<tr style="height:6px;">

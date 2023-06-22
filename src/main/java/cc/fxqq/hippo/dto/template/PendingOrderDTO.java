@@ -29,6 +29,8 @@ public class PendingOrderDTO {
 	
 	private String expiration;
 	
+	private String duration;
+	
 	private String status;
 	
 	private HistoryOrderDTO order;

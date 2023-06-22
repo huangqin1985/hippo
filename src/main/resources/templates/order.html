@@ -133,18 +133,18 @@
     				<!-- <a th:href="'orderList?close=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'平仓(' + totalSum.closeCount + ')'}"></a>
 	    			&nbsp; --><a th:href="'complexOrder?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'减仓(' + totalSum.complexCount + ')'}"></a>
 	    			&nbsp;<a th:href="'pendingOrder?sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate} + '&status=trade'" th:text="${'挂单(' + totalSum.pendingCount + ')'}"></a>
-    				&nbsp;<a th:href="'orderList?passWeekend=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'过周末(' + totalSum.passWeekendCount + ')'}"></a>
-    		</td>
+    				</td>
     	</tr>
-    	<!-- <tr style="height:10px;">
+    	<tr style="height:10px;">
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 			</td>
 		</tr>
 		<tr>
     		<td style="text-align:left;padding:0 10px 0 10px">
-    				<a th:href="'orderList?passDay=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'过夜(' + totalSum.passDayCount + ')'}"></a>
-	    	</td>
-    	</tr> -->
+    			<a th:href="'orderList?passDay=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'过夜(' + totalSum.passDayCount + ')'}"></a>
+	    		&nbsp;<a th:href="'orderList?passWeekend=true&sort=closeTime&sortOrder=desc&account=' + ${account} + '&startDate=' + ${startDate} + '&endDate=' + ${endDate}" th:text="${'过周末(' + totalSum.passWeekendCount + ')'}"></a>
+    		</td>
+    	</tr>
     	<tr style="height:10px;">
 			<td colspan="3" style="width:100%;"><hr style="border: dotted 0.7px silver;">
 			</td>

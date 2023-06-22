@@ -362,6 +362,9 @@ public class TradeOrderController extends BaseController {
 		model.addAttribute("tp", tp);
 		model.addAttribute("sl", sl);
 		model.addAttribute("so", so);
+		model.addAttribute("close", close);
+		model.addAttribute("passDay", passDay);
+		model.addAttribute("passWeekend", passWeekend);
 		
 		return "orderList";
 	}

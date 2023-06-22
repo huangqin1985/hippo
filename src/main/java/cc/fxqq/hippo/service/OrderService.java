@@ -88,19 +88,21 @@ public class OrderService {
 				if (expiration == null || expiration.getTime() <= 0) {
 					dto.setExpiration("");
 				} else {
-					dto.setExpiration(t.getExpiration());
+					dto.setExpiration(DateUtil.format(DateUtil.parseDatetime(t.getExpiration()), DateUtil.FORMAT1));
 				}
 				
 				dto.setStatus(t.getStatus());
 				
 				dto.setOpenTime(DateUtil.format(DateUtil.parseDatetime(t.getOpenTime()), DateUtil.FORMAT1));
 				dto.setCloseTime(DateUtil.format(DateUtil.parseDatetime(t.getCloseTime()), DateUtil.FORMAT1));
-				
+				dto.setDuration(DateUtil.getSecondDuration(t.getOpenTime(), t.getCloseTime()));
+
 				String ticket = t.getTicket();
 				HistoryOrder order = historyOrderExtMapper.selectUnique(t.getAccountId(), ticket);
 				if (order != null) {
 					dto.setOrder(convertToHistoryDTO(order));
 				}
+				dto.setTicket(ticket);
 				
 				return dto;
 			});
@@ -351,7 +353,7 @@ public class OrderService {
 		    	mailType = MailTypeEnum.SO.getValue();
 		    }
 		    if (mailType != null) {
-		    	mailService.sendTradeInfo(mailType, order);
+		    	mailService.sendTradeInfo(accountId, mailType, notifyList);
 		    }
 		}
 		
@@ -391,7 +393,7 @@ public class OrderService {
 		    
 		}
 		if (orders.size() > 0) {
-			mailService.sendTradeInfo(MailTypeEnum.PENDING.getValue(), orders.get(0));
+			mailService.sendTradeInfo(accountId, MailTypeEnum.PENDING.getValue(), orders);
 		}
 	}
 	

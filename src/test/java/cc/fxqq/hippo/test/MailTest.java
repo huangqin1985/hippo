@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import com.google.common.collect.Lists;
+
 import cc.fxqq.hippo.dto.json.OrderMQL;
 import cc.fxqq.hippo.notify.MailService;
 import cc.fxqq.hippo.notify.MailTypeEnum;
@@ -35,6 +37,6 @@ public class MailTest {
     	order.setProfit(DecimalUtil.get(2.0));
     	order.setProfit(DecimalUtil.get(123.0));
     	order.setTicket("83672074");
-    	mailService.sendTradeInfo(MailTypeEnum.SL.getValue(), order);
+    	mailService.sendTradeInfo(1, MailTypeEnum.SL.getValue(), Lists.newArrayList(order));
     }
 }
